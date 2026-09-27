@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Teman Bekam - POS Mandiri</title>
+  
+  <!-- Font Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    body { 
+      background-color: #f7f9f6; 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bg-tb-gradient {
+      background: linear-gradient(135deg, #0d4a2d 0%, #156d43 65%, #1b8552 100%);
+    }
+    .text-tb-green { color: #135a39; }
+    .card-income { background-color: #e1f2e7; border-color: #b7e0c4; color: #0c4d29; }
+    .card-expense { background-color: #fde8e8; border-color: #f8b4b4; color: #9b1c1c; }
+    .card-balance { background-color: #fef3d6; border-color: #fbe09e; color: #855307; }
+    .card-wallet-cash { background-color: #fdf6e9; border: 1px solid #fae5be; }
+    .card-wallet-bank { background-color: #edf7f0; border: 1px solid #c7ebd2; }
+    .btn-tb-primary {
+      background: linear-gradient(135deg, #135a39 0%, #1b7a4d 100%);
+    }
+    .btn-tb-primary:hover {
+      background: linear-gradient(135deg, #0f462c 0%, #15623e 100%);
+    }
+    .hide { display: none; }
+  </style>
+</head>
+<body class="pb-28">
+
+  <!-- Header Branding Teman Bekam -->
+  <header class="bg-tb-gradient text-white px-5 pt-7 pb-6 rounded-b-[2.2rem] text-center shadow-lg relative overflow-hidden">
+    <div class="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-md mb-2 relative border-2 border-amber-300">
+      <div class="flex items-center justify-center">
+        <i class="fa-solid fa-person-dots-from-line text-2xl text-emerald-800 mr-0.5"></i>
+        <i class="fa-solid fa-fire-flame-simple text-sm text-amber-500 -ml-1"></i>
+      </div>
+    </div>
+    
+    <h1 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm">Teman Bekam</h1>
+    <p class="text-xs font-semibold text-amber-300 tracking-wider uppercase mt-0.5">Ahlinya Bekam & Relaksasi[cite: 2]</p>
+    
+    <!-- Tombol Mode Mandiri & Backup -->
+    <div class="flex justify-center items-center gap-2 mt-3">
+      <button onclick="switchTab('pengaturan')" class="bg-black/20 hover:bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] text-emerald-100 border border-white/10 flex items-center gap-1.5">
+        <i class="fa-solid fa-database text-amber-300"></i> Cadangkan Data
+      </button>
+      <button id="btnInstallApp" onclick="installAplikasi()" class="bg-white/90 hover:bg-white text-emerald-950 font-bold px-3 py-1 rounded-full text-[11px] shadow flex items-center gap-1.5 hide">
+        <i class="fa-solid fa-download text-emerald-700"></i> Pasang Aplikasi
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= TAB 1: KASIR ================= -->
+  <main id="tab-dashboard" class="px-4 mt-4 space-y-4 max-w-md mx-auto">
+    <!-- Ringkasan Keuangan[cite: 1] -->
+    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+      <div class="card-income p-3 rounded-2xl border shadow-sm">
+        <div class="font-bold text-[10px] uppercase tracking-wider text-emerald-800">Total Omset</div>
+        <div class="font-extrabold text-xs mt-1" id="totalOmset">Rp 0</div>
+      </div>
+      <div class="card-expense p-3 rounded-2xl border shadow-sm">
+        <div class="font-bold text-[10px] uppercase tracking-wider text-rose-800">Pengeluaran</div>
+        <div class="font-extrabold text-xs mt-1" id="totalPengeluaranHeader">Rp 0</div>
+      </div>
+      <div class="card-balance p-3 rounded-2xl border shadow-sm">
+        <div class="font-bold text-[10px] uppercase tracking-wider text-amber-900">Sisa Saldo</div>
+        <div class="font-extrabold text-xs mt-1" id="sisaKasBersih">Rp 0</div>
+      </div>
+    </div>
+
+    <!-- Posisi Saldo Kasir[cite: 1] -->
+    <div class="space-y-2">
+      <div class="card-wallet-cash p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 text-lg shadow-inner">💵</div>
+          <div>
+            <div class="text-[11px] font-semibold text-amber-900">Kas Fisik Tunai (Laci)</div>
+            <div class="text-sm font-black text-gray-900" id="kasTunai">Rp 0</div>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2.5 py-1 rounded-full">Cash Drawer</span>
+      </div>
+
+      <div class="card-wallet-bank p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 text-lg shadow-inner">📱</div>
+          <div>
+            <div class="text-[11px] font-semibold text-emerald-900">QRIS / Bank Transfer</div>
+            <div class="text-sm font-black text-gray-900" id="kasQris">Rp 0</div>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2.5 py-1 rounded-full">Digital</span>
+      </div>
+    </div>
+
+    <!-- Form Transaksi Kasir -->
+    <section class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+        <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
+          <i class="fa-solid fa-notes-medical text-amber-500"></i> Pendaftaran & Kasir Pasien
+        </h2>
+        <span id="badgePasien" class="text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">Pasien Baru</span>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700 flex justify-between">
+          <span>Nomor WhatsApp Pasien</span>
+          <span class="text-emerald-700 font-medium text-[10px]">Cukup ketik WA jika pernah datang</span>
+        </label>
+        <div class="relative mt-1">
+          <input type="tel" id="custWA" oninput="cariPasienOtomatis()" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+          <i class="fa-brands fa-whatsapp absolute right-3.5 top-2.5 text-emerald-600 text-base"></i>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Nama Lengkap Pasien</label>
+        <input type="text" id="custName" placeholder="Contoh: Bapak Abdullah" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+      </div>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Pilihan Terapi</label>
+        <select id="layananSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800 font-medium"></select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Terapis</label>
+          <select id="terapisSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800"></select>
+        </div>
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Pembayaran</label>
+          <select id="metodeBayar" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+            <option value="Tunai">💵 Tunai</option>
+            <option value="QRIS">📱 QRIS / Transfer</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Keluhan Pasien / Catatan Medis</label>
+        <input type="text" id="custKeluhan" placeholder="Contoh: Kolesterol, migrain, titik kahil" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+      </div>
+
+      <button onclick="simpanTransaksi()" class="w-full py-3 btn-tb-primary text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 mt-2">
+        <i class="fa-solid fa-check-circle text-amber-300"></i> Simpan Transaksi Kasir
+      </button>
+    </section>
+
+    <!-- Riwayat Transaksi Hari Ini[cite: 1] -->
+    <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="font-bold text-gray-800 text-xs uppercase tracking-wider">Antrean Hari Ini</h2>
+        <span class="text-[11px] text-gray-400 font-mono" id="txCountBadge">0 Pasien</span>
+      </div>
+      <div id="riwayatList" class="space-y-2 text-xs">
+        <p class="text-gray-400 text-center py-3">Belum ada antrean selesai hari ini.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= TAB 2: PENGELUARAN ================= -->
+  <main id="tab-pengeluaran" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-900/10 space-y-3">
+      <h2 class="font-bold text-rose-800 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran Operasional
+      </h2>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Keterangan Biaya</label>
+        <input type="text" id="expKeterangan" placeholder="Contoh: Beli minyak zaitun, jarum bekam" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-rose-600">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Kategori</label>
+          <select id="expKategori" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-rose-600">
+            <option value="Bahan Medis (Jarum/Kop)">Bahan Medis (Jarum/Kop)</option>
+            <option value="Minyak / Herbal">Minyak / Herbal</option>
+            <option value="Operasional & Listrik">Operasional & Listrik</option>
+            <option value="Konsumsi & Kebersihan">Konsumsi & Kebersihan</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Sumber Kas</label>
+          <select id="expSumberKas" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-rose-600">
+            <option value="Tunai">💵 Kas Tunai (Laci)</option>
+            <option value="QRIS">📱 Rekening / Transfer</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Nominal (Rp)</label>
+        <input type="number" id="expNominal" placeholder="50000" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-rose-600">
+      </div>
+
+      <button onclick="simpanPengeluaran()" class="w-full py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-1.5 mt-2">
+        <i class="fa-solid fa-minus-circle"></i> Catat Pengeluaran
+      </button>
+    </div>
+
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <h3 class="font-bold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Pengeluaran Hari Ini</h3>
+      <div id="pengeluaranList" class="space-y-2 text-xs"></div>
+    </div>
+  </main>
+
+  <!-- ================= TAB 3: MASTER TERAPIS ================= -->
+  <main id="tab-terapis" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
+      <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
+        <i class="fa-solid fa-user-doctor text-amber-500"></i> Kelola Master Terapis
+      </h2>
+      <input type="hidden" id="editTerapisId">
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Nama Terapis</label>
+        <input type="text" id="masterNamaTerapis" placeholder="Contoh: Ustadz Ridwan" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Kategori</label>
+          <select id="masterKategoriTerapis" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+            <option value="Ikhwan (Pria)">Ikhwan (Pria)</option>
+            <option value="Akhwat (Wanita)">Akhwat (Wanita)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">No. WhatsApp</label>
+          <input type="tel" id="masterWaTerapis" placeholder="08xxxxxxxxxx" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 font-mono">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="simpanMasterTerapis()" class="flex-1 py-2.5 btn-tb-primary text-white font-bold rounded-xl text-xs shadow">Simpan Terapis</button>
+        <button onclick="resetFormMasterTerapis()" class="px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl text-xs">Batal</button>
+      </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <h3 class="font-bold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Terapis Aktif</h3>
+      <div id="masterTerapisList" class="space-y-2 text-xs"></div>
+    </div>
+  </main>
+
+  <!-- ================= TAB 4: MASTER LAYANAN ================= -->
+  <main id="tab-layanan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
+      <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
+        <i class="fa-solid fa-sliders text-amber-500"></i> Kelola Paket Terapi
+      </h2>
+      <input type="hidden" id="editLayananId">
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Nama Paket Layanan</label>
+        <input type="text" id="masterNamaLayanan" placeholder="Contoh: Bekam Kepala Tanpa Cukur" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Tarif Pasien (Rp)</label>
+          <input type="number" id="masterHargaLayanan" placeholder="130000" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+        </div>
+        <div>
+          <label class="text-[11px] font-semibold text-gray-700">Fee Terapis (Rp)</label>
+          <input type="number" id="masterFeeTerapis" placeholder="45000" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="simpanMasterLayanan()" class="flex-1 py-2.5 btn-tb-primary text-white font-bold rounded-xl text-xs shadow">Simpan Layanan</button>
+        <button onclick="resetFormMasterLayanan()" class="px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl text-xs">Batal</button>
+      </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <h3 class="font-bold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Paket Terapi Aktif</h3>
+      <div id="masterLayananList" class="space-y-2 text-xs"></div>
+    </div>
+  </main>
+
+  <!-- ================= TAB 5: DATABASE PASIEN ================= -->
+  <main id="tab-pasien" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <h2 class="font-bold text-tb-green text-sm mb-1 flex items-center gap-2">
+        <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
+      </h2>
+      <p class="text-[11px] text-gray-500 mb-3">Tersimpan otomatis di memori browser ini.</p>
+      
+      <div class="relative mb-3">
+        <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+        <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+      </div>
+
+      <div id="pasienListContainer" class="space-y-2 text-xs"></div>
+    </div>
+  </main>
+
+  <!-- ================= TAB 6: PENGATURAN & BACKUP ================= -->
+  <main id="tab-pengaturan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+      <h2 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-700"></i> Cadangkan & Pulihkan Data
+      </h2>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Karena aplikasi ini berjalan mandiri di browser tanpa server luar, unduh berkas cadangan secara berkala agar riwayat klinik tetap aman.
+      </p>
+
+      <div class="space-y-2 pt-2">
+        <button onclick="downloadBackupJSON()" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs shadow flex items-center justify-center gap-2">
+          <i class="fa-solid fa-file-arrow-down"></i> Unduh Cadangan Data (.json)
+        </button>
+
+        <label class="w-full py-3 bg-amber-50 border border-amber-300 text-amber-900 font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-file-arrow-up"></i> Pulihkan Data dari File
+          <input type="file" id="fileRestoreInput" accept=".json" onchange="restoreDataJSON(event)" class="hidden">
+        </label>
+
+        <button onclick="resetSemuaData()" class="w-full py-2 text-rose-600 text-[11px] font-semibold text-center hover:underline pt-2">
+          Hapus & Reset Semua Data
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-emerald-950/10 px-2 py-2 flex justify-between items-center text-gray-400 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-tb-green font-bold flex-1">
+      <i class="fa-solid fa-cash-register text-sm"></i>
+      <span class="text-[9px] mt-1">Kasir</span>
+    </button>
+    <button onclick="switchTab('pengeluaran')" id="nav-pengeluaran" class="flex flex-col items-center hover:text-emerald-800 flex-1">
+      <i class="fa-solid fa-arrow-down-up-across-line text-sm"></i>
+      <span class="text-[9px] mt-1">Biaya</span>
+    </button>
+    <button onclick="switchTab('terapis')" id="nav-terapis" class="flex flex-col items-center hover:text-emerald-800 flex-1">
+      <i class="fa-solid fa-user-doctor text-sm"></i>
+      <span class="text-[9px] mt-1">Terapis</span>
+    </button>
+    <button onclick="switchTab('layanan')" id="nav-layanan" class="flex flex-col items-center hover:text-emerald-800 flex-1">
+      <i class="fa-solid fa-spa text-sm"></i>
+      <span class="text-[9px] mt-1">Layanan</span>
+    </button>
+    <button onclick="switchTab('pasien')" id="nav-pasien" class="flex flex-col items-center hover:text-emerald-800 flex-1">
+      <i class="fa-solid fa-hospital-user text-sm"></i>
+      <span class="text-[9px] mt-1">Pasien</span>
+    </button>
+  </nav>
+
+  <script>
+    // State Penyimpanan Internal Mandiri (localStorage)
+    let masterTerapis = JSON.parse(localStorage.getItem('tb_master_terapis')) || [
+      { id: '1', nama: 'Ustadz Ridwan', kategori: 'Ikhwan (Pria)', wa: '08123456789' },
+      { id: '2', nama: 'Terapis Ikhwan 1', kategori: 'Ikhwan (Pria)', wa: '08987654321' },
+      { id: '3', nama: 'Terapis Akhwat 1', kategori: 'Akhwat (Wanita)', wa: '08129876543' }
+    ];
+
+    let masterLayanan = JSON.parse(localStorage.getItem('tb_master_layanan')) || [
+      { id: '1', nama: 'Bekam Sunnah Standar', harga: 100000, fee: 35000 },
+      { id: '2', nama: 'Bekam Medis + Pijat Relaksasi', harga: 150000, fee: 55000 },
+      { id: '3', nama: 'Refleksi Titik Syaraf & Relaksasi', harga: 80000, fee: 30000 },
+      { id: '4', nama: 'Bekam Kepala & Terapi Komplit', harga: 180000, fee: 65000 }
+    ];
+
+    let databasePasien = JSON.parse(localStorage.getItem('tb_database_pasien')) || {
+      '081234567890': { nama: 'Bapak Abdullah', keluhan: 'Migrain dan pegal pundak', kunjunganTerakhir: '2026-09-27' }
+    };
+
+    let transaksi = JSON.parse(localStorage.getItem('tb_transaksi_today')) || [];
+    let pengeluaran = JSON.parse(localStorage.getItem('tb_pengeluaran_today')) || [];
+
+    const formatRp = (num) => "Rp " + Number(num || 0).toLocaleString('id-ID');
+
+    // 1. CARI PASIEN VIA WA
+    function cariPasienOtomatis() {
+      const wa = document.getElementById('custWA').value.trim();
+      const badge = document.getElementById('badgePasien');
+      const namaInput = document.getElementById('custName');
+      const keluhanInput = document.getElementById('custKeluhan');
+
+      if (databasePasien[wa]) {
+        namaInput.value = databasePasien[wa].nama;
+        keluhanInput.value = databasePasien[wa].keluhan || '';
+        badge.innerText = "Pasien Lama (Terdaftar)";
+        badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-300";
+      } else {
+        badge.innerText = "Pasien Baru";
+        badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium";
+      }
+    }
+
+    // 2. SIMPAN TRANSAKSI
+    function simpanTransaksi() {
+      const wa = document.getElementById('custWA').value.trim();
+      const nama = document.getElementById('custName').value.trim();
+      const keluhan = document.getElementById('custKeluhan').value.trim();
+      const layananId = document.getElementById('layananSelect').value;
+      const terapis = document.getElementById('terapisSelect').value;
+      const metode = document.getElementById('metodeBayar').value;
+
+      if (!nama) { alert("Nama pasien wajib diisi!"); return; }
+
+      const selectedLayanan = masterLayanan.find(l => l.id === layananId);
+      if (!selectedLayanan) { alert("Pilih paket terapi!"); return; }
+
+      if (wa) {
+        databasePasien[wa] = {
+          nama: nama,
+          keluhan: keluhan,
+          kunjunganTerakhir: new Date().toISOString().split('T')[0]
+        };
+        localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+      }
+
+      transaksi.push({
+        id: Date.now(),
+        wa: wa || '-',
+        nama: nama,
+        layanan: selectedLayanan.nama,
+        nominal: selectedLayanan.harga,
+        fee: selectedLayanan.fee,
+        terapis: terapis,
+        metode: metode,
+        keluhan: keluhan,
+        jam: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
+
+      document.getElementById('custWA').value = '';
+      document.getElementById('custName').value = '';
+      document.getElementById('custKeluhan').value = '';
+      cariPasienOtomatis();
+      updateUI();
+    }
+
+    // 3. PENGELUARAN
+    function simpanPengeluaran() {
+      const ket = document.getElementById('expKeterangan').value.trim();
+      const kategori = document.getElementById('expKategori').value;
+      const sumber = document.getElementById('expSumberKas').value;
+      const nominal = parseInt(document.getElementById('expNominal').value) || 0;
+
+      if (!ket || nominal <= 0) { alert("Keterangan dan nominal pengeluaran harus diisi!"); return; }
+
+      pengeluaran.push({
+        id: Date.now(),
+        keterangan: ket,
+        kategori: kategori,
+        sumber: sumber,
+        nominal: nominal,
+        jam: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+      document.getElementById('expKeterangan').value = '';
+      document.getElementById('expNominal').value = '';
+      renderPengeluaran();
+      updateUI();
+    }
+
+    function renderPengeluaran() {
+      const container = document.getElementById('pengeluaranList');
+      if (pengeluaran.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-3">Belum ada pengeluaran hari ini.</p>';
+        return;
+      }
+      container.innerHTML = pengeluaran.slice().reverse().map(item => `
+        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+          <div>
+            <div class="font-bold text-gray-800">${item.keterangan}</div>
+            <div class="text-[11px] text-gray-500">${item.kategori} • ${item.sumber} • ${item.jam}</div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-extrabold text-rose-700">-${formatRp(item.nominal)}</span>
+            <button onclick="hapusPengeluaran(${item.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function hapusPengeluaran(id) {
+      if (!confirm("Hapus catatan pengeluaran ini?")) return;
+      pengeluaran = pengeluaran.filter(item => item.id !== id);
+      localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+      renderPengeluaran();
+      updateUI();
+    }
+
+    // 4. MASTER TERAPIS CRUD
+    function renderSelectTerapis() {
+      const select = document.getElementById('terapisSelect');
+      select.innerHTML = masterTerapis.map(t => 
+        `<option value="${t.nama}">${t.nama} (${t.kategori})</option>`
+      ).join('');
+    }
+
+    function renderMasterTerapis() {
+      const container = document.getElementById('masterTerapisList');
+      container.innerHTML = masterTerapis.map(t => `
+        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+          <div>
+            <div class="font-bold text-gray-800 text-xs">${t.nama}</div>
+            <div class="text-[11px] text-gray-500 mt-0.5">${t.kategori} • WA: <span class="font-mono text-emerald-700">${t.wa || '-'}</span></div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editTerapis('${t.id}')" class="text-sky-600 hover:text-sky-800 px-2 py-1"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="hapusTerapis('${t.id}')" class="text-rose-500 hover:text-rose-700 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada terapis.</p>';
+    }
+
+    function simpanMasterTerapis() {
+      const id = document.getElementById('editTerapisId').value;
+      const nama = document.getElementById('masterNamaTerapis').value.trim();
+      const kategori = document.getElementById('masterKategoriTerapis').value;
+      const wa = document.getElementById('masterWaTerapis').value.trim();
+
+      if (!nama) { alert("Nama terapis wajib diisi!"); return; }
+
+      if (id) {
+        const index = masterTerapis.findIndex(t => t.id === id);
+        if (index !== -1) masterTerapis[index] = { id, nama, kategori, wa };
+      } else {
+        masterTerapis.push({ id: Date.now().toString(), nama, kategori, wa });
+      }
+
+      localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+      resetFormMasterTerapis();
+      renderMasterTerapis();
+      renderSelectTerapis();
+      alert("Data terapis berhasil disimpan!");
+    }
+
+    function editTerapis(id) {
+      const item = masterTerapis.find(t => t.id === id);
+      if (!item) return;
+      document.getElementById('editTerapisId').value = item.id;
+      document.getElementById('masterNamaTerapis').value = item.nama;
+      document.getElementById('masterKategoriTerapis').value = item.kategori;
+      document.getElementById('masterWaTerapis').value = item.wa;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hapusTerapis(id) {
+      if (!confirm("Hapus data terapis ini?")) return;
+      masterTerapis = masterTerapis.filter(t => t.id !== id);
+      localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+      renderMasterTerapis();
+      renderSelectTerapis();
+    }
+
+    function resetFormMasterTerapis() {
+      document.getElementById('editTerapisId').value = '';
+      document.getElementById('masterNamaTerapis').value = '';
+      document.getElementById('masterWaTerapis').value = '';
+    }
+
+    // 5. MASTER LAYANAN CRUD
+    function renderSelectLayanan() {
+      const select = document.getElementById('layananSelect');
+      select.innerHTML = masterLayanan.map(l => 
+        `<option value="${l.id}">${l.nama} — ${formatRp(l.harga)}</option>`
+      ).join('');
+    }
+
+    function renderMasterLayanan() {
+      const container = document.getElementById('masterLayananList');
+      container.innerHTML = masterLayanan.map(l => `
+        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+          <div>
+            <div class="font-bold text-gray-800 text-xs">${l.nama}</div>
+            <div class="text-[11px] text-gray-500 mt-0.5">Tarif: <span class="text-tb-green font-bold">${formatRp(l.harga)}</span> • Fee: ${formatRp(l.fee)}</div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editLayanan('${l.id}')" class="text-sky-600 hover:text-sky-800 px-2 py-1"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="hapusLayanan('${l.id}')" class="text-rose-500 hover:text-rose-700 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada layanan aktif.</p>';
+    }
+
+    function simpanMasterLayanan() {
+      const id = document.getElementById('editLayananId').value;
+      const nama = document.getElementById('masterNamaLayanan').value.trim();
+      const harga = parseInt(document.getElementById('masterHargaLayanan').value) || 0;
+      const fee = parseInt(document.getElementById('masterFeeTerapis').value) || 0;
+
+      if (!nama || harga <= 0) { alert("Nama dan tarif terapi harus valid!"); return; }
+
+      if (id) {
+        const index = masterLayanan.findIndex(l => l.id === id);
+        if (index !== -1) masterLayanan[index] = { id, nama, harga, fee };
+      } else {
+        masterLayanan.push({ id: Date.now().toString(), nama, harga, fee });
+      }
+
+      localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+      resetFormMasterLayanan();
+      renderMasterLayanan();
+      renderSelectLayanan();
+      alert("Layanan tersimpan!");
+    }
+
+    function editLayanan(id) {
+      const item = masterLayanan.find(l => l.id === id);
+      if (!item) return;
+      document.getElementById('editLayananId').value = item.id;
+      document.getElementById('masterNamaLayanan').value = item.nama;
+      document.getElementById('masterHargaLayanan').value = item.harga;
+      document.getElementById('masterFeeTerapis').value = item.fee;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hapusLayanan(id) {
+      if (!confirm("Hapus paket layanan ini?")) return;
+      masterLayanan = masterLayanan.filter(l => l.id !== id);
+      localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+      renderMasterLayanan();
+      renderSelectLayanan();
+    }
+
+    function resetFormMasterLayanan() {
+      document.getElementById('editLayananId').value = '';
+      document.getElementById('masterNamaLayanan').value = '';
+      document.getElementById('masterHargaLayanan').value = '';
+      document.getElementById('masterFeeTerapis').value = '';
+    }
+
+    // 6. DATABASE PASIEN
+    function renderDaftarPasien() {
+      const container = document.getElementById('pasienListContainer');
+      const keyword = (document.getElementById('cariPasienListInput')?.value || '').toLowerCase();
+      const keys = Object.keys(databasePasien).filter(wa => 
+        wa.includes(keyword) || (databasePasien[wa].nama || '').toLowerCase().includes(keyword)
+      );
+
+      if (keys.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-4">Pasien tidak ditemukan.</p>';
+        return;
+      }
+
+      container.innerHTML = keys.map(wa => {
+        const p = databasePasien[wa];
+        return `
+          <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-start">
+            <div>
+              <div class="font-bold text-gray-800 text-xs">${p.nama}</div>
+              <div class="text-[11px] font-mono text-emerald-700 font-semibold mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${wa}</div>
+              <div class="text-[10px] text-gray-500 mt-1">Keluhan: ${p.keluhan || '-'}</div>
+            </div>
+            <button onclick="pilihPasienKeKasir('${wa}')" class="text-xs bg-amber-100 text-amber-900 border border-amber-300 font-bold px-2.5 py-1 rounded-lg hover:bg-amber-200">
+              Pilih
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function pilihPasienKeKasir(wa) {
+      switchTab('dashboard');
+      document.getElementById('custWA').value = wa;
+      cariPasienOtomatis();
+    }
+
+    // 7. UPDATE REKAP KASIR
+    function updateUI() {
+      let omset = 0, tunaiIn = 0, qrisIn = 0;
+      let totalPengeluaran = 0, tunaiOut = 0, qrisOut = 0;
+
+      transaksi.forEach(t => {
+        omset += t.nominal;
+        if (t.metode === 'Tunai') tunaiIn += t.nominal; else qrisIn += t.nominal;
+      });
+
+      pengeluaran.forEach(e => {
+        totalPengeluaran += e.nominal;
+        if (e.sumber === 'Tunai') tunaiOut += e.nominal; else qrisOut += e.nominal;
+      });
+
+      const saldoTunaiBersih = tunaiIn - tunaiOut;
+      const saldoQrisBersih = qrisIn - qrisOut;
+      const sisaSaldoTotal = omset - totalPengeluaran;
+
+      const listEl = document.getElementById('riwayatList');
+      listEl.innerHTML = '';
+
+      transaksi.slice().reverse().forEach(t => {
+        const row = document.createElement('div');
+        row.className = "flex justify-between items-center p-2.5 bg-gray-50 rounded-xl border border-gray-100";
+        row.innerHTML = `
+          <div>
+            <div class="font-bold text-gray-800">${t.nama} <span class="font-medium text-emerald-800">(${t.layanan})</span></div>
+            <div class="text-[10px] text-gray-500">${t.terapis} • ${t.metode} • ${t.jam} ${t.wa !== '-' ? '• WA: '+t.wa : ''}</div>
+          </div>
+          <div class="font-extrabold text-tb-green">${formatRp(t.nominal)}</div>
+        `;
+        listEl.appendChild(row);
+      });
+
+      document.getElementById('totalOmset').innerText = formatRp(omset);
+      document.getElementById('totalPengeluaranHeader').innerText = formatRp(totalPengeluaran);
+      document.getElementById('sisaKasBersih').innerText = formatRp(sisaSaldoTotal);
+      document.getElementById('kasTunai').innerText = formatRp(saldoTunaiBersih);
+      document.getElementById('kasQris').innerText = formatRp(saldoQrisBersih);
+      document.getElementById('txCountBadge').innerText = `${transaksi.length} Pasien`;
+    }
+
+    // 8. FITUR CADANGKAN & PULIHKAN DATA LOKAL (JSON)
+    function downloadBackupJSON() {
+      const dataBackup = {
+        waktu: new Date().toISOString(),
+        terapis: masterTerapis,
+        layanan: masterLayanan,
+        pasien: databasePasien,
+        transaksi: transaksi,
+        pengeluaran: pengeluaran
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataBackup, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `TemanBekam_Backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function restoreDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.terapis) masterTerapis = parsed.terapis;
+          if (parsed.layanan) masterLayanan = parsed.layanan;
+          if (parsed.pasien) databasePasien = parsed.pasien;
+          if (parsed.transaksi) transaksi = parsed.transaksi;
+          if (parsed.pengeluaran) pengeluaran = parsed.pengeluaran;
+
+          localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+          localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+          localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+          localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
+          localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+
+          renderSelectTerapis();
+          renderSelectLayanan();
+          renderPengeluaran();
+          updateUI();
+          alert("Data kasir & pasien berhasil dipulihkan!");
+          switchTab('dashboard');
+        } catch (err) {
+          alert("Format file tidak valid.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetSemuaData() {
+      if (!confirm("Peringatan: Semua data transaksi, pasien, dan layanan akan di-reset ke awal. Lanjutkan?")) return;
+      localStorage.clear();
+      location.reload();
+    }
+
+    // 9. DUKUNGAN INSTALL APLIKASI KE HP (PWA)
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('btnInstallApp');
+      if (btn) btn.classList.remove('hide');
+    });
+
+    function installAplikasi() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('btnInstallApp').classList.add('hide');
+        });
+      }
+    }
+
+    // 10. NAVIGASI TAB MENU
+    function switchTab(tab) {
+      ['dashboard', 'pengeluaran', 'terapis', 'layanan', 'pasien', 'pengaturan'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hide');
+        const navBtn = document.getElementById(`nav-${t}`);
+        if (navBtn) {
+          navBtn.classList.remove('text-tb-green', 'font-bold');
+          navBtn.classList.add('text-gray-400');
+        }
+      });
+
+      const activeTabEl = document.getElementById(`tab-${tab}`);
+      if (activeTabEl) activeTabEl.classList.remove('hide');
+
+      const activeNav = document.getElementById(`nav-${tab}`);
+      if (activeNav) {
+        activeNav.classList.add('text-tb-green', 'font-bold');
+        activeNav.classList.remove('text-gray-400');
+      }
+
+      if (tab === 'pengeluaran') renderPengeluaran();
+      if (tab === 'terapis') renderMasterTerapis();
+      if (tab === 'layanan') renderMasterLayanan();
+      if (tab === 'pasien') renderDaftarPasien();
+    }
+
+    renderSelectTerapis();
+    renderSelectLayanan();
+    renderPengeluaran();
+    updateUI();
+  </script>
+</body>
+</html>
