@@ -37,7 +37,7 @@ body {
 }
 .hide { display: none !important; }
 
-/* Styling Area Cetak Struk Thermal */
+/* Area Cetak Struk Thermal */
 @media print {
   body * { visibility: hidden; }
   #printArea, #printArea * { visibility: visible; }
@@ -58,11 +58,14 @@ body {
 
 <!-- Header Branding Teman Bekam -->
 <header class="bg-tb-gradient text-white px-5 pt-7 pb-6 rounded-b-[2.2rem] text-center shadow-lg relative overflow-hidden">
-  <div class="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-md mb-2 relative border-2 border-amber-300">
-    <div class="flex items-center justify-center">
-      <i class="fa-solid fa-person-dots-from-line text-2xl text-emerald-800 mr-0.5"></i>
-      <i class="fa-solid fa-fire-flame-simple text-sm text-amber-500 -ml-1"></i>
-    </div>
+  <!-- Wadah Logo Teman Bekam -->
+  <div class="w-16 h-16 bg-white rounded-2xl mx-auto overflow-hidden shadow-md mb-2 p-1 border-2 border-amber-300 flex items-center justify-center relative">
+    <img id="headerLogoImg" 
+         src="https://lh3.googleusercontent.com/d/1WWjwADg0bnye5BQuzwSqLQy4g2fhhckV" 
+         alt="Logo Teman Bekam" 
+         class="w-full h-full object-cover rounded-xl" 
+         referrerpolicy="no-referrer"
+         onerror="renderVectorLogo(this)">
   </div>
 
   <h1 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm">Teman Bekam</h1>
@@ -158,7 +161,7 @@ body {
             <i class="fa-solid fa-fire"></i>
           </div>
           <div>
-            <div class="text-[10px] text-emerald-200 font-semibold uppercase">Layanan Paling Laris</div>
+            <div class="text-[10px] text-emerald-200 font-semibold uppercase">Layanan Terlaris</div>
             <div class="font-extrabold text-white text-xs mt-0.5" id="topLayananNama">-</div>
           </div>
         </div>
@@ -483,6 +486,40 @@ body {
 </nav>
 
 <script>
+// Standar Logo Vektor Teman Bekam (Fallback Cadangan)
+const LOGO_TEMAN_BEKAM_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="tbBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a3d24"/>
+      <stop offset="60%" stop-color="#14663e"/>
+      <stop offset="100%" stop-color="#1e824c"/>
+    </linearGradient>
+    <linearGradient id="tbGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#tbBg)"/>
+  <circle cx="60" cy="60" r="53" fill="none" stroke="url(#tbGold)" stroke-width="2" stroke-dasharray="3,2"/>
+  <ellipse cx="60" cy="54" rx="22" ry="24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="47" y1="74" x2="73" y2="74" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="60" cy="46" r="6" fill="url(#tbGold)"/>
+  <path d="M60 30 C60 30 52 40 52 46 A8 8 0 0 0 68 46 C68 40 60 30 60 30 Z" fill="url(#tbGold)"/>
+  <path d="M40 85 Q60 76 80 85 Q60 81 40 85 Z" fill="#ffffff"/>
+  <circle cx="48" cy="60" r="2.5" fill="#fef08a"/>
+  <circle cx="72" cy="60" r="2.5" fill="#fef08a"/>
+</svg>
+`);
+
+const URL_LOGO_ONLINE = "https://lh3.googleusercontent.com/d/1WWjwADg0bnye5BQuzwSqLQy4g2fhhckV";
+
+// Fallback jika koneksi internet terputus
+function renderVectorLogo(imgElement) {
+  imgElement.onerror = null;
+  imgElement.src = LOGO_TEMAN_BEKAM_SVG;
+}
+
 // State Penyimpanan Internal Mandiri (localStorage)
 let masterTerapis = JSON.parse(localStorage.getItem('tb_master_terapis')) || [
   { id: '1', nama: 'Ustadz Ridwan', kategori: 'Ikhwan (Pria)', wa: '08123456789' },
@@ -525,8 +562,8 @@ const formatRp = (num) => "Rp " + Number(num || 0).toLocaleString('id-ID');
     theme_color: "#0d4a2d",
     icons: [
       {
-        src: "https://cdn-icons-png.flaticon.com/512/2966/2966327.png",
-        sizes: "512x512",
+        src: URL_LOGO_ONLINE,
+        sizes: "192x192 512x512",
         type: "image/png"
       }
     ]
@@ -908,7 +945,7 @@ Metode: ${item.metode}
 Waktu: ${item.jam}
 ----------------------------------
 *Anjuran Pasca Terapi Bekam:*
-1. Istirahat sejenak, hindari aktivitas berat.
+1. Istirahat sejenak, hindari aktivitas fisik berat.
 2. Hindari mandi air dingin langsung (tunggu 2-3 jam).
 3. Perbanyak konsumsi air putih hangat atau madu.
 
@@ -921,8 +958,11 @@ function bukaModalStruk(txId) {
   const item = transaksi.find(t => t.id === txId);
   if (!item) return;
 
+  const logoSrc = URL_LOGO_ONLINE;
+
   const htmlStruk = `
     <div style="text-align: center; margin-bottom: 8px;">
+      <img src="${logoSrc}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
       <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
       <div style="font-size: 9px; color: #555;">Ahlinya Bekam & Relaksasi</div>
       <div style="font-size: 8px; color: #777;">No. #${item.id.toString().slice(-6)} | ${item.jam}</div>
@@ -966,11 +1006,8 @@ function tutupModalStruk() {
 
 // 9. ANALITIK TOP PERFORMA & UPDATE UI
 function hitungAnalitikTopPerforma() {
-  // 1. Terapis Paling Produktif
   const dataTerapis = {};
-  // 2. Layanan Paling Laris
   const dataLayanan = {};
-  // 3. Pasien Paling Loyal
   const dataPasien = {};
 
   transaksi.forEach(t => {
@@ -988,7 +1025,7 @@ function hitungAnalitikTopPerforma() {
     dataLayanan[t.layanan].count += 1;
     dataLayanan[t.layanan].nominal += t.nominal;
 
-    // Agregasi Pasien (Identifikasi unik via No WA atau Nama jika WA kosong)
+    // Agregasi Pasien
     const keyPasien = (t.wa && t.wa !== '-') ? t.wa : t.nama;
     if (!dataPasien[keyPasien]) {
       dataPasien[keyPasien] = { nama: t.nama, kunjungan: 0, totalBelanja: 0 };
@@ -997,7 +1034,7 @@ function hitungAnalitikTopPerforma() {
     dataPasien[keyPasien].totalBelanja += t.nominal;
   });
 
-  // Cari Terapis Terbaik
+  // Top Terapis
   let topTerapis = { nama: '-', pasien: 0, omset: 0 };
   Object.keys(dataTerapis).forEach(nama => {
     if (dataTerapis[nama].pasien > topTerapis.pasien) {
@@ -1005,7 +1042,7 @@ function hitungAnalitikTopPerforma() {
     }
   });
 
-  // Cari Layanan Terlaris
+  // Top Layanan
   let topLayanan = { nama: '-', count: 0, nominal: 0 };
   Object.keys(dataLayanan).forEach(nama => {
     if (dataLayanan[nama].count > topLayanan.count) {
@@ -1013,7 +1050,7 @@ function hitungAnalitikTopPerforma() {
     }
   });
 
-  // Cari Pasien Paling Loyal
+  // Top Pasien
   let topPasien = { nama: '-', kunjungan: 0, totalBelanja: 0 };
   Object.keys(dataPasien).forEach(key => {
     if (dataPasien[key].kunjungan > topPasien.kunjungan) {
@@ -1124,7 +1161,7 @@ function updateUI() {
   document.getElementById('kasQris').innerText = formatRp(saldoQrisBersih);
   document.getElementById('txCountBadge').innerText = `${transaksi.length} Pasien`;
 
-  // Jalankan perhitungan analitik
+  // Hitung Top Performa
   hitungAnalitikTopPerforma();
 }
 
