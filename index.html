@@ -58,7 +58,6 @@ body {
 
 <!-- Header Branding Teman Bekam -->
 <header class="bg-tb-gradient text-white px-5 pt-7 pb-6 rounded-b-[2.2rem] text-center shadow-lg relative overflow-hidden">
-  <!-- Wadah Logo Teman Bekam -->
   <div class="w-16 h-16 bg-white rounded-2xl mx-auto overflow-hidden shadow-md mb-2 p-1 border-2 border-amber-300 flex items-center justify-center relative">
     <img id="headerLogoImg" 
          src="https://lh3.googleusercontent.com/d/1WWjwADg0bnye5BQuzwSqLQy4g2fhhckV" 
@@ -84,9 +83,77 @@ body {
   </div>
 </header>
 
-<!-- ================= TAB 1: KASIR & DASHBOARD ================= -->
+<!-- ================= TAB 1: KASIR ================= -->
 <main id="tab-dashboard" class="px-4 mt-4 space-y-4 max-w-md mx-auto">
-  <!-- Ringkasan Keuangan -->
+  <!-- Form Transaksi Kasir -->
+  <section class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+      <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
+        <i class="fa-solid fa-cash-register text-amber-500"></i> Pendaftaran Kasir Pasien
+      </h2>
+      <span id="badgePasien" class="text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">Pasien Baru</span>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-semibold text-gray-700 flex justify-between">
+        <span>Nomor WhatsApp Pasien</span>
+        <span class="text-emerald-700 font-medium text-[10px]">Ketik WA jika pernah datang</span>
+      </label>
+      <div class="relative mt-1">
+        <input type="tel" id="custWA" oninput="cariPasienOtomatis()" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+        <i class="fa-brands fa-whatsapp absolute right-3.5 top-2.5 text-emerald-600 text-base"></i>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-semibold text-gray-700">Nama Lengkap Pasien</label>
+      <input type="text" id="custName" placeholder="Contoh: Bapak Abdullah" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+    </div>
+
+    <div>
+      <label class="text-[11px] font-semibold text-gray-700">Pilihan Terapi</label>
+      <select id="layananSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800 font-medium"></select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Terapis</label>
+        <select id="terapisSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800"></select>
+      </div>
+      <div>
+        <label class="text-[11px] font-semibold text-gray-700">Pembayaran</label>
+        <select id="metodeBayar" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+          <option value="Tunai">💵 Tunai</option>
+          <option value="QRIS">📱 QRIS / Transfer</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-semibold text-gray-700">Keluhan Pasien / Catatan Titik Terapi</label>
+      <input type="text" id="custKeluhan" placeholder="Contoh: Kolesterol, migrain, titik kahil" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+    </div>
+
+    <button onclick="simpanTransaksi()" class="w-full py-3 btn-tb-primary text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 mt-2">
+      <i class="fa-solid fa-check-circle text-amber-300"></i> Simpan Transaksi Kasir
+    </button>
+  </section>
+
+  <!-- Riwayat Antrean Kasir Hari Ini -->
+  <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="font-bold text-gray-800 text-xs uppercase tracking-wider">Antrean Hari Ini</h2>
+      <span class="text-[11px] text-gray-400 font-mono" id="txCountBadge">0 Pasien</span>
+    </div>
+    <div id="riwayatList" class="space-y-2 text-xs">
+      <p class="text-gray-400 text-center py-3">Belum ada antrean selesai hari ini.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ================= TAB 2: LAPORAN (OMSET, KAS, PERFORMA & KOMISI) ================= -->
+<main id="tab-laporan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
+  <!-- Ringkasan Finansial Utama -->
   <div class="grid grid-cols-3 gap-2 text-center text-xs">
     <div class="card-income p-3 rounded-2xl border shadow-sm">
       <div class="font-bold text-[10px] uppercase tracking-wider text-emerald-800">Total Omset</div>
@@ -102,41 +169,41 @@ body {
     </div>
   </div>
 
-  <!-- Posisi Saldo Kasir -->
+  <!-- Posisi Saldo Laci Kas Fisik & Saldo Bank / QRIS -->
   <div class="space-y-2">
-    <div class="card-wallet-cash p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+    <div class="card-wallet-cash p-3 rounded-2xl flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 text-lg shadow-inner">💵</div>
+        <div class="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 text-base shadow-inner">💵</div>
         <div>
           <div class="text-[11px] font-semibold text-amber-900">Kas Fisik Tunai (Laci)</div>
-          <div class="text-sm font-black text-gray-900" id="kasTunai">Rp 0</div>
+          <div class="text-xs font-black text-gray-900" id="kasTunai">Rp 0</div>
         </div>
       </div>
-      <span class="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2.5 py-1 rounded-full">Cash Drawer</span>
+      <span class="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">Cash Drawer</span>
     </div>
 
-    <div class="card-wallet-bank p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+    <div class="card-wallet-bank p-3 rounded-2xl flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 text-lg shadow-inner">📱</div>
+        <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 text-base shadow-inner">📱</div>
         <div>
           <div class="text-[11px] font-semibold text-emerald-900">QRIS / Bank Transfer</div>
-          <div class="text-sm font-black text-gray-900" id="kasQris">Rp 0</div>
+          <div class="text-xs font-black text-gray-900" id="kasQris">Rp 0</div>
         </div>
       </div>
-      <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2.5 py-1 rounded-full">Digital</span>
+      <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-full">Digital</span>
     </div>
   </div>
 
-  <!-- ================= HIGHLIGHT TOP PERFORMA KLINIK ================= -->
+  <!-- HIGHLIGHT TOP PERFORMA KLINIK -->
   <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white p-4 rounded-2xl shadow-md space-y-3">
     <div class="flex justify-between items-center border-b border-white/10 pb-2">
       <h2 class="font-bold text-xs uppercase tracking-wider flex items-center gap-2 text-amber-300">
         <i class="fa-solid fa-trophy text-amber-400"></i> Top Performa Klinik
       </h2>
-      <span class="text-[10px] text-emerald-200 bg-white/10 px-2 py-0.5 rounded-full">Analitik Otomatis</span>
+      <span class="text-[10px] text-emerald-200 bg-white/10 px-2 py-0.5 rounded-full">Kalkulasi Otomatis</span>
     </div>
 
-    <div class="grid grid-cols-1 gap-2 text-xs">
+    <div class="grid grid-cols-1 gap-2.5 text-xs">
       <!-- 1. Terapis Paling Produktif -->
       <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
@@ -190,84 +257,36 @@ body {
     </div>
   </section>
 
-  <!-- Form Transaksi Kasir -->
-  <section class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
+  <!-- Rekap Bagi Hasil Komisi Terapis -->
+  <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
     <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-      <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
-        <i class="fa-solid fa-notes-medical text-amber-500"></i> Pendaftaran & Kasir Pasien
+      <h2 class="font-bold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Rekap Bagi Hasil & Komisi Terapis
       </h2>
-      <span id="badgePasien" class="text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">Pasien Baru</span>
+      <span class="text-[10px] text-gray-400">Hari Ini</span>
     </div>
-
-    <div>
-      <label class="text-[11px] font-semibold text-gray-700 flex justify-between">
-        <span>Nomor WhatsApp Pasien</span>
-        <span class="text-emerald-700 font-medium text-[10px]">Cukup ketik WA jika pernah datang</span>
-      </label>
-      <div class="relative mt-1">
-        <input type="tel" id="custWA" oninput="cariPasienOtomatis()" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
-        <i class="fa-brands fa-whatsapp absolute right-3.5 top-2.5 text-emerald-600 text-base"></i>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-semibold text-gray-700">Nama Lengkap Pasien</label>
-      <input type="text" id="custName" placeholder="Contoh: Bapak Abdullah" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-    </div>
-
-    <div>
-      <label class="text-[11px] font-semibold text-gray-700">Pilihan Terapi</label>
-      <select id="layananSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800 font-medium"></select>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2">
-      <div>
-        <label class="text-[11px] font-semibold text-gray-700">Terapis</label>
-        <select id="terapisSelect" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800"></select>
-      </div>
-      <div>
-        <label class="text-[11px] font-semibold text-gray-700">Pembayaran</label>
-        <select id="metodeBayar" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-          <option value="Tunai">💵 Tunai</option>
-          <option value="QRIS">📱 QRIS / Transfer</option>
-        </select>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-semibold text-gray-700">Keluhan Pasien / Catatan Medis</label>
-      <input type="text" id="custKeluhan" placeholder="Contoh: Kolesterol, migrain, titik kahil" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-    </div>
-
-    <button onclick="simpanTransaksi()" class="w-full py-3 btn-tb-primary text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 mt-2">
-      <i class="fa-solid fa-check-circle text-amber-300"></i> Simpan Transaksi Kasir
-    </button>
+    <div id="rekapKomisiList" class="space-y-2 text-xs"></div>
   </section>
 
-  <!-- Rekap Bagi Hasil Komisi Terapis Hari Ini -->
-  <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-    <div class="flex justify-between items-center mb-2.5">
-      <h2 class="font-bold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Komisi Terapis Hari Ini
-      </h2>
-      <span class="text-[10px] text-gray-400">Otomatis Terkalkulasi</span>
+  <!-- Rincian Kas Operasional -->
+  <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2">
+    <h3 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-2">Rincian Finansial Lengkap</h3>
+    <div class="flex justify-between items-center py-1.5 border-b border-gray-50 text-xs">
+      <span class="text-gray-600">Total Omset Pasien</span>
+      <span class="font-bold text-emerald-700" id="repOmset">Rp 0</span>
     </div>
-    <div id="rekapKomisiList" class="space-y-1.5 text-xs"></div>
-  </section>
-
-  <!-- Riwayat Transaksi Hari Ini -->
-  <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-    <div class="flex justify-between items-center mb-3">
-      <h2 class="font-bold text-gray-800 text-xs uppercase tracking-wider">Antrean Hari Ini</h2>
-      <span class="text-[11px] text-gray-400 font-mono" id="txCountBadge">0 Pasien</span>
+    <div class="flex justify-between items-center py-1.5 border-b border-gray-50 text-xs">
+      <span class="text-gray-600">Total Beban Biaya Operasional</span>
+      <span class="font-bold text-rose-700" id="repPengeluaran">Rp 0</span>
     </div>
-    <div id="riwayatList" class="space-y-2 text-xs">
-      <p class="text-gray-400 text-center py-3">Belum ada antrean selesai hari ini.</p>
+    <div class="flex justify-between items-center py-1.5 text-xs font-extrabold">
+      <span class="text-gray-800">Sisa Laba / Kas Bersih</span>
+      <span class="text-amber-800" id="repSisaSaldo">Rp 0</span>
     </div>
   </section>
 </main>
 
-<!-- ================= TAB 2: PENGELUARAN ================= -->
+<!-- ================= TAB 3: PENGELUARAN ================= -->
 <main id="tab-pengeluaran" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
   <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-900/10 space-y-3">
     <div class="flex justify-between items-center">
@@ -329,7 +348,7 @@ body {
   </div>
 </main>
 
-<!-- ================= TAB 3: MASTER TERAPIS ================= -->
+<!-- ================= TAB 4: MASTER TERAPIS ================= -->
 <main id="tab-terapis" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
   <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
     <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
@@ -365,7 +384,7 @@ body {
   </div>
 </main>
 
-<!-- ================= TAB 4: MASTER LAYANAN ================= -->
+<!-- ================= TAB 5: MASTER LAYANAN ================= -->
 <main id="tab-layanan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
   <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-900/10 space-y-3">
     <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
@@ -398,24 +417,43 @@ body {
   </div>
 </main>
 
-<!-- ================= TAB 5: DATABASE PASIEN ================= -->
+<!-- ================= TAB 6: DATABASE PASIEN (DILENGKAPI IMPOR GOOGLE KONTAK) ================= -->
 <main id="tab-pasien" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
-  <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-    <h2 class="font-bold text-tb-green text-sm mb-1 flex items-center gap-2">
-      <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
-    </h2>
-    <p class="text-[11px] text-gray-500 mb-3">Tersimpan otomatis di memori browser ini.</p>
+  <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="font-bold text-tb-green text-sm flex items-center gap-2">
+          <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
+        </h2>
+        <p class="text-[10px] text-gray-500 mt-0.5">Tersimpan otomatis di memori browser lokal.</p>
+      </div>
+      <!-- Tombol Impor Kontak Google -->
+      <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-sm flex items-center gap-1.5 transition">
+        <i class="fa-brands fa-google text-emerald-600"></i> Impor Kontak
+        <input type="file" id="fileGoogleContacts" accept=".csv, .vcf" onchange="imporGoogleKontak(event)" class="hidden">
+      </label>
+    </div>
 
-    <div class="relative mb-3">
+    <!-- Kotak Info Cara Ekspor Kontak Google -->
+    <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200 text-[10px] text-amber-900 leading-relaxed flex items-start gap-2">
+      <i class="fa-solid fa-circle-info text-amber-600 text-xs mt-0.5"></i>
+      <div>
+        Bisa mengimpor berkas <b>Google CSV</b> dari <span class="underline">contacts.google.com</span> atau berkas <b>vCard (.vcf)</b> hasil ekspor kontak HP Anda.
+      </div>
+    </div>
+
+    <!-- Pencarian Pasien -->
+    <div class="relative">
       <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
       <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
     </div>
 
-    <div id="pasienListContainer" class="space-y-2 text-xs"></div>
+    <!-- Daftar List Pasien -->
+    <div id="pasienListContainer" class="space-y-2 text-xs pt-1"></div>
   </div>
 </main>
 
-<!-- ================= TAB 6: PENGATURAN & BACKUP ================= -->
+<!-- ================= TAB 7: PENGATURAN & BACKUP ================= -->
 <main id="tab-pengaturan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide">
   <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
     <h2 class="font-bold text-gray-800 text-sm flex items-center gap-2">
@@ -461,11 +499,15 @@ body {
   </div>
 </div>
 
-<!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-emerald-950/10 px-2 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+<!-- Bottom Navigation (6 Menu) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-emerald-950/10 px-1 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
   <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-tb-green font-bold flex-1">
     <i class="fa-solid fa-cash-register text-sm"></i>
     <span class="text-[9px] mt-1">Kasir</span>
+  </button>
+  <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1">
+    <i class="fa-solid fa-chart-pie text-sm"></i>
+    <span class="text-[9px] mt-1">Laporan</span>
   </button>
   <button onclick="switchTab('pengeluaran')" id="nav-pengeluaran" class="flex flex-col items-center hover:text-emerald-800 flex-1">
     <i class="fa-solid fa-arrow-down-up-across-line text-sm"></i>
@@ -514,10 +556,25 @@ const LOGO_TEMAN_BEKAM_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(`
 
 const URL_LOGO_ONLINE = "https://lh3.googleusercontent.com/d/1WWjwADg0bnye5BQuzwSqLQy4g2fhhckV";
 
-// Fallback jika koneksi internet terputus
 function renderVectorLogo(imgElement) {
   imgElement.onerror = null;
   imgElement.src = LOGO_TEMAN_BEKAM_SVG;
+}
+
+// Helper Sanitasi Nomor Telepon ke Format Standar 08xx
+function normalisasiNomorWA(rawPhone) {
+  if (!rawPhone) return '';
+  let cleaned = rawPhone.toString().replace(/[^0-9+]/g, '');
+  if (cleaned.startsWith('+62')) {
+    cleaned = '0' + cleaned.substring(3);
+  } else if (cleaned.startsWith('62')) {
+    cleaned = '0' + cleaned.substring(2);
+  }
+  cleaned = cleaned.replace(/[^0-9]/g, '');
+  if (cleaned.length >= 9 && cleaned.startsWith('0')) {
+    return cleaned;
+  }
+  return '';
 }
 
 // State Penyimpanan Internal Mandiri (localStorage)
@@ -579,7 +636,8 @@ const formatRp = (num) => "Rp " + Number(num || 0).toLocaleString('id-ID');
 
 // 1. CARI PASIEN VIA WA
 function cariPasienOtomatis() {
-  const wa = document.getElementById('custWA').value.trim();
+  const rawWA = document.getElementById('custWA').value.trim();
+  const wa = normalisasiNomorWA(rawWA) || rawWA;
   const badge = document.getElementById('badgePasien');
   const namaInput = document.getElementById('custName');
   const keluhanInput = document.getElementById('custKeluhan');
@@ -597,7 +655,8 @@ function cariPasienOtomatis() {
 
 // 2. SIMPAN TRANSAKSI
 function simpanTransaksi() {
-  const wa = document.getElementById('custWA').value.trim();
+  const rawWA = document.getElementById('custWA').value.trim();
+  const wa = normalisasiNomorWA(rawWA) || rawWA;
   const nama = document.getElementById('custName').value.trim();
   const keluhan = document.getElementById('custKeluhan').value.trim();
   const layananId = document.getElementById('layananSelect').value;
@@ -612,7 +671,7 @@ function simpanTransaksi() {
   if (wa) {
     databasePasien[wa] = {
       nama: nama,
-      keluhan: keluhan,
+      keluhan: keluhan || databasePasien[wa]?.keluhan || '',
       kunjunganTerakhir: new Date().toISOString().split('T')[0]
     };
     localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
@@ -884,7 +943,7 @@ function resetFormMasterLayanan() {
   document.getElementById('masterFeeTerapis').value = '';
 }
 
-// 7. DATABASE PASIEN
+// 7. DATABASE PASIEN & IMPOR GOOGLE KONTAK
 function renderDaftarPasien() {
   const container = document.getElementById('pasienListContainer');
   const keyword = (document.getElementById('cariPasienListInput')?.value || '').toLowerCase();
@@ -905,6 +964,7 @@ function renderDaftarPasien() {
           <div class="font-bold text-gray-800 text-xs">${p.nama}</div>
           <div class="text-[11px] font-mono text-emerald-700 font-semibold mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${wa}</div>
           <div class="text-[10px] text-gray-500 mt-1">Keluhan: ${p.keluhan || '-'}</div>
+          ${p.kunjunganTerakhir ? `<div class="text-[9px] text-gray-400 mt-0.5">Terakhir: ${p.kunjunganTerakhir}</div>` : ''}
         </div>
         <button onclick="pilihPasienKeKasir('${wa}')" class="text-xs bg-amber-100 text-amber-900 border border-amber-300 font-bold px-2.5 py-1 rounded-lg hover:bg-amber-200">
           Pilih
@@ -918,6 +978,157 @@ function pilihPasienKeKasir(wa) {
   switchTab('dashboard');
   document.getElementById('custWA').value = wa;
   cariPasienOtomatis();
+}
+
+// Parser CSV & VCF Google Contacts
+function imporGoogleKontak(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  const fileName = file.name.toLowerCase();
+
+  reader.onload = function(e) {
+    const text = e.target.result;
+    let kontakTerimpor = 0;
+
+    if (fileName.endsWith('.csv')) {
+      kontakTerimpor = parseGoogleContactsCSV(text);
+    } else if (fileName.endsWith('.vcf')) {
+      kontakTerimpor = parseVCard(text);
+    } else {
+      alert("Harap pilih berkas dengan format .csv atau .vcf!");
+      return;
+    }
+
+    if (kontakTerimpor > 0) {
+      localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+      renderDaftarPasien();
+      alert(`Berhasil mengimpor ${kontakTerimpor} kontak pasien dari Google Kontak!`);
+    } else {
+      alert("Tidak ditemukan kontak valid dengan nomor telepon yang sesuai di berkas tersebut.");
+    }
+    event.target.value = '';
+  };
+
+  reader.readAsText(file);
+}
+
+// Parse Format CSV Google Contacts
+function parseGoogleContactsCSV(csvText) {
+  const lines = csvText.split(/\r\n|\n/);
+  if (lines.length < 2) return 0;
+
+  // Split line memperhatikan tanda kutip
+  const parseCSVLine = (line) => {
+    const row = [];
+    let insideQuotes = false;
+    let entry = '';
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (c === ',' && !insideQuotes) {
+        row.push(entry.trim());
+        entry = '';
+      } else {
+        entry += c;
+      }
+    }
+    row.push(entry.trim());
+    return row.map(r => r.replace(/^"|"$/g, '').trim());
+  };
+
+  const header = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+  
+  // Deteksi kolom nama dan telepon
+  let nameIndex = header.findIndex(h => h.includes('name') || h.includes('nama'));
+  let phoneIndices = [];
+  header.forEach((h, idx) => {
+    if (h.includes('phone') || h.includes('telepon') || h.includes('mobile') || h.includes('seluler')) {
+      phoneIndices.push(idx);
+    }
+  });
+
+  if (nameIndex === -1 && phoneIndices.length === 0) return 0;
+
+  let count = 0;
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const cols = parseCSVLine(lines[i]);
+    const nama = cols[nameIndex] || 'Pasien Tanpa Nama';
+
+    let nomorWA = '';
+    for (let pIdx of phoneIndices) {
+      if (cols[pIdx]) {
+        const cleaned = normalisasiNomorWA(cols[pIdx]);
+        if (cleaned) {
+          nomorWA = cleaned;
+          break;
+        }
+      }
+    }
+
+    if (nomorWA && nama) {
+      if (!databasePasien[nomorWA]) {
+        databasePasien[nomorWA] = {
+          nama: nama,
+          keluhan: '',
+          kunjunganTerakhir: ''
+        };
+        count++;
+      } else if (!databasePasien[nomorWA].nama || databasePasien[nomorWA].nama === 'Pasien Baru') {
+        databasePasien[nomorWA].nama = nama;
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+// Parse Format vCard (.vcf)
+function parseVCard(vcfText) {
+  const cards = vcfText.split(/BEGIN:VCARD/i);
+  let count = 0;
+
+  cards.forEach(card => {
+    if (!card.trim()) return;
+    let nama = '';
+    let telp = '';
+
+    const lines = card.split(/\r\n|\n/);
+    lines.forEach(l => {
+      const line = l.trim();
+      if (line.startsWith('FN:')) {
+        nama = line.substring(3).trim();
+      } else if (!nama && line.startsWith('N:')) {
+        const parts = line.substring(2).split(';');
+        nama = parts.filter(p => p.trim()).reverse().join(' ').trim();
+      } else if (line.startsWith('TEL') || line.includes(':')) {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx !== -1 && line.substring(0, colonIdx).includes('TEL')) {
+          const rawNum = line.substring(colonIdx + 1).trim();
+          const cleanNum = normalisasiNomorWA(rawNum);
+          if (cleanNum && !telp) {
+            telp = cleanNum;
+          }
+        }
+      }
+    });
+
+    if (telp && nama) {
+      if (!databasePasien[telp]) {
+        databasePasien[telp] = {
+          nama: nama,
+          keluhan: '',
+          kunjunganTerakhir: ''
+        };
+        count++;
+      }
+    }
+  });
+
+  return count;
 }
 
 // 8. CETAK NOTA & WHATSAPP
@@ -1011,21 +1222,18 @@ function hitungAnalitikTopPerforma() {
   const dataPasien = {};
 
   transaksi.forEach(t => {
-    // Agregasi Terapis
     if (!dataTerapis[t.terapis]) {
       dataTerapis[t.terapis] = { pasien: 0, omset: 0 };
     }
     dataTerapis[t.terapis].pasien += 1;
     dataTerapis[t.terapis].omset += t.nominal;
 
-    // Agregasi Layanan
     if (!dataLayanan[t.layanan]) {
       dataLayanan[t.layanan] = { count: 0, nominal: 0 };
     }
     dataLayanan[t.layanan].count += 1;
     dataLayanan[t.layanan].nominal += t.nominal;
 
-    // Agregasi Pasien
     const keyPasien = (t.wa && t.wa !== '-') ? t.wa : t.nama;
     if (!dataPasien[keyPasien]) {
       dataPasien[keyPasien] = { nama: t.nama, kunjungan: 0, totalBelanja: 0 };
@@ -1034,7 +1242,6 @@ function hitungAnalitikTopPerforma() {
     dataPasien[keyPasien].totalBelanja += t.nominal;
   });
 
-  // Top Terapis
   let topTerapis = { nama: '-', pasien: 0, omset: 0 };
   Object.keys(dataTerapis).forEach(nama => {
     if (dataTerapis[nama].pasien > topTerapis.pasien) {
@@ -1042,7 +1249,6 @@ function hitungAnalitikTopPerforma() {
     }
   });
 
-  // Top Layanan
   let topLayanan = { nama: '-', count: 0, nominal: 0 };
   Object.keys(dataLayanan).forEach(nama => {
     if (dataLayanan[nama].count > topLayanan.count) {
@@ -1050,7 +1256,6 @@ function hitungAnalitikTopPerforma() {
     }
   });
 
-  // Top Pasien
   let topPasien = { nama: '-', kunjungan: 0, totalBelanja: 0 };
   Object.keys(dataPasien).forEach(key => {
     if (dataPasien[key].kunjungan > topPasien.kunjungan) {
@@ -1058,19 +1263,16 @@ function hitungAnalitikTopPerforma() {
     }
   });
 
-  // Update Tampilan Top Terapis
   document.getElementById('topTerapisNama').innerText = topTerapis.nama;
   document.getElementById('topTerapisPasien').innerText = `${topTerapis.pasien} Pasien`;
   document.getElementById('topTerapisOmset').innerText = formatRp(topTerapis.omset);
 
-  // Update Tampilan Top Layanan
   const totalLayananTerjual = transaksi.length || 1;
   const porsiLayanan = Math.round((topLayanan.count / totalLayananTerjual) * 100);
   document.getElementById('topLayananNama').innerText = topLayanan.nama;
   document.getElementById('topLayananQty').innerText = `${topLayanan.count}x Terjual`;
   document.getElementById('topLayananPersen').innerText = transaksi.length ? `${porsiLayanan}% Porsi Penjualan` : '0% Porsi';
 
-  // Update Tampilan Top Pasien
   document.getElementById('topPasienNama').innerText = topPasien.nama;
   document.getElementById('topPasienKunjungan').innerText = `${topPasien.kunjungan} Kunjungan`;
   document.getElementById('topPasienTotalBelanja').innerText = formatRp(topPasien.totalBelanja);
@@ -1105,7 +1307,6 @@ function updateUI() {
   const saldoQrisBersih = qrisIn - qrisOut;
   const sisaSaldoTotal = omset - totalPengeluaran;
 
-  // Render Riwayat Antrean Kasir
   const listEl = document.getElementById('riwayatList');
   if (transaksi.length === 0) {
     listEl.innerHTML = '<p class="text-gray-400 text-center py-3">Belum ada antrean selesai hari ini.</p>';
@@ -1131,7 +1332,6 @@ function updateUI() {
     `).join('');
   }
 
-  // Render Rekap Komisi
   const komisiContainer = document.getElementById('rekapKomisiList');
   const namaTerapisKeys = Object.keys(rekapKomisi);
   if (namaTerapisKeys.length === 0) {
@@ -1140,7 +1340,7 @@ function updateUI() {
     komisiContainer.innerHTML = namaTerapisKeys.map(nama => {
       const data = rekapKomisi[nama];
       return `
-        <div class="flex justify-between items-center p-2 rounded-xl bg-gray-50 border border-gray-200">
+        <div class="flex justify-between items-center p-2.5 rounded-xl bg-gray-50 border border-gray-200">
           <div>
             <div class="font-bold text-gray-800 text-[11px]">${nama}</div>
             <div class="text-[10px] text-gray-500">${data.pasien} Pasien ditangani</div>
@@ -1154,14 +1354,16 @@ function updateUI() {
     }).join('');
   }
 
+  document.getElementById('txCountBadge').innerText = `${transaksi.length} Pasien`;
   document.getElementById('totalOmset').innerText = formatRp(omset);
   document.getElementById('totalPengeluaranHeader').innerText = formatRp(totalPengeluaran);
   document.getElementById('sisaKasBersih').innerText = formatRp(sisaSaldoTotal);
   document.getElementById('kasTunai').innerText = formatRp(saldoTunaiBersih);
   document.getElementById('kasQris').innerText = formatRp(saldoQrisBersih);
-  document.getElementById('txCountBadge').innerText = `${transaksi.length} Pasien`;
+  document.getElementById('repOmset').innerText = formatRp(omset);
+  document.getElementById('repPengeluaran').innerText = formatRp(totalPengeluaran);
+  document.getElementById('repSisaSaldo').innerText = formatRp(sisaSaldoTotal);
 
-  // Hitung Top Performa
   hitungAnalitikTopPerforma();
 }
 
@@ -1281,9 +1483,9 @@ function installAplikasi() {
   }
 }
 
-// 13. NAVIGASI TAB MENU
+// 13. NAVIGASI TAB MENU LENGKAP
 function switchTab(tab) {
-  ['dashboard', 'pengeluaran', 'terapis', 'layanan', 'pasien', 'pengaturan'].forEach(t => {
+  ['dashboard', 'laporan', 'pengeluaran', 'terapis', 'layanan', 'pasien', 'pengaturan'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.classList.add('hide');
     const navBtn = document.getElementById(`nav-${t}`);
@@ -1302,6 +1504,7 @@ function switchTab(tab) {
     activeNav.classList.remove('text-gray-400');
   }
 
+  if (tab === 'laporan') updateUI();
   if (tab === 'pengeluaran') renderPengeluaran();
   if (tab === 'terapis') renderMasterTerapis();
   if (tab === 'layanan') renderMasterLayanan();
