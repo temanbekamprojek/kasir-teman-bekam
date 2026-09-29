@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Teman Bekam - POS Mandiri</title>
+<title>Teman Bekam - POS Mandiri & Reservasi</title>
 
 <!-- Font Plus Jakarta Sans -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@ body {
 .text-tb-green { color: #0f5132; }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(15, 81, 50, 0.08);
@@ -89,14 +89,8 @@ body {
   animation: tabFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes tabFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 input, select {
@@ -141,7 +135,7 @@ input:focus, select:focus {
   </div>
 
   <h1 class="text-2xl font-black tracking-tight text-white drop-shadow-sm">Teman Bekam</h1>
-  <p class="text-[11px] font-bold text-amber-300 tracking-wider uppercase mt-0.5">Ahlinya Bekam Sunnah & Relaksasi</p>
+  <p class="text-[11px] font-bold text-amber-300 tracking-wider uppercase mt-0.5">Ahlinya Bekam & Relaksasi</p>
 
   <div class="flex justify-center items-center gap-2 mt-3.5 flex-wrap">
     <button onclick="exportLaporanCSV()" class="bg-white/10 hover:bg-white/20 active:scale-95 transition backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-emerald-50 border border-white/15 flex items-center gap-1.5 shadow-sm">
@@ -149,9 +143,6 @@ input:focus, select:focus {
     </button>
     <button onclick="switchTab('pengaturan')" class="bg-white/10 hover:bg-white/20 active:scale-95 transition backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-emerald-50 border border-white/15 flex items-center gap-1.5 shadow-sm">
       <i class="fa-solid fa-database text-amber-300"></i> Backup Data
-    </button>
-    <button id="btnInstallApp" onclick="installAplikasi()" class="bg-amber-400 hover:bg-amber-300 active:scale-95 transition text-emerald-950 font-extrabold px-3.5 py-1.5 rounded-full text-[11px] shadow-md flex items-center gap-1.5 hide">
-      <i class="fa-solid fa-download"></i> Pasang App
     </button>
   </div>
 </header>
@@ -177,7 +168,7 @@ input:focus, select:focus {
       </div>
     </div>
 
-    <!-- BANNER RIWAYAT KUNJUNGAN TERAKHIR -->
+    <!-- Banner Riwayat Terakhir -->
     <div id="bannerRiwayatTerakhir" class="bg-gradient-to-r from-emerald-50 to-teal-50/70 border border-emerald-200/80 rounded-2xl p-3 text-xs space-y-1 shadow-sm hide transition-all duration-300">
       <div class="flex items-center gap-1.5 text-emerald-950 font-bold text-[11px]">
         <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i>
@@ -217,7 +208,10 @@ input:focus, select:focus {
 
     <div class="grid grid-cols-2 gap-2.5">
       <div>
-        <label class="text-[11px] font-bold text-gray-700">Terapis yang Menangani</label>
+        <label class="text-[11px] font-bold text-gray-700 flex justify-between">
+          <span>Terapis</span>
+          <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
+        </label>
         <select id="terapisSelect" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white text-gray-800 font-bold"></select>
       </div>
       <div>
@@ -231,7 +225,7 @@ input:focus, select:focus {
 
     <div>
       <label class="text-[11px] font-bold text-gray-700">Keluhan Pasien / Catatan Titik Terapi</label>
-      <input type="text" id="custKeluhan" placeholder="Contoh: Kolesterol, migrain, titik kahil" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+      <input type="text" id="custKeluhan" placeholder="Contoh: Kolesterol, migrain, titik kahil" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white">
     </div>
 
     <button onclick="simpanTransaksi()" class="w-full py-3.5 btn-tb-primary text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 mt-2">
@@ -251,7 +245,80 @@ input:focus, select:focus {
   </section>
 </main>
 
-<!-- ================= TAB 2: LAPORAN ================= -->
+<!-- ================= TAB 2: RESERVASI / JADWAL BOOKING ================= -->
+<main id="tab-reservasi" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
+  <section class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2.5">
+      <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+        <i class="fa-solid fa-calendar-check text-amber-500"></i> Reservasi Jadwal Terapi
+      </h2>
+      <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Booking Jadwal</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2.5">
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Tanggal Kedatangan</label>
+        <input type="date" id="resTanggal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Pukul / Jam (Format 24 Jam)</label>
+        <input type="time" id="resJam" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-bold text-gray-700">Nomor WhatsApp Pasien</label>
+      <div class="relative mt-1">
+        <input type="tel" id="resWA" oninput="isiOtomatisReservasiPasien()" placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+        <i class="fa-brands fa-whatsapp absolute right-3.5 top-3 text-emerald-600 text-base"></i>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-bold text-gray-700">Nama Pasien</label>
+      <input type="text" id="resNama" placeholder="Contoh: Bapak / Ibu Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+    </div>
+
+    <div class="grid grid-cols-2 gap-2.5">
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Pilihan Terapi</label>
+        <select id="resLayanan" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-gray-700 flex justify-between">
+          <span>Pilihan Terapis</span>
+          <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
+        </label>
+        <select id="resTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-bold text-gray-700">Catatan Tambahan / Keluhan</label>
+      <input type="text" id="resCatatan" placeholder="Contoh: Pegal leher dan punggung, minta ruang tenang" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+    </div>
+
+    <button onclick="simpanReservasi()" class="w-full py-3.5 btn-tb-primary text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 mt-1">
+      <i class="fa-solid fa-calendar-plus text-amber-300"></i> Simpan & Kirim Bukti Reservasi
+    </button>
+  </section>
+
+  <!-- Daftar Antrean Reservasi Pasien -->
+  <section class="glass-card p-4 rounded-3xl space-y-3">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+      <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+        <i class="fa-solid fa-list-check text-emerald-700"></i> Daftar Booking Reservasi
+      </h2>
+      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-100 font-bold px-2 py-0.5 rounded-full" id="badgeJumlahReservasi">0 Booking</span>
+    </div>
+
+    <div id="daftarReservasiList" class="space-y-2.5 text-xs">
+      <p class="text-gray-400 text-center py-4">Belum ada jadwal reservasi aktif.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ================= TAB 3: LAPORAN ================= -->
 <main id="tab-laporan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   <section class="glass-card p-4 rounded-3xl space-y-3">
     <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
@@ -296,7 +363,7 @@ input:focus, select:focus {
     </div>
   </div>
 
-  <!-- DEMOGRAFI PASIEN: IKHWAN VS AKHWAT -->
+  <!-- Demografi Pasien -->
   <section class="glass-card p-4 rounded-3xl space-y-3">
     <div class="flex justify-between items-center border-b border-gray-100 pb-2">
       <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
@@ -314,7 +381,7 @@ input:focus, select:focus {
       <div class="card-stat bg-emerald-50/80 border border-emerald-200/80 p-3 rounded-2xl">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5 font-extrabold text-emerald-900 text-xs">
-            <i class="fa-solid fa-mars text-emerald-700"></i> Ikhwan (Pria)
+            <i class="fa-solid fa-mars text-emerald-700"></i> Pria (Ikhwan)
           </div>
           <span class="text-[10px] font-black text-emerald-700" id="persenIkhwan">0%</span>
         </div>
@@ -327,7 +394,7 @@ input:focus, select:focus {
       <div class="card-stat bg-rose-50/80 border border-rose-200/80 p-3 rounded-2xl">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5 font-extrabold text-rose-900 text-xs">
-            <i class="fa-solid fa-venus text-rose-600"></i> Akhwat (Wanita)
+            <i class="fa-solid fa-venus text-rose-600"></i> Wanita (Akhwat)
           </div>
           <span class="text-[10px] font-black text-rose-700" id="persenAkhwat">0%</span>
         </div>
@@ -339,7 +406,7 @@ input:focus, select:focus {
     </div>
   </section>
 
-  <!-- Posisi Saldo Laci Kas Fisik & Saldo Bank / QRIS -->
+  <!-- Saldo Laci Kas & Bank -->
   <div class="space-y-2.5">
     <div class="card-stat card-wallet-cash p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
       <div class="flex items-center gap-3">
@@ -364,77 +431,6 @@ input:focus, select:focus {
     </div>
   </div>
 
-  <!-- Top Performa Klinik -->
-  <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white p-5 rounded-3xl shadow-md space-y-3.5">
-    <div class="flex justify-between items-center border-b border-white/10 pb-2.5">
-      <h2 class="font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 text-amber-300">
-        <i class="fa-solid fa-trophy text-amber-400"></i> Top Performa Klinik
-      </h2>
-      <span class="text-[10px] font-semibold text-emerald-200 bg-white/10 px-2.5 py-0.5 rounded-full" id="labelTanggalTop">-</span>
-    </div>
-
-    <div class="grid grid-cols-1 gap-2.5 text-xs">
-      <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-sm font-bold">
-            <i class="fa-solid fa-user-check"></i>
-          </div>
-          <div>
-            <div class="text-[10px] text-emerald-200 font-bold uppercase">Terapis Paling Produktif</div>
-            <div class="font-black text-white text-xs mt-0.5" id="topTerapisNama">-</div>
-          </div>
-        </div>
-        <div class="text-right">
-          <div class="font-extrabold text-amber-300 text-xs" id="topTerapisPasien">0 Pasien</div>
-          <div class="text-[10px] text-emerald-200" id="topTerapisOmset">Rp 0</div>
-        </div>
-      </div>
-
-      <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-sky-400/20 text-sky-300 flex items-center justify-center text-sm font-bold">
-            <i class="fa-solid fa-fire"></i>
-          </div>
-          <div>
-            <div class="text-[10px] text-emerald-200 font-bold uppercase">Layanan Terlaris</div>
-            <div class="font-black text-white text-xs mt-0.5" id="topLayananNama">-</div>
-          </div>
-        </div>
-        <div class="text-right">
-          <div class="font-extrabold text-sky-300 text-xs" id="topLayananQty">0x Terjual</div>
-          <div class="text-[10px] text-emerald-200" id="topLayananPersen">0% Porsi</div>
-        </div>
-      </div>
-
-      <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-rose-400/20 text-rose-300 flex items-center justify-center text-sm font-bold">
-            <i class="fa-solid fa-crown"></i>
-          </div>
-          <div>
-            <div class="text-[10px] text-emerald-200 font-bold uppercase">Pasien Teratas</div>
-            <div class="font-black text-white text-xs mt-0.5" id="topPasienNama">-</div>
-          </div>
-        </div>
-        <div class="text-right">
-          <div class="font-extrabold text-rose-300 text-xs" id="topPasienKunjungan">0 Terapi</div>
-          <div class="text-[10px] text-emerald-200" id="topPasienTotalBelanja">Rp 0</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Rekap Bagi Hasil Komisi Terapis -->
-  <section class="glass-card p-4 rounded-3xl space-y-3">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-      <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-2">
-        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Rekap Bagi Hasil Terapis
-      </h2>
-      <span class="text-[10px] font-bold text-emerald-700" id="labelTanggalKomisi">-</span>
-    </div>
-    <div id="rekapKomisiList" class="space-y-2 text-xs"></div>
-  </section>
-
   <!-- Rincian Finansial -->
   <section class="glass-card p-4 rounded-3xl space-y-2.5">
     <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider mb-2">Rincian Finansial Periode</h3>
@@ -453,81 +449,68 @@ input:focus, select:focus {
   </section>
 </main>
 
-<!-- ================= TAB 3: PENGELUARAN ================= -->
-<main id="tab-pengeluaran" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
-  <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+<!-- ================= TAB 4: MASTER DATA & OPERASIONAL (GABUNGAN BIAYA, TERAPIS, LAYANAN, PASIEN) ================= -->
+<main id="tab-master" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
+  
+  <div class="grid grid-cols-4 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-[10px] font-bold text-center">
+    <button onclick="switchSubMaster('biaya')" id="btn-sub-biaya" class="py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95">
+      Biaya
+    </button>
+    <button onclick="switchSubMaster('terapis')" id="btn-sub-terapis" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
+      Terapis
+    </button>
+    <button onclick="switchSubMaster('layanan')" id="btn-sub-layanan" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
+      Layanan
+    </button>
+    <button onclick="switchSubMaster('pasien')" id="btn-sub-pasien" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
+      Pasien
+    </button>
+  </div>
+
+  <!-- BAGIAN A: CATAT PENGELUARAN / BIAYA -->
+  <div id="sub-biaya-section" class="space-y-4">
+    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
       <h2 class="font-extrabold text-rose-800 text-sm flex items-center gap-2">
-        <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran Operasional
+        <i class="fa-solid fa-receipt text-rose-600"></i> Catat Biaya Operasional
       </h2>
-      <button onclick="toggleKategoriManager()" class="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 active:scale-95 transition">
-        <i class="fa-solid fa-gear"></i> Kategori
+
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Keterangan Pengeluaran</label>
+        <input type="text" id="expKeterangan" placeholder="Contoh: Beli minyak zaitun, jarum bekam" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Kategori</label>
+          <select id="expKategori" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold"></select>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Sumber Kas</label>
+          <select id="expSumberKas" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold">
+            <option value="Tunai">💵 Kas Tunai (Laci)</option>
+            <option value="QRIS">📱 Rekening / Transfer</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Nominal (Rp)</label>
+        <input type="number" id="expNominal" placeholder="50000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-mono font-bold">
+      </div>
+
+      <button onclick="simpanPengeluaran()" class="w-full py-3 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5 mt-2">
+        <i class="fa-solid fa-minus-circle"></i> Catat Biaya Operasional
       </button>
     </div>
 
-    <!-- Manager Kategori Pengeluaran -->
-    <div id="boxKelolaKategori" class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200/80 space-y-2.5 hide">
-      <div class="font-bold text-xs text-amber-900 flex justify-between items-center">
-        <span>Tambah / Kelola Kategori</span>
-        <button onclick="toggleKategoriManager()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="flex gap-1.5">
-        <input type="text" id="inputKategoriBaru" placeholder="Nama kategori baru..." class="flex-1 px-3 py-2 bg-white border border-amber-200 rounded-xl text-xs outline-none">
-        <button onclick="tambahKategoriPengeluaran()" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow-sm active:scale-95 transition">
-          Tambah
-        </button>
-      </div>
-      <div id="daftarTagKategori" class="flex flex-wrap gap-1.5 pt-1"></div>
+    <div class="glass-card p-4 rounded-3xl space-y-3">
+      <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider">Daftar Biaya Hari Ini</h3>
+      <div id="pengeluaranList" class="space-y-2.5 text-xs"></div>
     </div>
-
-    <div>
-      <label class="text-[11px] font-bold text-gray-700">Keterangan Pengeluaran</label>
-      <input type="text" id="expKeterangan" placeholder="Contoh: Beli minyak zaitun, jarum bekam" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white">
-    </div>
-
-    <div class="grid grid-cols-2 gap-2.5">
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Kategori</label>
-        <select id="expKategori" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold"></select>
-      </div>
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Sumber Kas</label>
-        <select id="expSumberKas" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold">
-          <option value="Tunai">💵 Kas Tunai (Laci)</option>
-          <option value="QRIS">📱 Rekening / Transfer</option>
-        </select>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-bold text-gray-700">Nominal (Rp)</label>
-      <input type="number" id="expNominal" placeholder="50000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-mono font-bold">
-    </div>
-
-    <button onclick="simpanPengeluaran()" class="w-full py-3 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5 mt-2">
-      <i class="fa-solid fa-minus-circle"></i> Catat Pengeluaran
-    </button>
   </div>
 
-  <div class="glass-card p-4 rounded-3xl space-y-3">
-    <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider">Daftar Pengeluaran Hari Ini</h3>
-    <div id="pengeluaranList" class="space-y-2.5 text-xs"></div>
-  </div>
-</main>
-
-<!-- ================= TAB 4: MASTER DATA ================= -->
-<main id="tab-master" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
-  <div class="flex bg-gray-200/70 p-1.5 rounded-2xl gap-1 shadow-inner">
-    <button onclick="switchSubMaster('terapis')" id="btn-sub-terapis" class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-tb-green shadow-sm transition active:scale-95">
-      <i class="fa-solid fa-user-doctor mr-1"></i> Data Terapis
-    </button>
-    <button onclick="switchSubMaster('layanan')" id="btn-sub-layanan" class="flex-1 py-2 rounded-xl text-xs font-bold text-gray-600 hover:text-gray-900 transition active:scale-95">
-      <i class="fa-solid fa-spa mr-1"></i> Paket Terapi
-    </button>
-  </div>
-
-  <!-- BAGIAN A: MASTER TERAPIS -->
-  <div id="sub-terapis-section" class="space-y-4">
+  <!-- BAGIAN B: MASTER TERAPIS -->
+  <div id="sub-terapis-section" class="space-y-4 hide">
     <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
       <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
         <i class="fa-solid fa-user-doctor text-amber-500"></i> Kelola Master Terapis
@@ -562,7 +545,7 @@ input:focus, select:focus {
     </div>
   </div>
 
-  <!-- BAGIAN B: MASTER LAYANAN -->
+  <!-- BAGIAN C: MASTER LAYANAN -->
   <div id="sub-layanan-section" class="space-y-4 hide">
     <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
       <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
@@ -594,34 +577,34 @@ input:focus, select:focus {
       <div id="masterLayananList" class="space-y-2.5 text-xs"></div>
     </div>
   </div>
-</main>
 
-<!-- ================= TAB 5: DATA PASIEN ================= -->
-<main id="tab-pasien" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
-  <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-    <div class="flex justify-between items-center">
-      <div>
-        <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
-          <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
-        </h2>
-        <p class="text-[10px] text-gray-500 mt-0.5">Riwayat kunjungan & keluhan tercatat otomatis.</p>
+  <!-- BAGIAN D: DATA PASIEN -->
+  <div id="sub-pasien-section" class="space-y-4 hide">
+    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+            <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
+          </h2>
+          <p class="text-[10px] text-gray-500 mt-0.5">Tersimpan otomatis di browser lokal.</p>
+        </div>
+        <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-xs flex items-center gap-1.5 transition">
+          <i class="fa-brands fa-google text-emerald-600"></i> Impor
+          <input type="file" id="fileGoogleContacts" accept=".csv, .vcf" onchange="imporGoogleKontak(event)" class="hidden">
+        </label>
       </div>
-      <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-xs flex items-center gap-1.5 transition">
-        <i class="fa-brands fa-google text-emerald-600"></i> Impor Kontak
-        <input type="file" id="fileGoogleContacts" accept=".csv, .vcf" onchange="imporGoogleKontak(event)" class="hidden">
-      </label>
-    </div>
 
-    <div class="relative">
-      <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-9 pr-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-      <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-    </div>
+      <div class="relative">
+        <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-9 pr-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+        <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+      </div>
 
-    <div id="pasienListContainer" class="space-y-2.5 text-xs pt-1"></div>
+      <div id="pasienListContainer" class="space-y-2.5 text-xs pt-1"></div>
+    </div>
   </div>
 </main>
 
-<!-- ================= TAB 6: PENGATURAN & BACKUP ================= -->
+<!-- ================= TAB 5: PENGATURAN & BACKUP ================= -->
 <main id="tab-pengaturan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   <div class="glass-card p-5 rounded-3xl space-y-4 shadow-sm">
     <h2 class="font-extrabold text-gray-800 text-sm flex items-center gap-2">
@@ -648,79 +631,6 @@ input:focus, select:focus {
   </div>
 </main>
 
-<!-- MODAL RIWAYAT KUNJUNGAN PASIEN -->
-<div id="modalRiwayatPasien" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
-  <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-3.5 transform transition-all">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2.5">
-      <div>
-        <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
-          <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> Riwayat Pasien
-        </h3>
-        <p class="text-[10px] text-gray-500 font-bold" id="modalNamaPasienTitle">-</p>
-      </div>
-      <button onclick="tutupModalRiwayatPasien()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <div id="modalTimelineList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 text-xs"></div>
-
-    <button onclick="tutupModalRiwayatPasien()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 active:scale-95 transition text-gray-700 font-extrabold rounded-2xl text-xs">
-      Tutup
-    </button>
-  </div>
-</div>
-
-<!-- MODAL EDIT TRANSAKSI / GANTI TERAPIS -->
-<div id="modalEditTx" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
-  <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl space-y-3.5">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2.5">
-      <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
-        <i class="fa-solid fa-pen-to-square text-amber-500"></i> Edit Transaksi Pasien
-      </h3>
-      <button onclick="tutupModalEditTx()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <input type="hidden" id="editTxId">
-
-    <div>
-      <label class="text-[10px] font-bold text-gray-500">Nama Pasien</label>
-      <input type="text" id="editTxNama" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold">
-    </div>
-
-    <div>
-      <label class="text-[10px] font-bold text-gray-500">Terapis yang Menangani</label>
-      <select id="editTxTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-emerald-500 rounded-xl text-xs font-extrabold text-gray-800 outline-none"></select>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2">
-      <div>
-        <label class="text-[10px] font-bold text-gray-500">Metode Bayar</label>
-        <select id="editTxMetode" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold">
-          <option value="Tunai">💵 Tunai</option>
-          <option value="QRIS">📱 QRIS / Bank</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-[10px] font-bold text-gray-500">Total Tarif (Rp)</label>
-        <input type="number" id="editTxNominal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold">
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[10px] font-bold text-gray-500">Keluhan / Catatan</label>
-      <input type="text" id="editTxKeluhan" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs">
-    </div>
-
-    <div class="flex gap-2 pt-2">
-      <button onclick="simpanPerubahanTransaksi()" class="flex-1 py-2.5 bg-emerald-800 hover:bg-emerald-900 active:scale-95 transition text-white font-extrabold rounded-xl text-xs shadow-md">
-        Simpan
-      </button>
-      <button onclick="tutupModalEditTx()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 active:scale-95 transition text-gray-700 font-bold rounded-xl text-xs">
-        Batal
-      </button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL CETAK STRUK THERMAL -->
 <div id="modalStruk" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
   <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl space-y-3.5">
@@ -736,18 +646,19 @@ input:focus, select:focus {
   </div>
 </div>
 
-<!-- Bottom Navigation Modern -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-emerald-900/10 px-2 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
+<!-- Bottom Navigation Ramping (4 Menu Utama) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-emerald-900/10 px-3 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
   <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-chart-pie text-sm"></i>
+    <i class="fa-solid fa-chart-pie text-base"></i>
     <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Laporan</span>
   </button>
 
-  <button onclick="switchTab('pengeluaran')" id="nav-pengeluaran" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-arrow-down-up-across-line text-sm"></i>
-    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Pengeluaran</span>
+  <button onclick="switchTab('reservasi')" id="nav-reservasi" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
+    <i class="fa-solid fa-calendar-check text-base"></i>
+    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Booking</span>
   </button>
 
+  <!-- KASIR FLOATING CENTER BUTTON -->
   <div class="flex-1 flex justify-center -mt-7">
     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center w-14 h-14 rounded-full btn-floating-kasir text-white border-[3.5px] border-white active:scale-90 transition">
       <i class="fa-solid fa-cash-register text-lg text-amber-300"></i>
@@ -756,13 +667,8 @@ input:focus, select:focus {
   </div>
 
   <button onclick="switchTab('master')" id="nav-master" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-boxes-stacked text-sm"></i>
+    <i class="fa-solid fa-sliders text-base"></i>
     <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Master Data</span>
-  </button>
-
-  <button onclick="switchTab('pasien')" id="nav-pasien" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-hospital-user text-sm"></i>
-    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Data Pasien</span>
   </button>
 </nav>
 
@@ -822,6 +728,13 @@ function getTodayDateStr() {
   return `${year}-${month}-${day}`;
 }
 
+// FORMAT 24 JAM STANDAR INDONESIA (TANPA AM/PM)
+function getJam24Format(d = new Date()) {
+  const jam = String(d.getHours()).padStart(2, '0');
+  const menit = String(d.getMinutes()).padStart(2, '0');
+  return `${jam}:${menit}`;
+}
+
 function formatTanggalIndo(tglStr) {
   if (!tglStr) return '-';
   const parts = tglStr.split('-');
@@ -845,7 +758,7 @@ function hitungSelisihHari(tglStr) {
   return '';
 }
 
-// State Penyimpanan
+// State Penyimpanan Internal
 let masterTerapis = JSON.parse(localStorage.getItem('tb_master_terapis')) || [
   { id: '1', nama: 'Ustadz Ridwan', kategori: 'Ikhwan (Pria)', wa: '08123456789' },
   { id: '2', nama: 'Terapis Ikhwan 1', kategori: 'Ikhwan (Pria)', wa: '08987654321' },
@@ -879,11 +792,10 @@ let databasePasien = JSON.parse(localStorage.getItem('tb_database_pasien')) || {
 
 let transaksi = JSON.parse(localStorage.getItem('tb_transaksi_today')) || [];
 let pengeluaran = JSON.parse(localStorage.getItem('tb_pengeluaran_today')) || [];
+let dataReservasi = JSON.parse(localStorage.getItem('tb_data_reservasi')) || [];
 
-// Rentang Tanggal Laporan
 let tglMulaiLaporan = getTodayDateStr();
 let tglSampaiLaporan = getTodayDateStr();
-let modePintasAktif = 'hari_ini';
 
 const formatRp = (num) => "Rp " + Number(num || 0).toLocaleString('id-ID');
 
@@ -929,7 +841,7 @@ function cariInfoKunjunganTerakhir(wa, nama) {
   return null;
 }
 
-// 1. CARI PASIEN VIA WA
+// 1. CARI PASIEN FORM KASIR
 function cariPasienOtomatis() {
   const rawWA = document.getElementById('custWA').value.trim();
   const wa = normalisasiNomorWA(rawWA) || rawWA;
@@ -961,7 +873,7 @@ function cariPasienOtomatis() {
   }
 }
 
-// 2. SIMPAN TRANSAKSI
+// 2. SIMPAN TRANSAKSI KASIR
 function simpanTransaksi() {
   const rawWA = document.getElementById('custWA').value.trim();
   const wa = normalisasiNomorWA(rawWA) || rawWA;
@@ -969,7 +881,7 @@ function simpanTransaksi() {
   const keluhan = document.getElementById('custKeluhan').value.trim();
   const layananId1 = document.getElementById('layananSelect1').value;
   const layananId2 = document.getElementById('layananSelect2').value;
-  const terapisNama = document.getElementById('terapisSelect').value;
+  let terapisNama = document.getElementById('terapisSelect').value.trim();
   const metode = document.getElementById('metodeBayar').value;
 
   if (!nama) { alert("Nama pasien wajib diisi!"); return; }
@@ -991,6 +903,11 @@ function simpanTransaksi() {
 
   const dataTerapisObj = masterTerapis.find(t => t.nama === terapisNama);
   const kategoriGender = dataTerapisObj ? dataTerapisObj.kategori : 'Ikhwan (Pria)';
+  
+  if (!terapisNama) {
+    terapisNama = "-";
+  }
+
   const todayStr = getTodayDateStr();
 
   if (wa) {
@@ -1016,7 +933,7 @@ function simpanTransaksi() {
     kategoriPasien: kategoriGender,
     metode: metode,
     keluhan: keluhan,
-    jam: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    jam: getJam24Format()
   };
 
   transaksi.push(newTx);
@@ -1026,653 +943,227 @@ function simpanTransaksi() {
   document.getElementById('custName').value = '';
   document.getElementById('custKeluhan').value = '';
   document.getElementById('layananSelect2').value = '';
+  document.getElementById('terapisSelect').value = '';
   document.getElementById('bannerRiwayatTerakhir').classList.add('hide');
   cariPasienOtomatis();
   updateUI();
 }
 
-// 3. RIWAYAT PASIEN (MODAL)
-function bukaRiwayatPasien(wa, nama) {
-  document.getElementById('modalNamaPasienTitle').innerText = `${nama} (${wa})`;
-  const container = document.getElementById('modalTimelineList');
+// 3. FITUR RESERVASI
+function renderDropdownReservasi() {
+  const selLayanan = document.getElementById('resLayanan');
+  const selTerapis = document.getElementById('resTerapis');
 
-  const riwayat = transaksi.filter(t => (t.wa && t.wa === wa) || (t.nama && t.nama.toLowerCase() === nama.toLowerCase())).slice().reverse();
+  selLayanan.innerHTML = masterLayanan.map(l => `<option value="${l.nama}">${l.nama} (${formatRp(l.harga)})</option>`).join('');
+  
+  selTerapis.innerHTML = `<option value="">-- Tanpa Request (Bebas) --</option>` + 
+    masterTerapis.map(t => `<option value="${t.nama}">${t.nama} (${t.kategori})</option>`).join('');
+}
 
-  if (riwayat.length === 0) {
-    const p = databasePasien[wa];
-    if (p && p.kunjunganTerakhir) {
-      container.innerHTML = `
-        <div class="p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl space-y-1">
-          <div class="flex justify-between items-center font-bold text-emerald-950">
-            <span>${formatTanggalIndo(p.kunjunganTerakhir)}</span>
-            <span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-bold">${hitungSelisihHari(p.kunjunganTerakhir)}</span>
-          </div>
-          <div class="text-[11px] font-bold text-gray-800">${p.layananTerakhir || 'Terapi Bekam'}</div>
-          <div class="text-[10px] text-gray-500">Terapis: ${p.terapisTerakhir || '-'}</div>
-          ${p.keluhan ? `<div class="text-[10px] text-gray-600 italic mt-1 bg-white p-2 rounded-xl border border-emerald-100">Catatan: "${p.keluhan}"</div>` : ''}
-        </div>
-      `;
-    } else {
-      container.innerHTML = '<p class="text-gray-400 text-center py-4">Belum ada riwayat terapi pasien ini.</p>';
+function isiOtomatisReservasiPasien() {
+  const rawWA = document.getElementById('resWA').value.trim();
+  const wa = normalisasiNomorWA(rawWA) || rawWA;
+  if (databasePasien[wa]) {
+    document.getElementById('resNama').value = databasePasien[wa].nama || '';
+    if (databasePasien[wa].keluhan) {
+      document.getElementById('resCatatan').value = databasePasien[wa].keluhan;
     }
-  } else {
-    container.innerHTML = riwayat.map((t, idx) => `
-      <div class="p-3.5 bg-gray-50 border border-gray-200/80 rounded-2xl space-y-1">
-        <div class="flex justify-between items-center font-bold text-gray-800">
-          <span>${formatTanggalIndo(t.tanggal || getTodayDateStr())} • <span class="font-mono text-gray-500 text-[10px]">${t.jam}</span></span>
-          <span class="text-[10px] ${idx === 0 ? 'bg-emerald-100 text-emerald-800 font-black' : 'bg-gray-200 text-gray-700 font-bold'} px-2 py-0.5 rounded-full">
-            ${idx === 0 ? 'Terakhir (' + hitungSelisihHari(t.tanggal) + ')' : hitungSelisihHari(t.tanggal)}
-          </span>
-        </div>
-        <div class="text-[11px] font-bold text-emerald-800">${t.layanan}</div>
-        <div class="text-[10px] text-gray-500 flex justify-between font-medium">
-          <span>Terapis: <b>${t.terapis}</b></span>
-          <span class="font-extrabold text-gray-800">${formatRp(t.nominal)}</span>
-        </div>
-        ${t.keluhan ? `<div class="text-[10px] text-gray-600 bg-white p-2 rounded-xl border border-gray-100 mt-1">Keluhan: ${t.keluhan}</div>` : ''}
-      </div>
-    `).join('');
-  }
-
-  document.getElementById('modalRiwayatPasien').classList.remove('hide');
-}
-
-function tutupModalRiwayatPasien() {
-  document.getElementById('modalRiwayatPasien').classList.add('hide');
-}
-
-// 4. EDIT TRANSAKSI
-function bukaModalEditTx(id) {
-  const item = transaksi.find(t => t.id === id);
-  if (!item) return;
-
-  document.getElementById('editTxId').value = item.id;
-  document.getElementById('editTxNama').value = item.nama;
-  document.getElementById('editTxMetode').value = item.metode;
-  document.getElementById('editTxNominal').value = item.nominal;
-  document.getElementById('editTxKeluhan').value = item.keluhan || '';
-
-  const terapisSelectEl = document.getElementById('editTxTerapis');
-  terapisSelectEl.innerHTML = masterTerapis.map(t => 
-    `<option value="${t.nama}" ${t.nama === item.terapis ? 'selected' : ''}>${t.nama} (${t.kategori})</option>`
-  ).join('');
-
-  document.getElementById('modalEditTx').classList.remove('hide');
-}
-
-function tutupModalEditTx() {
-  document.getElementById('modalEditTx').classList.add('hide');
-}
-
-function simpanPerubahanTransaksi() {
-  const id = parseInt(document.getElementById('editTxId').value);
-  const index = transaksi.findIndex(t => t.id === id);
-  if (index === -1) return;
-
-  const terapisBaru = document.getElementById('editTxTerapis').value;
-  const dataTerapisObj = masterTerapis.find(t => t.nama === terapisBaru);
-
-  transaksi[index].nama = document.getElementById('editTxNama').value.trim() || transaksi[index].nama;
-  transaksi[index].terapis = terapisBaru;
-  transaksi[index].kategoriPasien = dataTerapisObj ? dataTerapisObj.kategori : (transaksi[index].kategoriPasien || 'Ikhwan (Pria)');
-  transaksi[index].metode = document.getElementById('editTxMetode').value;
-  transaksi[index].nominal = parseInt(document.getElementById('editTxNominal').value) || transaksi[index].nominal;
-  transaksi[index].keluhan = document.getElementById('editTxKeluhan').value.trim();
-
-  localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
-  tutupModalEditTx();
-  updateUI();
-  alert("Data transaksi berhasil diperbarui!");
-}
-
-function hapusTransaksi(id) {
-  if (!confirm("Hapus data transaksi ini dari antrean?")) return;
-  transaksi = transaksi.filter(t => t.id !== id);
-  localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
-  updateUI();
-}
-
-// 5. MASTER DATA (TERAPIS & LAYANAN)
-function switchSubMaster(sub) {
-  const secTerapis = document.getElementById('sub-terapis-section');
-  const secLayanan = document.getElementById('sub-layanan-section');
-  const btnTerapis = document.getElementById('btn-sub-terapis');
-  const btnLayanan = document.getElementById('btn-sub-layanan');
-
-  if (sub === 'terapis') {
-    secTerapis.classList.remove('hide');
-    secLayanan.classList.add('hide');
-    btnTerapis.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-tb-green shadow-sm transition active:scale-95";
-    btnLayanan.className = "flex-1 py-2 rounded-xl text-xs font-bold text-gray-600 hover:text-gray-900 transition active:scale-95";
-    renderMasterTerapis();
-  } else {
-    secLayanan.classList.remove('hide');
-    secTerapis.classList.add('hide');
-    btnLayanan.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-tb-green shadow-sm transition active:scale-95";
-    btnTerapis.className = "flex-1 py-2 rounded-xl text-xs font-bold text-gray-600 hover:text-gray-900 transition active:scale-95";
-    renderMasterLayanan();
   }
 }
 
-function renderSelectTerapis() {
-  const select = document.getElementById('terapisSelect');
-  select.innerHTML = masterTerapis.map(t => 
-    `<option value="${t.nama}">${t.nama} (${t.kategori})</option>`
-  ).join('');
-}
+function simpanReservasi() {
+  const tgl = document.getElementById('resTanggal').value;
+  const jam = document.getElementById('resJam').value;
+  const rawWA = document.getElementById('resWA').value.trim();
+  const wa = normalisasiNomorWA(rawWA) || rawWA;
+  const nama = document.getElementById('resNama').value.trim();
+  const layanan = document.getElementById('resLayanan').value;
+  let terapis = document.getElementById('resTerapis').value.trim();
+  const catatan = document.getElementById('resCatatan').value.trim();
 
-function renderMasterTerapis() {
-  const container = document.getElementById('masterTerapisList');
-  container.innerHTML = masterTerapis.map(t => `
-    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
-      <div>
-        <div class="font-extrabold text-gray-800 text-xs">${t.nama}</div>
-        <div class="text-[11px] text-gray-500 mt-0.5">${t.kategori} • WA: <span class="font-mono text-emerald-700 font-bold">${t.wa || '-'}</span></div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="editTerapis('${t.id}')" class="text-sky-600 hover:text-sky-800 p-1.5 active:scale-90 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-        <button onclick="hapusTerapis('${t.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    </div>
-  `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada terapis.</p>';
-}
-
-function simpanMasterTerapis() {
-  const id = document.getElementById('editTerapisId').value;
-  const nama = document.getElementById('masterNamaTerapis').value.trim();
-  const kategori = document.getElementById('masterKategoriTerapis').value;
-  const wa = document.getElementById('masterWaTerapis').value.trim();
-
-  if (!nama) { alert("Nama terapis wajib diisi!"); return; }
-
-  if (id) {
-    const index = masterTerapis.findIndex(t => t.id === id);
-    if (index !== -1) masterTerapis[index] = { id, nama, kategori, wa };
-  } else {
-    masterTerapis.push({ id: Date.now().toString(), nama, kategori, wa });
-  }
-
-  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
-  resetFormMasterTerapis();
-  renderMasterTerapis();
-  renderSelectTerapis();
-  alert("Data terapis berhasil disimpan!");
-}
-
-function editTerapis(id) {
-  const item = masterTerapis.find(t => t.id === id);
-  if (!item) return;
-  document.getElementById('editTerapisId').value = item.id;
-  document.getElementById('masterNamaTerapis').value = item.nama;
-  document.getElementById('masterKategoriTerapis').value = item.kategori;
-  document.getElementById('masterWaTerapis').value = item.wa;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function hapusTerapis(id) {
-  if (!confirm("Hapus data terapis ini?")) return;
-  masterTerapis = masterTerapis.filter(t => t.id !== id);
-  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
-  renderMasterTerapis();
-  renderSelectTerapis();
-}
-
-function resetFormMasterTerapis() {
-  document.getElementById('editTerapisId').value = '';
-  document.getElementById('masterNamaTerapis').value = '';
-  document.getElementById('masterWaTerapis').value = '';
-}
-
-function renderSelectLayanan() {
-  const select1 = document.getElementById('layananSelect1');
-  const select2 = document.getElementById('layananSelect2');
-
-  const options = masterLayanan.map(l => 
-    `<option value="${l.id}">${l.nama} — ${formatRp(l.harga)}</option>`
-  ).join('');
-
-  select1.innerHTML = options;
-  select2.innerHTML = `<option value="">-- Tidak ada layanan tambahan --</option>` + options;
-}
-
-function renderMasterLayanan() {
-  const container = document.getElementById('masterLayananList');
-  container.innerHTML = masterLayanan.map(l => `
-    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
-      <div>
-        <div class="font-extrabold text-gray-800 text-xs">${l.nama}</div>
-        <div class="text-[11px] text-gray-500 mt-0.5">Tarif: <span class="text-tb-green font-extrabold">${formatRp(l.harga)}</span> • Fee: ${formatRp(l.fee)}</div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="editLayanan('${l.id}')" class="text-sky-600 hover:text-sky-800 p-1.5 active:scale-90 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-        <button onclick="hapusLayanan('${l.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    </div>
-  `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada layanan aktif.</p>';
-}
-
-function simpanMasterLayanan() {
-  const id = document.getElementById('editLayananId').value;
-  const nama = document.getElementById('masterNamaLayanan').value.trim();
-  const harga = parseInt(document.getElementById('masterHargaLayanan').value) || 0;
-  const fee = parseInt(document.getElementById('masterFeeTerapis').value) || 0;
-
-  if (!nama || harga <= 0) { alert("Nama dan tarif terapi harus valid!"); return; }
-
-  if (id) {
-    const index = masterLayanan.findIndex(l => l.id === id);
-    if (index !== -1) masterLayanan[index] = { id, nama, harga, fee };
-  } else {
-    masterLayanan.push({ id: Date.now().toString(), nama, harga, fee });
-  }
-
-  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
-  resetFormMasterLayanan();
-  renderMasterLayanan();
-  renderSelectLayanan();
-  alert("Layanan tersimpan!");
-}
-
-function editLayanan(id) {
-  const item = masterLayanan.find(l => l.id === id);
-  if (!item) return;
-  document.getElementById('editLayananId').value = item.id;
-  document.getElementById('masterNamaLayanan').value = item.nama;
-  document.getElementById('masterHargaLayanan').value = item.harga;
-  document.getElementById('masterFeeTerapis').value = item.fee;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function hapusLayanan(id) {
-  if (!confirm("Hapus paket layanan ini?")) return;
-  masterLayanan = masterLayanan.filter(l => l.id !== id);
-  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
-  renderMasterLayanan();
-  renderSelectLayanan();
-}
-
-function resetFormMasterLayanan() {
-  document.getElementById('editLayananId').value = '';
-  document.getElementById('masterNamaLayanan').value = '';
-  document.getElementById('masterHargaLayanan').value = '';
-  document.getElementById('masterFeeTerapis').value = '';
-}
-
-// 6. KATEGORI PENGELUARAN DINAMIS
-function toggleKategoriManager() {
-  const box = document.getElementById('boxKelolaKategori');
-  box.classList.toggle('hide');
-  renderDaftarTagKategori();
-}
-
-function renderSelectKategoriPengeluaran() {
-  const select = document.getElementById('expKategori');
-  select.innerHTML = masterKategoriPengeluaran.map(k => `<option value="${k}">${k}</option>`).join('');
-}
-
-function renderDaftarTagKategori() {
-  const container = document.getElementById('daftarTagKategori');
-  container.innerHTML = masterKategoriPengeluaran.map(k => `
-    <span class="inline-flex items-center gap-1.5 bg-white border border-amber-300 text-amber-900 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-xs">
-      ${k}
-      <button onclick="hapusKategoriPengeluaran('${k}')" class="text-rose-500 hover:text-rose-700 ml-0.5"><i class="fa-solid fa-times"></i></button>
-    </span>
-  `).join('');
-}
-
-function tambahKategoriPengeluaran() {
-  const input = document.getElementById('inputKategoriBaru');
-  const val = input.value.trim();
-  if (!val) return;
-  if (masterKategoriPengeluaran.includes(val)) {
-    alert("Kategori ini sudah ada!");
+  if (!tgl || !jam || !nama || !wa) {
+    alert("Tanggal, Jam, Nama Pasien, dan Nomor WhatsApp wajib diisi!");
     return;
   }
-  masterKategoriPengeluaran.push(val);
-  localStorage.setItem('tb_master_kategori_exp', JSON.stringify(masterKategoriPengeluaran));
-  input.value = '';
-  renderSelectKategoriPengeluaran();
-  renderDaftarTagKategori();
-}
 
-function hapusKategoriPengeluaran(nama) {
-  if (masterKategoriPengeluaran.length <= 1) {
-    alert("Minimal harus ada satu kategori tersisa!");
-    return;
+  if (!terapis) {
+    terapis = "-";
   }
-  if (!confirm(`Hapus kategori "${nama}"?`)) return;
-  masterKategoriPengeluaran = masterKategoriPengeluaran.filter(k => k !== nama);
-  localStorage.setItem('tb_master_kategori_exp', JSON.stringify(masterKategoriPengeluaran));
-  renderSelectKategoriPengeluaran();
-  renderDaftarTagKategori();
-}
 
-// 7. PENGELUARAN
-function simpanPengeluaran() {
-  const ket = document.getElementById('expKeterangan').value.trim();
-  const kategori = document.getElementById('expKategori').value;
-  const sumber = document.getElementById('expSumberKas').value;
-  const nominal = parseInt(document.getElementById('expNominal').value) || 0;
-
-  if (!ket || nominal <= 0) { alert("Keterangan dan nominal pengeluaran harus diisi!"); return; }
-
-  pengeluaran.push({
+  const newRes = {
     id: Date.now(),
-    tanggal: getTodayDateStr(),
-    keterangan: ket,
-    kategori: kategori,
-    sumber: sumber,
-    nominal: nominal,
-    jam: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  });
+    tanggalBooking: tgl,
+    jamBooking: jam,
+    wa: wa,
+    nama: nama,
+    layanan: layanan,
+    terapis: terapis,
+    catatan: catatan || '-',
+    status: 'Terkonfirmasi'
+  };
 
-  localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
-  document.getElementById('expKeterangan').value = '';
-  document.getElementById('expNominal').value = '';
-  renderPengeluaran();
-  updateUI();
+  dataReservasi.push(newRes);
+  localStorage.setItem('tb_data_reservasi', JSON.stringify(dataReservasi));
+
+  if (wa && !databasePasien[wa]) {
+    databasePasien[wa] = { nama, keluhan: catatan || '', kunjunganTerakhir: '' };
+    localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+  }
+
+  renderDaftarReservasi();
+
+  if (confirm(`Reservasi ${nama} berhasil disimpan.\n\nKirim bukti booking ke WhatsApp pasien sekarang?`)) {
+    kirimBuktiReservasiWA(newRes.id);
+  }
+
+  document.getElementById('resNama').value = '';
+  document.getElementById('resWA').value = '';
+  document.getElementById('resCatatan').value = '';
+  document.getElementById('resTerapis').value = '';
 }
 
-function renderPengeluaran() {
-  const container = document.getElementById('pengeluaranList');
-  const todayStr = getTodayDateStr();
-  const listToday = pengeluaran.filter(p => !p.tanggal || p.tanggal === todayStr);
+function renderDaftarReservasi() {
+  const container = document.getElementById('daftarReservasiList');
+  const badge = document.getElementById('badgeJumlahReservasi');
+  badge.innerText = `${dataReservasi.length} Booking`;
 
-  if (listToday.length === 0) {
-    container.innerHTML = '<p class="text-gray-400 text-center py-4">Belum ada pengeluaran hari ini.</p>';
+  if (dataReservasi.length === 0) {
+    container.innerHTML = '<p class="text-gray-400 text-center py-4">Belum ada jadwal reservasi aktif.</p>';
     return;
   }
-  container.innerHTML = listToday.slice().reverse().map(item => `
-    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
-      <div>
-        <div class="font-extrabold text-gray-800">${item.keterangan}</div>
-        <div class="text-[11px] text-gray-500">${item.kategori} • ${item.sumber} • ${item.jam}</div>
+
+  container.innerHTML = dataReservasi.slice().reverse().map(r => `
+    <div class="p-3.5 bg-gray-50/90 rounded-2xl border border-gray-200/80 space-y-2 card-stat">
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="font-extrabold text-gray-800 text-xs">${r.nama}</div>
+          <div class="text-[11px] font-mono text-emerald-700 font-bold">${r.wa}</div>
+        </div>
+        <span class="text-[9px] bg-emerald-100 text-emerald-900 border border-emerald-300 font-black px-2 py-0.5 rounded-full">
+          ${r.status}
+        </span>
       </div>
-      <div class="flex items-center gap-3">
-        <span class="font-black text-rose-700">-${formatRp(item.nominal)}</span>
-        <button onclick="hapusPengeluaran(${item.id})" class="text-rose-500 hover:text-rose-700 p-1 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+
+      <div class="bg-white p-2.5 rounded-xl border border-gray-100 text-[10px] space-y-1">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Jadwal:</span>
+          <span class="font-extrabold text-gray-900">${formatTanggalIndo(r.tanggalBooking)} • Pukul ${r.jamBooking} WIB</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Layanan:</span>
+          <span class="font-bold text-emerald-800">${r.layanan}</span>
+        </div>
+        ${r.terapis && r.terapis !== '-' ? `
+        <div class="flex justify-between">
+          <span class="text-gray-500">Terapis:</span>
+          <span class="font-semibold text-gray-800">${r.terapis}</span>
+        </div>` : ''}
+        ${r.catatan && r.catatan !== '-' ? `<div class="text-gray-500 pt-0.5">Catatan: <i class="text-gray-700 font-medium">${r.catatan}</i></div>` : ''}
+      </div>
+
+      <div class="flex items-center justify-between gap-1.5 pt-1">
+        <button onclick="checkInKeKasir(${r.id})" class="flex-1 py-1.5 bg-emerald-800 hover:bg-emerald-900 active:scale-95 transition text-white font-extrabold text-[10px] rounded-xl flex items-center justify-center gap-1 shadow-xs">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Check-in Kasir
+        </button>
+
+        <button onclick="kirimBuktiReservasiWA(${r.id})" title="Kirim Bukti WA" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center hover:bg-emerald-200 active:scale-90 transition">
+          <i class="fa-brands fa-whatsapp text-xs"></i>
+        </button>
+
+        <button onclick="cetakTiketReservasi(${r.id})" title="Cetak Bukti Booking" class="w-8 h-8 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center hover:bg-amber-200 active:scale-90 transition">
+          <i class="fa-solid fa-print text-xs"></i>
+        </button>
+
+        <button onclick="hapusReservasi(${r.id})" title="Hapus Booking" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-100 active:scale-90 transition">
+          <i class="fa-solid fa-trash text-xs"></i>
+        </button>
       </div>
     </div>
   `).join('');
 }
 
-function hapusPengeluaran(id) {
-  if (!confirm("Hapus catatan pengeluaran ini?")) return;
-  pengeluaran = pengeluaran.filter(item => item.id !== id);
-  localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
-  renderPengeluaran();
-  updateUI();
-}
+// BUKTI RESERVASI VIA WHATSAPP
+function kirimBuktiReservasiWA(resId) {
+  const r = dataReservasi.find(item => item.id === resId);
+  if (!r) return;
 
-// 8. DATA PASIEN
-function renderDaftarPasien() {
-  const container = document.getElementById('pasienListContainer');
-  const keyword = (document.getElementById('cariPasienListInput')?.value || '').toLowerCase();
-  const keys = Object.keys(databasePasien).filter(wa => 
-    wa.includes(keyword) || (databasePasien[wa].nama || '').toLowerCase().includes(keyword)
-  );
-
-  if (keys.length === 0) {
-    container.innerHTML = '<p class="text-gray-400 text-center py-4">Pasien tidak ditemukan.</p>';
-    return;
-  }
-
-  container.innerHTML = keys.map(wa => {
-    const p = databasePasien[wa];
-    const last = cariInfoKunjunganTerakhir(wa, p.nama);
-    const tglTerakhir = last?.tanggal || p.kunjunganTerakhir || '';
-    const selisihHari = hitungSelisihHari(tglTerakhir);
-
-    return `
-      <div class="p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 flex justify-between items-start card-stat">
-        <div>
-          <div class="font-extrabold text-gray-800 text-xs">${p.nama}</div>
-          <div class="text-[11px] font-mono text-emerald-700 font-bold mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${wa}</div>
-          <div class="text-[10px] text-gray-500 mt-1">Keluhan: ${p.keluhan || '-'}</div>
-          
-          ${tglTerakhir ? `
-            <div class="text-[10px] text-emerald-950 font-bold mt-1.5 flex items-center gap-1.5 bg-emerald-100/80 px-2.5 py-0.5 rounded-full w-fit">
-              <i class="fa-solid fa-calendar-check text-emerald-700 text-[9px]"></i>
-              Terakhir: ${formatTanggalIndo(tglTerakhir)} (${selisihHari})
-            </div>
-          ` : '<div class="text-[9px] text-gray-400 mt-1">Belum ada catatan kunjungan</div>'}
-        </div>
-        <div class="flex flex-col gap-1.5 items-end">
-          <button onclick="pilihPasienKeKasir('${wa}')" class="text-xs bg-amber-100 text-amber-950 border border-amber-300 font-extrabold px-3 py-1 rounded-xl active:scale-95 transition">
-            Pilih Kasir
-          </button>
-          <button onclick="bukaRiwayatPasien('${wa}', '${p.nama}')" class="text-[10px] text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 font-extrabold px-2.5 py-1 rounded-xl active:scale-95 transition">
-            <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function pilihPasienKeKasir(wa) {
-  switchTab('dashboard');
-  document.getElementById('custWA').value = wa;
-  cariPasienOtomatis();
-}
-
-function imporGoogleKontak(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  const fileName = file.name.toLowerCase();
-
-  reader.onload = function(e) {
-    const text = e.target.result;
-    let kontakTerimpor = 0;
-
-    if (fileName.endsWith('.csv')) {
-      kontakTerimpor = parseGoogleContactsCSV(text);
-    } else if (fileName.endsWith('.vcf')) {
-      kontakTerimpor = parseVCard(text);
-    } else {
-      alert("Harap pilih berkas dengan format .csv atau .vcf!");
-      return;
-    }
-
-    if (kontakTerimpor > 0) {
-      localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
-      renderDaftarPasien();
-      alert(`Berhasil mengimpor ${kontakTerimpor} kontak pasien dari Google Kontak!`);
-    } else {
-      alert("Tidak ditemukan kontak valid dengan nomor telepon yang sesuai.");
-    }
-    event.target.value = '';
-  };
-
-  reader.readAsText(file);
-}
-
-function parseGoogleContactsCSV(csvText) {
-  const lines = csvText.split(/\r\n|\n/);
-  if (lines.length < 2) return 0;
-
-  const parseCSVLine = (line) => {
-    const row = [];
-    let insideQuotes = false;
-    let entry = '';
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
-      if (c === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (c === ',' && !insideQuotes) {
-        row.push(entry.trim());
-        entry = '';
-      } else {
-        entry += c;
-      }
-    }
-    row.push(entry.trim());
-    return row.map(r => r.replace(/^"|"$/g, '').trim());
-  };
-
-  const header = parseCSVLine(lines[0]).map(h => h.toLowerCase());
-  let nameIndex = header.findIndex(h => h.includes('name') || h.includes('nama'));
-  let phoneIndices = [];
-  header.forEach((h, idx) => {
-    if (h.includes('phone') || h.includes('telepon') || h.includes('mobile') || h.includes('seluler')) {
-      phoneIndices.push(idx);
-    }
-  });
-
-  if (nameIndex === -1 && phoneIndices.length === 0) return 0;
-
-  let count = 0;
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    const cols = parseCSVLine(lines[i]);
-    const nama = cols[nameIndex] || 'Pasien Tanpa Nama';
-
-    let nomorWA = '';
-    for (let pIdx of phoneIndices) {
-      if (cols[pIdx]) {
-        const cleaned = normalisasiNomorWA(cols[pIdx]);
-        if (cleaned) {
-          nomorWA = cleaned;
-          break;
-        }
-      }
-    }
-
-    if (nomorWA && nama) {
-      if (!databasePasien[nomorWA]) {
-        databasePasien[nomorWA] = { nama, keluhan: '', kunjunganTerakhir: '' };
-        count++;
-      } else if (!databasePasien[nomorWA].nama || databasePasien[nomorWA].nama === 'Pasien Baru') {
-        databasePasien[nomorWA].nama = nama;
-        count++;
-      }
-    }
-  }
-  return count;
-}
-
-function parseVCard(vcfText) {
-  const cards = vcfText.split(/BEGIN:VCARD/i);
-  let count = 0;
-
-  cards.forEach(card => {
-    if (!card.trim()) return;
-    let nama = '';
-    let telp = '';
-
-    const lines = card.split(/\r\n|\n/);
-    lines.forEach(l => {
-      const line = l.trim();
-      if (line.startsWith('FN:')) {
-        nama = line.substring(3).trim();
-      } else if (!nama && line.startsWith('N:')) {
-        const parts = line.substring(2).split(';');
-        nama = parts.filter(p => p.trim()).reverse().join(' ').trim();
-      } else if (line.startsWith('TEL') || line.includes(':')) {
-        const colonIdx = line.indexOf(':');
-        if (colonIdx !== -1 && line.substring(0, colonIdx).includes('TEL')) {
-          const rawNum = line.substring(colonIdx + 1).trim();
-          const cleanNum = normalisasiNomorWA(rawNum);
-          if (cleanNum && !telp) {
-            telp = cleanNum;
-          }
-        }
-      }
-    });
-
-    if (telp && nama) {
-      if (!databasePasien[telp]) {
-        databasePasien[telp] = { nama, keluhan: '', kunjunganTerakhir: '' };
-        count++;
-      }
-    }
-  });
-
-  return count;
-}
-
-// 9. CETAK NOTA & WHATSAPP
-function kirimNotaWA(txId) {
-  const item = transaksi.find(t => t.id === txId);
-  if (!item) return;
-  if (!item.wa || item.wa === '-') {
-    alert("Nomor WhatsApp pasien tidak tersedia pada transaksi ini!");
-    return;
-  }
-
-  let noWA = item.wa.replace(/[^0-9]/g, '');
+  let noWA = r.wa.replace(/[^0-9]/g, '');
   if (noWA.startsWith('0')) noWA = '62' + noWA.slice(1);
 
+  const barisTerapis = (r.terapis && r.terapis !== '-') ? `\nTerapis : *${r.terapis}*` : '';
+
   const pesan = 
-`*TEMAN BEKAM - BUKTI TRANSAKSI*
-_Ahlinya Bekam Sunnah & Relaksasi_
-----------------------------------
-No. Nota: #TB-${item.id.toString().slice(-6)}
-Nama Pasien: *${item.nama}*
-Layanan: ${item.layanan}
-Terapis: *${item.terapis}*
-Tarif: *${formatRp(item.nominal)}*
-Metode: ${item.metode}
-Waktu: ${item.jam}
-----------------------------------
-Terima kasih sudah meluangkan waktu merawat diri hari ini. Tubuh Bapak/Ibu baru saja melewati proses detoksifikasi dan relaksasi.
+`Halo Bapak/Ibu *${r.nama}*, salam hangat dari Teman Bekam 😊
 
-Agar manfaat terapinya maksimal, yuk perhatikan anjuran berikut:
-• *Rehat sejenak:* Hindari aktivitas berat seharian ini agar sirkulasi energi dan darah seimbang kembali.
-• *Jeda waktu mandi:* Beri jeda 2–3 jam sebelum mandi
-• *Nutrisi Pemulihan:* Minum cukup air putih hangat dan madu murni untuk mempercepat regenerasi sel.
+Terima kasih sudah melakukan reservasi perawatan tubuh bersama kami. Jadwal terapi Anda sudah berhasil kami daftarkan dengan rincian berikut:
 
-Semoga lekas pulih, badan kembali enteng. Sehat adalah investasi, dan merawatnya adalah bentuk syukur terbaik.
+*KONFIRMASI RESERVASI - TEMAN BEKAM*
+-----------------------------------------------
+No. Booking : *#TB-RES-${r.id.toString().slice(-5)}*
+Nama : *${r.nama}*
+Hari, Tanggal : *${formatTanggalIndo(r.tanggalBooking)}*
+Waktu Kedatangan : *Pukul ${r.jamBooking} WIB*
+Paket Terapi : *${r.layanan}*${barisTerapis}
+Status : *Terkonfirmasi*
+-----------------------------------------------
 
-Pintu kami selalu terbuka kapan pun tubuh Bapak/Ibu butuh rehat sejenak. Sampai jumpa di jadwal perawatan berikutnya!`;
+*Catatan Kedatangan:*
+Mohon datang sesuai jadwal yang sudah ditentukan.
+
+Jika ada kendala waktu atau ingin melakukan penyesuaian jadwal, jangan ragu untuk mengabari kami ya.
+
+Sampai jumpa di Teman Bekam! Semoga sehat dan segar selalu.
+*Teman Bekam - Ahlinya Bekam & Relaksasi*`;
 
   window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
 
-function bukaModalStruk(txId) {
-  const item = transaksi.find(t => t.id === txId);
-  if (!item) return;
+// Cetak Tiket Struk Reservasi
+function cetakTiketReservasi(resId) {
+  const r = dataReservasi.find(item => item.id === resId);
+  if (!r) return;
+
+  const barisTerapisHtml = (r.terapis && r.terapis !== '-') ? `
+    <div style="display: flex; justify-content: space-between;">
+      <span>Terapis:</span>
+      <span>${r.terapis}</span>
+    </div>
+  ` : '';
 
   const htmlStruk = `
     <div style="text-align: center; margin-bottom: 8px;">
       <img src="${URL_LOGO_ONLINE}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
       <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
-      <div style="font-size: 9px; color: #555;">Ahlinya Bekam Sunnah & Relaksasi</div>
-      <div style="font-size: 8px; color: #777;">No. #${item.id.toString().slice(-6)} | ${item.jam}</div>
+      <div style="font-size: 9px; color: #555;">BUKTI RESERVASI JADWAL</div>
+      <div style="font-size: 8px; color: #777;">Kode: #TB-RES-${r.id.toString().slice(-5)}</div>
     </div>
     <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
     <div style="display: flex; justify-content: space-between;">
       <span>Pasien:</span>
-      <span style="font-weight: 700;">${item.nama}</span>
+      <span style="font-weight: 700;">${r.nama}</span>
     </div>
     <div style="display: flex; justify-content: space-between;">
-      <span>Terapis:</span>
-      <span style="font-weight: 600;">${item.terapis}</span>
+      <span>WhatsApp:</span>
+      <span style="font-mono;">${r.wa}</span>
     </div>
     <div style="display: flex; justify-content: space-between;">
-      <span>Metode:</span>
-      <span>${item.metode}</span>
+      <span>Jadwal:</span>
+      <span style="font-weight: 700;">${r.tanggalBooking}</span>
     </div>
+    <div style="display: flex; justify-content: space-between;">
+      <span>Jam Kedatangan:</span>
+      <span style="font-weight: 800;">${r.jamBooking} WIB</span>
+    </div>
+    ${barisTerapisHtml}
     <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
     <div>
-      <div style="font-weight: 600;">${item.layanan}</div>
-      <div style="text-align: right; font-weight: 800;">${formatRp(item.nominal)}</div>
-    </div>
-    <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
-    <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 12px;">
-      <span>TOTAL:</span>
-      <span>${formatRp(item.nominal)}</span>
+      <div style="font-weight: 600;">Paket Terapi:</div>
+      <div style="font-weight: 700; color: #0f5132;">${r.layanan}</div>
     </div>
     <div style="border-top: 1px dashed #444; margin: 8px 0 6px 0;"></div>
-    <div style="text-align: center; font-size: 8px; color: #444; line-height: 1.4;">
-      Terima kasih sudah merawat diri hari ini.<br>
-      <b>Anjuran Pasca Terapi:</b><br>
-      • Rehat sejenak (hindari aktivitas berat)<br>
-      • Jeda waktu mandi: 2-3 jam sebelum mandi<br>
-      • Cukup minum air putih hangat & madu murni<br><br>
-      <i>Semoga lekas pulih, badan kembali enteng. Sampai jumpa di perawatan berikutnya!</i>
+    <div style="text-align: center; font-size: 8px; color: #444; line-height: 1.3;">
+      Mohon datang sesuai jadwal yang sudah ditentukan.<br>
+      Terima kasih sudah merawat kesehatan bersama Teman Bekam.
     </div>
   `;
 
@@ -1680,13 +1171,45 @@ function bukaModalStruk(txId) {
   document.getElementById('modalStruk').classList.remove('hide');
 }
 
-function tutupModalStruk() {
-  document.getElementById('modalStruk').classList.add('hide');
+function checkInKeKasir(resId) {
+  const r = dataReservasi.find(item => item.id === resId);
+  if (!r) return;
+
+  switchTab('dashboard');
+
+  document.getElementById('custWA').value = r.wa;
+  document.getElementById('custName').value = r.nama;
+  document.getElementById('custKeluhan').value = r.catatan !== '-' ? r.catatan : '';
+
+  const layananObj = masterLayanan.find(l => l.nama === r.layanan);
+  if (layananObj) {
+    document.getElementById('layananSelect1').value = layananObj.id;
+  }
+
+  if (r.terapis && r.terapis !== '-') {
+    document.getElementById('terapisSelect').value = r.terapis;
+  } else {
+    document.getElementById('terapisSelect').value = '';
+  }
+
+  cariPasienOtomatis();
+
+  if (confirm(`Data pasien ${r.nama} telah dipindahkan ke form Kasir.\n\nHapus antrean booking ini dari daftar reservasi?`)) {
+    dataReservasi = dataReservasi.filter(item => item.id !== resId);
+    localStorage.setItem('tb_data_reservasi', JSON.stringify(dataReservasi));
+    renderDaftarReservasi();
+  }
 }
 
-// 10. FILTER RENTANG TANGGAL LAPORAN
+function hapusReservasi(id) {
+  if (!confirm("Hapus antrean booking ini?")) return;
+  dataReservasi = dataReservasi.filter(item => item.id !== id);
+  localStorage.setItem('tb_data_reservasi', JSON.stringify(dataReservasi));
+  renderDaftarReservasi();
+}
+
+// ================= 4. FILTER RENTANG TANGGAL LAPORAN =================
 function setPintasTanggal(mode) {
-  modePintasAktif = mode;
   const todayStr = getTodayDateStr();
 
   if (mode === 'hari_ini') {
@@ -1696,8 +1219,7 @@ function setPintasTanggal(mode) {
   } else if (mode === '7_hari') {
     const d = new Date();
     d.setDate(d.getDate() - 6);
-    const startStr = d.toISOString().split('T')[0];
-    tglMulaiLaporan = startStr;
+    tglMulaiLaporan = d.toISOString().split('T')[0];
     tglSampaiLaporan = todayStr;
     document.getElementById('badgeLabelPeriode').innerText = "7 Hari Terakhir";
   } else if (mode === 'bulan_ini') {
@@ -1731,7 +1253,6 @@ function gantiRentangTanggal() {
     }
     tglMulaiLaporan = start;
     tglSampaiLaporan = end;
-    modePintasAktif = 'kustom';
     document.getElementById('badgeLabelPeriode').innerText = "Kustom";
     updateUI();
   }
@@ -1751,11 +1272,13 @@ function hitungAnalitikTopPerforma(txFiltered) {
   const dataPasien = {};
 
   txFiltered.forEach(t => {
-    if (!dataTerapis[t.terapis]) {
-      dataTerapis[t.terapis] = { pasien: 0, omset: 0 };
+    if (t.terapis && t.terapis !== '-') {
+      if (!dataTerapis[t.terapis]) {
+        dataTerapis[t.terapis] = { pasien: 0, omset: 0 };
+      }
+      dataTerapis[t.terapis].pasien += 1;
+      dataTerapis[t.terapis].omset += t.nominal;
     }
-    dataTerapis[t.terapis].pasien += 1;
-    dataTerapis[t.terapis].omset += t.nominal;
 
     if (!dataLayanan[t.layanan]) {
       dataLayanan[t.layanan] = { count: 0, nominal: 0 };
@@ -1807,7 +1330,7 @@ function hitungAnalitikTopPerforma(txFiltered) {
   document.getElementById('topPasienTotalBelanja').innerText = formatRp(topPasien.totalBelanja);
 }
 
-// 11. UPDATE UI KASIR, DEMOGRAFI & LAPORAN
+// 5. UPDATE UI
 function updateUI() {
   const todayStr = getTodayDateStr();
 
@@ -1823,15 +1346,11 @@ function updateUI() {
           <div class="font-extrabold text-gray-800">${t.nama}</div>
           <div class="text-[11px] font-bold text-emerald-800 mt-0.5">${t.layanan}</div>
           <div class="text-[10px] text-gray-500 mt-0.5 font-medium">
-            <span class="text-amber-900 font-extrabold bg-amber-100/80 px-2 py-0.5 rounded-full">Terapis: ${t.terapis}</span> 
-            • ${t.metode} • ${t.jam} ${t.wa !== '-' ? '• WA: '+t.wa : ''}
+            ${t.terapis && t.terapis !== '-' ? `<span class="text-amber-900 font-extrabold bg-amber-100/80 px-2 py-0.5 rounded-full">Terapis: ${t.terapis}</span> • ` : ''}${t.metode} • ${t.jam} WIB ${t.wa !== '-' ? '• WA: '+t.wa : ''}
           </div>
           <div class="font-black text-tb-green mt-1 text-xs">${formatRp(t.nominal)}</div>
         </div>
         <div class="flex items-center gap-1.5">
-          <button onclick="bukaModalEditTx(${t.id})" title="Edit Terapis / Data" class="w-8 h-8 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center hover:bg-sky-200 active:scale-90 transition">
-            <i class="fa-solid fa-pen-to-square text-xs"></i>
-          </button>
           <button onclick="bukaModalStruk(${t.id})" title="Cetak Nota" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center hover:bg-emerald-200 active:scale-90 transition">
             <i class="fa-solid fa-receipt text-xs"></i>
           </button>
@@ -1854,24 +1373,13 @@ function updateUI() {
 
   let omset = 0, tunaiIn = 0, qrisIn = 0;
   let totalPengeluaran = 0, tunaiOut = 0, qrisOut = 0;
-  const rekapKomisi = {};
 
   let countIkhwan = 0, omsetIkhwan = 0;
   let countAkhwat = 0, omsetAkhwat = 0;
 
-  masterTerapis.forEach(t => {
-    rekapKomisi[t.nama] = { pasien: 0, totalFee: 0 };
-  });
-
   txFiltered.forEach(t => {
     omset += t.nominal;
     if (t.metode === 'Tunai') tunaiIn += t.nominal; else qrisIn += t.nominal;
-
-    if (!rekapKomisi[t.terapis]) {
-      rekapKomisi[t.terapis] = { pasien: 0, totalFee: 0 };
-    }
-    rekapKomisi[t.terapis].pasien += 1;
-    rekapKomisi[t.terapis].totalFee += (t.fee || 0);
 
     let kat = t.kategoriPasien;
     if (!kat) {
@@ -1932,30 +1440,6 @@ function updateUI() {
 
   const tglTop = document.getElementById('labelTanggalTop');
   if (tglTop) tglTop.innerText = labelTeksRentang;
-  const tglKom = document.getElementById('labelTanggalKomisi');
-  if (tglKom) tglKom.innerText = labelTeksRentang;
-
-  const komisiContainer = document.getElementById('rekapKomisiList');
-  const namaTerapisKeys = Object.keys(rekapKomisi);
-  if (namaTerapisKeys.length === 0) {
-    komisiContainer.innerHTML = '<div class="text-gray-400 text-center py-2">Belum ada data terapis.</div>';
-  } else {
-    komisiContainer.innerHTML = namaTerapisKeys.map(nama => {
-      const data = rekapKomisi[nama];
-      return `
-        <div class="flex justify-between items-center p-3 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
-          <div>
-            <div class="font-extrabold text-gray-800 text-[11px]">${nama}</div>
-            <div class="text-[10px] text-gray-500">${data.pasien} Pasien ditangani</div>
-          </div>
-          <div class="text-right">
-            <div class="font-black text-emerald-700 text-xs">${formatRp(data.totalFee)}</div>
-            <div class="text-[9px] text-gray-400 font-medium">Total Komisi</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
 
   document.getElementById('totalOmset').innerText = formatRp(omset);
   document.getElementById('totalPengeluaranHeader').innerText = formatRp(totalPengeluaran);
@@ -1969,7 +1453,377 @@ function updateUI() {
   hitungAnalitikTopPerforma(txFiltered);
 }
 
-// 12. EKSPOR LAPORAN CSV
+// 6. NOTA WA KASIR
+function kirimNotaWA(txId) {
+  const item = transaksi.find(t => t.id === txId);
+  if (!item) return;
+  if (!item.wa || item.wa === '-') {
+    alert("Nomor WhatsApp pasien tidak tersedia pada transaksi ini!");
+    return;
+  }
+
+  let noWA = item.wa.replace(/[^0-9]/g, '');
+  if (noWA.startsWith('0')) noWA = '62' + noWA.slice(1);
+
+  const barisTerapisNota = (item.terapis && item.terapis !== '-') ? `\nTerapis: *${item.terapis}*` : '';
+
+  const pesan = 
+`*TEMAN BEKAM - BUKTI TRANSAKSI*
+_Ahlinya Bekam & Relaksasi_
+----------------------------------
+No. Nota: #TB-${item.id.toString().slice(-6)}
+Nama Pasien: *${item.nama}*
+Layanan: ${item.layanan}${barisTerapisNota}
+Tarif: *${formatRp(item.nominal)}*
+Metode: ${item.metode}
+Waktu: ${item.jam} WIB
+----------------------------------
+Terima kasih sudah meluangkan waktu merawat diri hari ini. Tubuh Bapak/Ibu baru saja melewati proses detoksifikasi dan relaksasi.
+
+Agar manfaat terapinya maksimal, yuk perhatikan anjuran berikut:
+• *Rehat sejenak:* Hindari aktivitas berat seharian ini agar sirkulasi energi dan darah seimbang kembali.
+• *Jeda waktu mandi:* Beri jeda 2–3 jam sebelum mandi
+• *Nutrisi Pemulihan:* Minum cukup air putih hangat dan madu murni untuk mempercepat regenerasi sel.
+
+Semoga lekas pulih dan badan kembali enteng. Sehat adalah investasi, dan merawatnya adalah bentuk syukur terbaik.
+
+Pintu kami selalu terbuka kapan pun tubuh Bapak/Ibu butuh rehat sejenak. Sampai jumpa di jadwal perawatan berikutnya!`;
+
+  window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`, '_blank');
+}
+
+function bukaModalStruk(txId) {
+  const item = transaksi.find(t => t.id === txId);
+  if (!item) return;
+
+  const barisTerapisStruk = (item.terapis && item.terapis !== '-') ? `
+    <div style="display: flex; justify-content: space-between;">
+      <span>Terapis:</span>
+      <span style="font-weight: 600;">${item.terapis}</span>
+    </div>
+  ` : '';
+
+  const htmlStruk = `
+    <div style="text-align: center; margin-bottom: 8px;">
+      <img src="${URL_LOGO_ONLINE}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
+      <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
+      <div style="font-size: 9px; color: #555;">Ahlinya Bekam & Relaksasi</div>
+      <div style="font-size: 8px; color: #777;">No. #${item.id.toString().slice(-6)} | ${item.jam} WIB</div>
+    </div>
+    <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
+    <div style="display: flex; justify-content: space-between;">
+      <span>Pasien:</span>
+      <span style="font-weight: 700;">${item.nama}</span>
+    </div>
+    ${barisTerapisStruk}
+    <div style="display: flex; justify-content: space-between;">
+      <span>Metode:</span>
+      <span>${item.metode}</span>
+    </div>
+    <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
+    <div>
+      <div style="font-weight: 600;">Paket Terapi:</div>
+      <div style="font-weight: 700; color: #0f5132;">${item.layanan}</div>
+      <div style="text-align: right; font-weight: 800; margin-top: 4px;">${formatRp(item.nominal)}</div>
+    </div>
+    <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
+    <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 12px;">
+      <span>TOTAL:</span>
+      <span>${formatRp(item.nominal)}</span>
+    </div>
+    <div style="border-top: 1px dashed #444; margin: 8px 0 6px 0;"></div>
+    <div style="text-align: center; font-size: 8px; color: #444; line-height: 1.4;">
+      Terima kasih sudah merawat diri hari ini.<br>
+      <b>Anjuran Pasca Terapi:</b><br>
+      • Rehat sejenak & hindari aktivitas berat.<br>
+      • Jeda waktu mandi: 2-3 jam sebelum mandi.<br>
+      • Minum air putih hangat & madu murni.<br><br>
+      <i>Semoga lekas pulih, badan kembali enteng. Sampai jumpa di perawatan berikutnya!</i>
+    </div>
+  `;
+
+  document.getElementById('printArea').innerHTML = htmlStruk;
+  document.getElementById('modalStruk').classList.remove('hide');
+}
+
+function tutupModalStruk() {
+  document.getElementById('modalStruk').classList.add('hide');
+}
+
+function hapusTransaksi(id) {
+  if (!confirm("Hapus data transaksi ini dari antrean?")) return;
+  transaksi = transaksi.filter(t => t.id !== id);
+  localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
+  updateUI();
+}
+
+// 7. PENGELUARAN (FORMAT 24 JAM)
+function simpanPengeluaran() {
+  const ket = document.getElementById('expKeterangan').value.trim();
+  const kategori = document.getElementById('expKategori').value;
+  const sumber = document.getElementById('expSumberKas').value;
+  const nominal = parseInt(document.getElementById('expNominal').value) || 0;
+
+  if (!ket || nominal <= 0) { alert("Keterangan dan nominal pengeluaran harus diisi!"); return; }
+
+  pengeluaran.push({
+    id: Date.now(),
+    tanggal: getTodayDateStr(),
+    keterangan: ket,
+    kategori: kategori,
+    sumber: sumber,
+    nominal: nominal,
+    jam: getJam24Format()
+  });
+
+  localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+  document.getElementById('expKeterangan').value = '';
+  document.getElementById('expNominal').value = '';
+  renderPengeluaran();
+  updateUI();
+}
+
+function renderPengeluaran() {
+  const container = document.getElementById('pengeluaranList');
+  const todayStr = getTodayDateStr();
+  const listToday = pengeluaran.filter(p => !p.tanggal || p.tanggal === todayStr);
+
+  if (listToday.length === 0) {
+    container.innerHTML = '<p class="text-gray-400 text-center py-4">Belum ada pengeluaran hari ini.</p>';
+    return;
+  }
+  container.innerHTML = listToday.slice().reverse().map(item => `
+    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
+      <div>
+        <div class="font-extrabold text-gray-800">${item.keterangan}</div>
+        <div class="text-[11px] text-gray-500">${item.kategori} • ${item.sumber} • ${item.jam} WIB</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="font-black text-rose-700">-${formatRp(item.nominal)}</span>
+        <button onclick="hapusPengeluaran(${item.id})" class="text-rose-500 hover:text-rose-700 p-1 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function hapusPengeluaran(id) {
+  if (!confirm("Hapus catatan pengeluaran ini?")) return;
+  pengeluaran = pengeluaran.filter(item => item.id !== id);
+  localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+  renderPengeluaran();
+  updateUI();
+}
+
+// 8. DATA PASIEN
+function renderDaftarPasien() {
+  const container = document.getElementById('pasienListContainer');
+  const keyword = (document.getElementById('cariPasienListInput')?.value || '').toLowerCase();
+  const keys = Object.keys(databasePasien).filter(wa => 
+    wa.includes(keyword) || (databasePasien[wa].nama || '').toLowerCase().includes(keyword)
+  );
+
+  if (keys.length === 0) {
+    container.innerHTML = '<p class="text-gray-400 text-center py-4">Pasien tidak ditemukan.</p>';
+    return;
+  }
+
+  container.innerHTML = keys.map(wa => {
+    const p = databasePasien[wa];
+    const last = cariInfoKunjunganTerakhir(wa, p.nama);
+    const tglTerakhir = last?.tanggal || p.kunjunganTerakhir || '';
+    const selisihHari = hitungSelisihHari(tglTerakhir);
+
+    return `
+      <div class="p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 flex justify-between items-start card-stat">
+        <div>
+          <div class="font-extrabold text-gray-800 text-xs">${p.nama}</div>
+          <div class="text-[11px] font-mono text-emerald-700 font-bold mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${wa}</div>
+          <div class="text-[10px] text-gray-500 mt-1">Keluhan: ${p.keluhan || '-'}</div>
+          
+          ${tglTerakhir ? `
+            <div class="text-[10px] text-emerald-950 font-bold mt-1.5 flex items-center gap-1.5 bg-emerald-100/80 px-2.5 py-0.5 rounded-full w-fit">
+              <i class="fa-solid fa-calendar-check text-emerald-700 text-[9px]"></i>
+              Terakhir: ${formatTanggalIndo(tglTerakhir)} (${selisihHari})
+            </div>
+          ` : '<div class="text-[9px] text-gray-400 mt-1">Belum ada catatan kunjungan</div>'}
+        </div>
+        <div class="flex flex-col gap-1.5 items-end">
+          <button onclick="pilihPasienKeKasir('${wa}')" class="text-xs bg-amber-100 text-amber-950 border border-amber-300 font-extrabold px-3 py-1 rounded-xl active:scale-95 transition">
+            Pilih Kasir
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function pilihPasienKeKasir(wa) {
+  switchTab('dashboard');
+  document.getElementById('custWA').value = wa;
+  cariPasienOtomatis();
+}
+
+function imporGoogleKontak(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    let count = 0;
+    const lines = text.split(/\r\n|\n/);
+    lines.forEach(l => {
+      const parts = l.split(',');
+      if (parts.length >= 2) {
+        const nama = parts[0].replace(/"/g, '').trim();
+        const wa = normalisasiNomorWA(parts[1].replace(/"/g, '').trim());
+        if (nama && wa) {
+          databasePasien[wa] = { nama, keluhan: '', kunjunganTerakhir: '' };
+          count++;
+        }
+      }
+    });
+
+    if (count > 0) {
+      localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+      renderDaftarPasien();
+      alert(`Berhasil mengimpor ${count} kontak pasien!`);
+    } else {
+      alert("Tidak ditemukan kontak yang valid.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// 9. SUB-TAB MASTER DATA (BIAYA, TERAPIS, LAYANAN, PASIEN)
+function switchSubMaster(sub) {
+  ['biaya', 'terapis', 'layanan', 'pasien'].forEach(s => {
+    const el = document.getElementById(`sub-${s}-section`);
+    const btn = document.getElementById(`btn-sub-${s}`);
+    if (el) el.classList.add('hide');
+    if (btn) {
+      btn.className = "py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95";
+    }
+  });
+
+  const activeSec = document.getElementById(`sub-${sub}-section`);
+  const activeBtn = document.getElementById(`btn-sub-${sub}`);
+  if (activeSec) activeSec.classList.remove('hide');
+  if (activeBtn) {
+    activeBtn.className = "py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95";
+  }
+
+  if (sub === 'biaya') renderPengeluaran();
+  if (sub === 'terapis') renderMasterTerapis();
+  if (sub === 'layanan') renderMasterLayanan();
+  if (sub === 'pasien') renderDaftarPasien();
+}
+
+function renderMasterTerapis() {
+  const container = document.getElementById('masterTerapisList');
+  container.innerHTML = masterTerapis.map(t => `
+    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
+      <div>
+        <div class="font-extrabold text-gray-800 text-xs">${t.nama}</div>
+        <div class="text-[11px] text-gray-500 mt-0.5">${t.kategori} • WA: <span class="font-mono text-emerald-700 font-bold">${t.wa || '-'}</span></div>
+      </div>
+      <button onclick="hapusTerapis('${t.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function simpanMasterTerapis() {
+  const nama = document.getElementById('masterNamaTerapis').value.trim();
+  const kategori = document.getElementById('masterKategoriTerapis').value;
+  const wa = document.getElementById('masterWaTerapis').value.trim();
+
+  if (!nama) { alert("Nama terapis wajib diisi!"); return; }
+
+  masterTerapis.push({ id: Date.now().toString(), nama, kategori, wa });
+  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+
+  resetFormMasterTerapis();
+  renderMasterTerapis();
+  renderSelectTerapis();
+  renderDropdownReservasi();
+  alert("Data terapis berhasil disimpan!");
+}
+
+function hapusTerapis(id) {
+  if (!confirm("Hapus data terapis ini?")) return;
+  masterTerapis = masterTerapis.filter(t => t.id !== id);
+  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+  renderMasterTerapis();
+  renderSelectTerapis();
+  renderDropdownReservasi();
+}
+
+function resetFormMasterTerapis() {
+  document.getElementById('masterNamaTerapis').value = '';
+  document.getElementById('masterWaTerapis').value = '';
+}
+
+function renderMasterLayanan() {
+  const container = document.getElementById('masterLayananList');
+  container.innerHTML = masterLayanan.map(l => `
+    <div class="flex justify-between items-center p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/80 card-stat">
+      <div>
+        <div class="font-extrabold text-gray-800 text-xs">${l.nama}</div>
+        <div class="text-[11px] text-gray-500 mt-0.5">Tarif: <span class="text-tb-green font-extrabold">${formatRp(l.harga)}</span> • Fee: ${formatRp(l.fee)}</div>
+      </div>
+      <button onclick="hapusLayanan('${l.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function simpanMasterLayanan() {
+  const nama = document.getElementById('masterNamaLayanan').value.trim();
+  const harga = parseInt(document.getElementById('masterHargaLayanan').value) || 0;
+  const fee = parseInt(document.getElementById('masterFeeTerapis').value) || 0;
+
+  if (!nama || harga <= 0) { alert("Nama dan tarif terapi harus valid!"); return; }
+
+  masterLayanan.push({ id: Date.now().toString(), nama, harga, fee });
+  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+
+  resetFormMasterLayanan();
+  renderMasterLayanan();
+  renderSelectLayanan();
+  renderDropdownReservasi();
+  alert("Layanan tersimpan!");
+}
+
+function hapusLayanan(id) {
+  if (!confirm("Hapus paket layanan ini?")) return;
+  masterLayanan = masterLayanan.filter(l => l.id !== id);
+  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+  renderMasterLayanan();
+  renderSelectLayanan();
+  renderDropdownReservasi();
+}
+
+function resetFormMasterLayanan() {
+  document.getElementById('masterNamaLayanan').value = '';
+  document.getElementById('masterHargaLayanan').value = '';
+  document.getElementById('masterFeeTerapis').value = '';
+}
+
+function renderSelectTerapis() {
+  const select = document.getElementById('terapisSelect');
+  select.innerHTML = `<option value="">-- Tanpa Pilihan Terapis --</option>` + 
+    masterTerapis.map(t => `<option value="${t.nama}">${t.nama} (${t.kategori})</option>`).join('');
+}
+
+function renderSelectLayanan() {
+  const select1 = document.getElementById('layananSelect1');
+  const select2 = document.getElementById('layananSelect2');
+
+  const options = masterLayanan.map(l => `<option value="${l.id}">${l.nama} — ${formatRp(l.harga)}</option>`).join('');
+  select1.innerHTML = options;
+  select2.innerHTML = `<option value="">-- Tidak ada layanan tambahan --</option>` + options;
+}
+
+// 10. BACKUP & EXPORT
 function exportLaporanCSV() {
   const txFiltered = filterDataBerdasarkanRentang(transaksi);
   const expFiltered = filterDataBerdasarkanRentang(pengeluaran);
@@ -1980,33 +1834,33 @@ function exportLaporanCSV() {
   }
 
   let csv = "LAPORAN TEMAN BEKAM\r\n";
-  csv += `Rentang Tanggal: ${tglMulaiLaporan} s/d ${tglSampaiLaporan}\r\n`;
-  csv += `Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')}\r\n\r\n`;
-
-  csv += "--- TRANSAKSI PASIEN ---\r\n";
-  csv += "Tanggal,Waktu,Nama Pasien,Kategori (Ikhwan/Akhwat),No WhatsApp,Layanan,Terapis,Metode Bayar,Tarif (Rp),Fee Terapis (Rp),Keluhan\r\n";
+  csv += `Rentang Tanggal: ${tglMulaiLaporan} s/d ${tglSampaiLaporan}\r\n\r\n`;
+  csv += "Tanggal,Waktu (24 Jam),Nama Pasien,Kategori,No WhatsApp,Layanan,Terapis,Metode,Tarif (Rp),Fee Terapis (Rp),Keluhan\r\n";
   txFiltered.forEach(t => {
-    csv += `"${t.tanggal || '-'}","${t.jam}","${t.nama}","${t.kategoriPasien || '-'}","${t.wa}","${t.layanan}","${t.terapis}","${t.metode}",${t.nominal},${t.fee},"${t.keluhan || '-'}"\r\n`;
+    csv += `"${t.tanggal}","${t.jam}","${t.nama}","${t.kategoriPasien}","${t.wa}","${t.layanan}","${t.terapis}","${t.metode}",${t.nominal},${t.fee},"${t.keluhan}"\r\n`;
   });
 
   csv += "\r\n--- PENGELUARAN OPERASIONAL ---\r\n";
-  csv += "Tanggal,Waktu,Keterangan,Kategori,Sumber Kas,Nominal (Rp)\r\n";
+  csv += "Tanggal,Waktu (24 Jam),Keterangan,Kategori,Sumber Kas,Nominal (Rp)\r\n";
   expFiltered.forEach(p => {
-    csv += `"${p.tanggal || '-'}","${p.jam}","${p.keterangan}","${p.kategori}","${p.sumber}",${p.nominal}\r\n`;
+    csv += `"${p.tanggal}","${p.jam}","${p.keterangan}","${p.kategori}","${p.sumber}",${p.nominal}\r\n`;
   });
 
   const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
+  a.style.display = 'none';
   a.href = url;
   a.download = `Laporan_TemanBekam_${tglMulaiLaporan}_sd_${tglSampaiLaporan}.csv`;
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 200);
 }
 
-// 13. CADANGKAN & PULIHKAN DATA JSON
 function downloadBackupJSON() {
   const dataBackup = {
     waktu: new Date().toISOString(),
@@ -2015,16 +1869,26 @@ function downloadBackupJSON() {
     kategoriPengeluaran: masterKategoriPengeluaran,
     pasien: databasePasien,
     transaksi: transaksi,
-    pengeluaran: pengeluaran
+    pengeluaran: pengeluaran,
+    reservasi: dataReservasi
   };
 
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataBackup, null, 2));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `TemanBekam_Backup_${getTodayDateStr()}.json`);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
+  const jsonStr = JSON.stringify(dataBackup, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = `TemanBekam_Backup_${getTodayDateStr()}.json`;
+  
+  document.body.appendChild(a);
+  a.click();
+  
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 200);
 }
 
 function restoreDataJSON(event) {
@@ -2040,6 +1904,7 @@ function restoreDataJSON(event) {
       if (parsed.pasien) databasePasien = parsed.pasien;
       if (parsed.transaksi) transaksi = parsed.transaksi;
       if (parsed.pengeluaran) pengeluaran = parsed.pengeluaran;
+      if (parsed.reservasi) dataReservasi = parsed.reservasi;
 
       localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
       localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
@@ -2047,51 +1912,32 @@ function restoreDataJSON(event) {
       localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
       localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
       localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+      localStorage.setItem('tb_data_reservasi', JSON.stringify(dataReservasi));
 
       renderSelectTerapis();
       renderSelectLayanan();
-      renderSelectKategoriPengeluaran();
+      renderDropdownReservasi();
+      renderDaftarReservasi();
       renderPengeluaran();
       updateUI();
-      alert("Data kasir & pasien berhasil dipulihkan!");
+      alert("Data berhasil dipulihkan!");
       switchTab('dashboard');
     } catch (err) {
-      alert("Format file tidak valid.");
+      alert("Format berkas tidak valid.");
     }
   };
   reader.readAsText(file);
 }
 
 function resetSemuaData() {
-  if (!confirm("Peringatan: Semua data transaksi, pasien, dan master layanan akan di-reset. Lanjutkan?")) return;
+  if (!confirm("Reset semua data? Data tidak dapat dikembalikan.")) return;
   localStorage.clear();
   location.reload();
 }
 
-// 14. PWA INSTALL HANDLER
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('btnInstallApp');
-  if (btn) btn.classList.remove('hide');
-});
-
-function installAplikasi() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      document.getElementById('btnInstallApp').classList.add('hide');
-    });
-  } else {
-    alert("Untuk memasang aplikasi di HP:\nBuka menu titik tiga browser Chrome / Safari, lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).");
-  }
-}
-
-// 15. NAVIGASI TAB MENU UTAMA
+// 11. NAVIGASI TAB MENU UTAMA (4 MENU UTAMA)
 function switchTab(tab) {
-  ['dashboard', 'laporan', 'pengeluaran', 'master', 'pasien', 'pengaturan'].forEach(t => {
+  ['dashboard', 'reservasi', 'laporan', 'master', 'pengaturan'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) {
       el.classList.add('hide');
@@ -2126,20 +1972,22 @@ function switchTab(tab) {
   }
 
   if (tab === 'dashboard' || tab === 'laporan') updateUI();
-  if (tab === 'pengeluaran') renderPengeluaran();
+  if (tab === 'reservasi') renderDaftarReservasi();
   if (tab === 'master') {
-    renderMasterTerapis();
-    renderMasterLayanan();
+    switchSubMaster('biaya');
   }
-  if (tab === 'pasien') renderDaftarPasien();
 }
 
 // Inisialisasi awal
+document.getElementById('resTanggal').value = getTodayDateStr();
 document.getElementById('filterTglMulai').value = tglMulaiLaporan;
 document.getElementById('filterTglSampai').value = tglSampaiLaporan;
+document.getElementById('expKategori').innerHTML = masterKategoriPengeluaran.map(k => `<option value="${k}">${k}</option>`).join('');
+
 renderSelectTerapis();
 renderSelectLayanan();
-renderSelectKategoriPengeluaran();
+renderDropdownReservasi();
+renderDaftarReservasi();
 renderPengeluaran();
 updateUI();
 </script>
