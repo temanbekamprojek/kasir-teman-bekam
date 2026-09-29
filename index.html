@@ -28,14 +28,12 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Background Gradients */
 .bg-tb-gradient {
   background: linear-gradient(145deg, #093821 0%, #0f5132 55%, #157347 100%);
 }
 
 .text-tb-green { color: #0f5132; }
 
-/* Modern Soft Cards */
 .glass-card {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
@@ -67,7 +65,6 @@ body {
   color: #664d03; 
 }
 
-/* Primary Button Styling with Glow */
 .btn-tb-primary {
   background: linear-gradient(135deg, #0f5132 0%, #157347 100%);
   box-shadow: 0 4px 14px 0 rgba(15, 81, 50, 0.35);
@@ -78,7 +75,6 @@ body {
   box-shadow: 0 2px 8px 0 rgba(15, 81, 50, 0.25);
 }
 
-/* Floating Action Button (Kasir) */
 .btn-floating-kasir {
   background: linear-gradient(135deg, #0a3d24 0%, #157347 100%);
   box-shadow: 0 10px 25px -3px rgba(15, 81, 50, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -89,7 +85,6 @@ body {
   50% { box-shadow: 0 14px 28px -2px rgba(21, 115, 71, 0.6); }
 }
 
-/* Animations for Tab Switching */
 .fade-in-tab {
   animation: tabFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -104,7 +99,6 @@ body {
   }
 }
 
-/* Smooth Input Focus */
 input, select {
   transition: all 0.2s ease-in-out;
 }
@@ -114,7 +108,6 @@ input:focus, select:focus {
 
 .hide { display: none !important; }
 
-/* Thermal Printing */
 @media print {
   body * { visibility: hidden; }
   #printArea, #printArea * { visibility: visible; }
@@ -133,9 +126,8 @@ input:focus, select:focus {
 </head>
 <body class="pb-32">
 
-<!-- Header Branding Modern Teman Bekam -->
+<!-- Header Branding Teman Bekam -->
 <header class="bg-tb-gradient text-white px-5 pt-7 pb-8 rounded-b-[2.5rem] text-center shadow-lg relative overflow-hidden">
-  <!-- Subtle Glow Effect in Header -->
   <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl"></div>
   <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl"></div>
 
@@ -185,7 +177,7 @@ input:focus, select:focus {
       </div>
     </div>
 
-    <!-- BANNER RIWAYAT KUNJUNGAN TERAKHIR DENGAN TRANSISI HALUS -->
+    <!-- BANNER RIWAYAT KUNJUNGAN TERAKHIR -->
     <div id="bannerRiwayatTerakhir" class="bg-gradient-to-r from-emerald-50 to-teal-50/70 border border-emerald-200/80 rounded-2xl p-3 text-xs space-y-1 shadow-sm hide transition-all duration-300">
       <div class="flex items-center gap-1.5 text-emerald-950 font-bold text-[11px]">
         <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i>
@@ -744,7 +736,7 @@ input:focus, select:focus {
   </div>
 </div>
 
-<!-- Bottom Navigation Modern (Glassmorphism & Floating Action Button) -->
+<!-- Bottom Navigation Modern -->
 <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-emerald-900/10 px-2 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
   <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
     <i class="fa-solid fa-chart-pie text-sm"></i>
@@ -756,7 +748,6 @@ input:focus, select:focus {
     <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Pengeluaran</span>
   </button>
 
-  <!-- KASIR (FLOATING BUTTON DI TENGAH DENGAN GLOW PULSE) -->
   <div class="flex-1 flex justify-center -mt-7">
     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center w-14 h-14 rounded-full btn-floating-kasir text-white border-[3.5px] border-white active:scale-90 transition">
       <i class="fa-solid fa-cash-register text-lg text-amber-300"></i>
@@ -1626,14 +1617,16 @@ Tarif: *${formatRp(item.nominal)}*
 Metode: ${item.metode}
 Waktu: ${item.jam}
 ----------------------------------
-*Anjuran & Adab Pasca Hijamah:*
-1. Rehat sejenak, hindari aktivitas fisik berat.
-2. Tunda mandi air dingin (tunggu 2-3 jam / gunakan air hangat).
-3. Konsumsi madu yang dilarutkan air hangat untuk memulihkan stamina.
-4. Niatkan ikhtiar ini sebagai pengamalan sunnah Thibbun Nabawi.
+Terima kasih sudah meluangkan waktu merawat diri hari ini. Tubuh Bapak/Ibu baru saja melewati proses detoksifikasi dan relaksasi.
 
-_Syafakallah / Syafakillah, thohurun insyaAllah._
-_Jazakumullahu khairan atas kepercayaannya berikhtiar di Teman Bekam._`;
+Agar manfaat terapinya maksimal, yuk perhatikan anjuran berikut:
+• *Rehat sejenak:* Hindari aktivitas berat seharian ini agar sirkulasi energi dan darah seimbang kembali.
+• *Jeda waktu mandi:* Beri jeda 2–3 jam sebelum mandi
+• *Nutrisi Pemulihan:* Minum cukup air putih hangat dan madu murni untuk mempercepat regenerasi sel.
+
+Semoga lekas pulih, badan kembali enteng. Sehat adalah investasi, dan merawatnya adalah bentuk syukur terbaik.
+
+Pintu kami selalu terbuka kapan pun tubuh Bapak/Ibu butuh rehat sejenak. Sampai jumpa di jadwal perawatan berikutnya!`;
 
   window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
@@ -1673,10 +1666,13 @@ function bukaModalStruk(txId) {
       <span>${formatRp(item.nominal)}</span>
     </div>
     <div style="border-top: 1px dashed #444; margin: 8px 0 6px 0;"></div>
-    <div style="text-align: center; font-size: 9px; color: #444; line-height: 1.4;">
-      <i>Syafakallah, thohurun insyaAllah.</i><br>
-      Semoga lekas sembuh, berkah & bernilai ibadah.<br>
-      <b>Jazakumullahu Khairan.</b>
+    <div style="text-align: center; font-size: 8px; color: #444; line-height: 1.4;">
+      Terima kasih sudah merawat diri hari ini.<br>
+      <b>Anjuran Pasca Terapi:</b><br>
+      • Rehat sejenak (hindari aktivitas berat)<br>
+      • Jeda waktu mandi: 2-3 jam sebelum mandi<br>
+      • Cukup minum air putih hangat & madu murni<br><br>
+      <i>Semoga lekas pulih, badan kembali enteng. Sampai jumpa di perawatan berikutnya!</i>
     </div>
   `;
 
@@ -1815,7 +1811,6 @@ function hitungAnalitikTopPerforma(txFiltered) {
 function updateUI() {
   const todayStr = getTodayDateStr();
 
-  // Riwayat Kasir Hari Ini
   const txHariIni = transaksi.filter(t => !t.tanggal || t.tanggal === todayStr);
   const listEl = document.getElementById('riwayatList');
 
@@ -1854,7 +1849,6 @@ function updateUI() {
   }
   document.getElementById('txCountBadge').innerText = `${txHariIni.length} Pasien`;
 
-  // Filter Data Tab Laporan Berdasarkan Rentang Terpilih
   const txFiltered = filterDataBerdasarkanRentang(transaksi);
   const expFiltered = filterDataBerdasarkanRentang(pengeluaran);
 
@@ -1894,7 +1888,6 @@ function updateUI() {
     }
   });
 
-  // Render Widget Demografi
   const totalPasienPeriode = txFiltered.length;
   document.getElementById('totalPasienPeriodeBadge').innerText = `${totalPasienPeriode} Pasien`;
 
@@ -2118,7 +2111,7 @@ function switchTab(tab) {
   const activeTabEl = document.getElementById(`tab-${tab}`);
   if (activeTabEl) {
     activeTabEl.classList.remove('hide');
-    void activeTabEl.offsetWidth; // Trigger reflow for animation
+    void activeTabEl.offsetWidth;
     activeTabEl.classList.add('fade-in-tab');
   }
 
@@ -2141,7 +2134,7 @@ function switchTab(tab) {
   if (tab === 'pasien') renderDaftarPasien();
 }
 
-// Inisialisasi awal saat aplikasi dijalankan
+// Inisialisasi awal
 document.getElementById('filterTglMulai').value = tglMulaiLaporan;
 document.getElementById('filterTglSampai').value = tglSampaiLaporan;
 renderSelectTerapis();
