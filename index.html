@@ -93,10 +93,10 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-input, select {
+input, select, textarea {
   transition: all 0.2s ease-in-out;
 }
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(21, 115, 71, 0.15);
 }
 
@@ -120,7 +120,7 @@ input:focus, select:focus {
 </head>
 <body class="pb-32">
 
-<!-- Header Branding Teman Bekam -->
+<!-- Header Branding -->
 <header class="bg-tb-gradient text-white px-5 pt-7 pb-8 rounded-b-[2.5rem] text-center shadow-lg relative overflow-hidden">
   <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl"></div>
   <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl"></div>
@@ -157,15 +157,16 @@ input:focus, select:focus {
       <span id="badgePasien" class="text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-semibold transition-all">Pasien Baru</span>
     </div>
 
-    <div>
+    <div class="relative">
       <label class="text-[11px] font-bold text-gray-700 flex justify-between">
         <span>Nomor WhatsApp Pasien</span>
-        <span class="text-emerald-700 font-semibold text-[10px]">Ketik WA jika pernah datang</span>
+        <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis muncul saat diketik</span>
       </label>
       <div class="relative mt-1">
-        <input type="tel" id="custWA" oninput="cariPasienOtomatis()" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+        <input type="tel" id="custWA" oninput="cariPasienOtomatis()" autocomplete="off" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
         <i class="fa-brands fa-whatsapp absolute right-3.5 top-3 text-emerald-600 text-base"></i>
       </div>
+      <div id="suggestBoxKasir" class="absolute left-0 right-0 mt-1 bg-white border border-emerald-100 rounded-2xl shadow-xl z-50 max-h-48 overflow-y-auto divide-y divide-gray-100 hide"></div>
     </div>
 
     <!-- Banner Riwayat Terakhir -->
@@ -186,10 +187,17 @@ input:focus, select:focus {
       <input type="text" id="custName" placeholder="Contoh: Bapak Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
     </div>
 
-    <div class="space-y-2 bg-emerald-50/60 p-3 rounded-2xl border border-emerald-100">
+    <!-- Area Pemilihan Layanan Dengan Pilihan Cepat -->
+    <div class="space-y-2.5 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
       <div>
-        <label class="text-[11px] font-bold text-emerald-950 flex justify-between">
-          <span>Layanan Terapi 1 (Utama)</span>
+        <div class="flex justify-between items-center mb-1.5">
+          <label class="text-[11px] font-bold text-emerald-950">Pilih Cepat Paket Terapi</label>
+          <span class="text-[10px] text-emerald-700 font-bold">1-Klik Pilih</span>
+        </div>
+        <div id="quickPackageKasir" class="grid grid-cols-2 gap-1.5 mb-2"></div>
+
+        <label class="text-[11px] font-bold text-emerald-950 flex justify-between mt-2">
+          <span>Layanan Utama</span>
           <span class="text-[10px] text-emerald-700 font-bold">Wajib</span>
         </label>
         <select id="layananSelect1" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs"></select>
@@ -197,7 +205,7 @@ input:focus, select:focus {
 
       <div>
         <label class="text-[11px] font-bold text-emerald-950 flex justify-between">
-          <span>Layanan Terapi 2 (Tambahan)</span>
+          <span>Layanan Tambahan</span>
           <span class="text-[10px] text-gray-500 font-medium">Opsional</span>
         </label>
         <select id="layananSelect2" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs">
@@ -232,379 +240,486 @@ input:focus, select:focus {
       <i class="fa-solid fa-check-circle text-amber-300"></i> Simpan Transaksi Kasir
     </button>
   </section>
-
-  <!-- Riwayat Antrean Kasir Hari Ini -->
-  <section class="glass-card p-4 rounded-3xl space-y-3">
-    <div class="flex justify-between items-center mb-1">
-      <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider">Antrean Hari Ini</h2>
-      <span class="text-[11px] text-emerald-800 bg-emerald-100 font-extrabold px-2.5 py-0.5 rounded-full" id="txCountBadge">0 Pasien</span>
-    </div>
-    <div id="riwayatList" class="space-y-2.5 text-xs">
-      <p class="text-gray-400 text-center py-4">Belum ada antrean selesai hari ini.</p>
-    </div>
-  </section>
 </main>
 
-<!-- ================= TAB 2: RESERVASI / JADWAL BOOKING ================= -->
+<!-- ================= TAB 2: MENU BOOKING & ANTREAN ================= -->
 <main id="tab-reservasi" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
-  <section class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2.5">
-      <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
-        <i class="fa-solid fa-calendar-check text-amber-500"></i> Reservasi Jadwal Terapi
-      </h2>
-      <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Booking Jadwal</span>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2.5">
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Tanggal Kedatangan</label>
-        <input type="date" id="resTanggal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
-      </div>
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Pukul / Jam (Format 24 Jam)</label>
-        <input type="time" id="resJam" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-bold text-gray-700">Nomor WhatsApp Pasien</label>
-      <div class="relative mt-1">
-        <input type="tel" id="resWA" oninput="isiOtomatisReservasiPasien()" placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
-        <i class="fa-brands fa-whatsapp absolute right-3.5 top-3 text-emerald-600 text-base"></i>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-bold text-gray-700">Nama Pasien</label>
-      <input type="text" id="resNama" placeholder="Contoh: Bapak / Ibu Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-    </div>
-
-    <div class="grid grid-cols-2 gap-2.5">
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Pilihan Terapi</label>
-        <select id="resLayanan" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
-      </div>
-      <div>
-        <label class="text-[11px] font-bold text-gray-700 flex justify-between">
-          <span>Pilihan Terapis</span>
-          <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
-        </label>
-        <select id="resTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
-      </div>
-    </div>
-
-    <div>
-      <label class="text-[11px] font-bold text-gray-700">Catatan Tambahan / Keluhan</label>
-      <input type="text" id="resCatatan" placeholder="Contoh: Pegal leher dan punggung, minta ruang tenang" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-    </div>
-
-    <button onclick="simpanReservasi()" class="w-full py-3.5 btn-tb-primary text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 mt-1">
-      <i class="fa-solid fa-calendar-plus text-amber-300"></i> Simpan & Kirim Bukti Reservasi
-    </button>
-  </section>
-
-  <!-- Daftar Antrean Reservasi Pasien -->
-  <section class="glass-card p-4 rounded-3xl space-y-3">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-      <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-        <i class="fa-solid fa-list-check text-emerald-700"></i> Daftar Booking Reservasi
-      </h2>
-      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-100 font-bold px-2 py-0.5 rounded-full" id="badgeJumlahReservasi">0 Booking</span>
-    </div>
-
-    <div id="daftarReservasiList" class="space-y-2.5 text-xs">
-      <p class="text-gray-400 text-center py-4">Belum ada jadwal reservasi aktif.</p>
-    </div>
-  </section>
-</main>
-
-<!-- ================= TAB 3: LAPORAN ================= -->
-<main id="tab-laporan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
-  <section class="glass-card p-4 rounded-3xl space-y-3">
-    <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
-      <span class="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
-        <i class="fa-solid fa-calendar-days text-emerald-700"></i> Filter Rentang Tanggal
-      </span>
-      <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="badgeLabelPeriode">Hari Ini</span>
-    </div>
-
-    <div class="grid grid-cols-4 gap-1.5 text-[10px] font-extrabold">
-      <button onclick="setPintasTanggal('hari_ini')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Hari Ini</button>
-      <button onclick="setPintasTanggal('7_hari')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">7 Hari</button>
-      <button onclick="setPintasTanggal('bulan_ini')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Bulan Ini</button>
-      <button onclick="setPintasTanggal('semua')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Semua</button>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2 pt-1">
-      <div>
-        <label class="text-[10px] font-bold text-gray-500 block mb-1">Dari Tanggal:</label>
-        <input type="date" id="filterTglMulai" onchange="gantiRentangTanggal()" class="w-full px-3 py-2 bg-gray-50/80 border border-gray-300 rounded-xl text-xs font-mono outline-none focus:border-emerald-600">
-      </div>
-      <div>
-        <label class="text-[10px] font-bold text-gray-500 block mb-1">Sampai Tanggal:</label>
-        <input type="date" id="filterTglSampai" onchange="gantiRentangTanggal()" class="w-full px-3 py-2 bg-gray-50/80 border border-gray-300 rounded-xl text-xs font-mono outline-none focus:border-emerald-600">
-      </div>
-    </div>
-  </section>
-
-  <!-- Ringkasan Finansial Utama -->
-  <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
-    <div class="card-stat card-income p-3.5 rounded-3xl shadow-sm">
-      <div class="font-extrabold text-[10px] uppercase tracking-wider text-emerald-900">Total Omset</div>
-      <div class="font-black text-xs mt-1" id="totalOmset">Rp 0</div>
-    </div>
-    <div class="card-stat card-expense p-3.5 rounded-3xl shadow-sm">
-      <div class="font-extrabold text-[10px] uppercase tracking-wider text-rose-900">Pengeluaran</div>
-      <div class="font-black text-xs mt-1" id="totalPengeluaranHeader">Rp 0</div>
-    </div>
-    <div class="card-stat card-balance p-3.5 rounded-3xl shadow-sm">
-      <div class="font-extrabold text-[10px] uppercase tracking-wider text-amber-950">Sisa Saldo</div>
-      <div class="font-black text-xs mt-1" id="sisaKasBersih">Rp 0</div>
-    </div>
-  </div>
-
-  <!-- Demografi Pasien -->
-  <section class="glass-card p-4 rounded-3xl space-y-3">
-    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-      <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
-        <i class="fa-solid fa-venus-mars text-tb-green"></i> Demografi Pasien
-      </h3>
-      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-bold" id="totalPasienPeriodeBadge">0 Pasien</span>
-    </div>
-
-    <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden flex shadow-inner">
-      <div id="barIkhwan" class="bg-emerald-600 h-full transition-all duration-500 ease-out" style="width: 50%;"></div>
-      <div id="barAkhwat" class="bg-rose-500 h-full transition-all duration-500 ease-out" style="width: 50%;"></div>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2.5 text-xs">
-      <div class="card-stat bg-emerald-50/80 border border-emerald-200/80 p-3 rounded-2xl">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5 font-extrabold text-emerald-900 text-xs">
-            <i class="fa-solid fa-mars text-emerald-700"></i> Pria (Ikhwan)
-          </div>
-          <span class="text-[10px] font-black text-emerald-700" id="persenIkhwan">0%</span>
-        </div>
-        <div class="mt-2 flex justify-between items-baseline">
-          <div class="text-sm font-black text-gray-900" id="jmlPasienIkhwan">0 Pasien</div>
-          <div class="text-[10px] font-bold text-emerald-800" id="omsetIkhwan">Rp 0</div>
-        </div>
-      </div>
-
-      <div class="card-stat bg-rose-50/80 border border-rose-200/80 p-3 rounded-2xl">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5 font-extrabold text-rose-900 text-xs">
-            <i class="fa-solid fa-venus text-rose-600"></i> Wanita (Akhwat)
-          </div>
-          <span class="text-[10px] font-black text-rose-700" id="persenAkhwat">0%</span>
-        </div>
-        <div class="mt-2 flex justify-between items-baseline">
-          <div class="text-sm font-black text-gray-900" id="jmlPasienAkhwat">0 Pasien</div>
-          <div class="text-[10px] font-bold text-rose-800" id="omsetAkhwat">Rp 0</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Saldo Laci Kas & Bank -->
-  <div class="space-y-2.5">
-    <div class="card-stat card-wallet-cash p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-700 text-base shadow-sm">💵</div>
-        <div>
-          <div class="text-[11px] font-bold text-amber-900">Kas Fisik Tunai (Laci)</div>
-          <div class="text-xs font-black text-gray-900" id="kasTunai">Rp 0</div>
-        </div>
-      </div>
-      <span class="text-[10px] font-extrabold text-amber-900 bg-amber-200/90 px-2.5 py-1 rounded-full">Cash Drawer</span>
-    </div>
-
-    <div class="card-stat card-wallet-bank p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 text-base shadow-sm">📱</div>
-        <div>
-          <div class="text-[11px] font-bold text-emerald-950">QRIS / Bank Transfer</div>
-          <div class="text-xs font-black text-gray-900" id="kasQris">Rp 0</div>
-        </div>
-      </div>
-      <span class="text-[10px] font-extrabold text-emerald-900 bg-emerald-200/90 px-2.5 py-1 rounded-full">Digital</span>
-    </div>
-  </div>
-
-  <!-- Rincian Finansial -->
-  <section class="glass-card p-4 rounded-3xl space-y-2.5">
-    <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider mb-2">Rincian Finansial Periode</h3>
-    <div class="flex justify-between items-center py-1.5 border-b border-gray-100 text-xs">
-      <span class="text-gray-600 font-medium">Total Omset Pasien</span>
-      <span class="font-black text-emerald-700" id="repOmset">Rp 0</span>
-    </div>
-    <div class="flex justify-between items-center py-1.5 border-b border-gray-100 text-xs">
-      <span class="text-gray-600 font-medium">Total Beban Pengeluaran</span>
-      <span class="font-black text-rose-700" id="repPengeluaran">Rp 0</span>
-    </div>
-    <div class="flex justify-between items-center py-1.5 text-xs font-black">
-      <span class="text-gray-800">Sisa Laba / Kas Bersih</span>
-      <span class="text-amber-800 text-sm" id="repSisaSaldo">Rp 0</span>
-    </div>
-  </section>
-</main>
-
-<!-- ================= TAB 4: MASTER DATA & OPERASIONAL (GABUNGAN BIAYA, TERAPIS, LAYANAN, PASIEN) ================= -->
-<main id="tab-master" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   
-  <div class="grid grid-cols-4 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-[10px] font-bold text-center">
-    <button onclick="switchSubMaster('biaya')" id="btn-sub-biaya" class="py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95">
-      Biaya
+  <!-- Sub-Navigasi Beralih: Form Booking vs Antrean -->
+  <div class="grid grid-cols-2 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-xs font-bold text-center">
+    <button onclick="switchSubBooking('form')" id="btn-sub-bkg-form" class="py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-calendar-plus text-sm"></i> Form Booking
     </button>
-    <button onclick="switchSubMaster('terapis')" id="btn-sub-terapis" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
-      Terapis
-    </button>
-    <button onclick="switchSubMaster('layanan')" id="btn-sub-layanan" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
-      Layanan
-    </button>
-    <button onclick="switchSubMaster('pasien')" id="btn-sub-pasien" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">
-      Pasien
+    <button onclick="switchSubBooking('antrean')" id="btn-sub-bkg-antrean" class="py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-list-check text-sm"></i> Antrean & Riwayat
     </button>
   </div>
 
-  <!-- BAGIAN A: CATAT PENGELUARAN / BIAYA -->
-  <div id="sub-biaya-section" class="space-y-4">
-    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-      <h2 class="font-extrabold text-rose-800 text-sm flex items-center gap-2">
-        <i class="fa-solid fa-receipt text-rose-600"></i> Catat Biaya Operasional
-      </h2>
+  <!-- BAGIAN 1: FORM INPUT RESERVASI -->
+  <div id="sub-booking-form-section" class="space-y-4">
+    <section class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2.5">
+        <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+          <i class="fa-solid fa-calendar-check text-amber-500"></i> Reservasi Jadwal Terapi
+        </h2>
+        <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Booking Jadwal</span>
+      </div>
 
+      <!-- Pilihan Tipe Layanan -->
       <div>
-        <label class="text-[11px] font-bold text-gray-700">Keterangan Pengeluaran</label>
-        <input type="text" id="expKeterangan" placeholder="Contoh: Beli minyak zaitun, jarum bekam" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white">
+        <label class="text-[11px] font-bold text-gray-700 block mb-1">Tipe Layanan</label>
+        <div class="grid grid-cols-2 gap-2">
+          <label id="labelKlinik" class="cursor-pointer border-2 border-emerald-600 bg-emerald-50 text-emerald-950 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition">
+            <input type="radio" name="resTipeLayanan" value="Klinik" checked onchange="toggleTipeLayananBooking()" class="hidden">
+            <i class="fa-solid fa-clinic-medical"></i> Datang ke Klinik
+          </label>
+          <label id="labelHomecare" class="cursor-pointer border-2 border-gray-200 bg-gray-50 text-gray-600 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition">
+            <input type="radio" name="resTipeLayanan" value="Home Care" onchange="toggleTipeLayananBooking()" class="hidden">
+            <i class="fa-solid fa-house-chimney-medical"></i> Layanan ke Rumah
+          </label>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-2.5">
         <div>
-          <label class="text-[11px] font-bold text-gray-700">Kategori</label>
-          <select id="expKategori" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold"></select>
+          <label class="text-[11px] font-bold text-gray-700">Tanggal Kedatangan</label>
+          <input type="date" id="resTanggal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
         </div>
         <div>
-          <label class="text-[11px] font-bold text-gray-700">Sumber Kas</label>
-          <select id="expSumberKas" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold">
-            <option value="Tunai">💵 Kas Tunai (Laci)</option>
-            <option value="QRIS">📱 Rekening / Transfer</option>
-          </select>
+          <label class="text-[11px] font-bold text-gray-700">Pukul / Jam (Format 24 Jam)</label>
+          <input type="time" id="resJam" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
         </div>
       </div>
 
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Nominal (Rp)</label>
-        <input type="number" id="expNominal" placeholder="50000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-mono font-bold">
-      </div>
-
-      <button onclick="simpanPengeluaran()" class="w-full py-3 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5 mt-2">
-        <i class="fa-solid fa-minus-circle"></i> Catat Biaya Operasional
-      </button>
-    </div>
-
-    <div class="glass-card p-4 rounded-3xl space-y-3">
-      <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider">Daftar Biaya Hari Ini</h3>
-      <div id="pengeluaranList" class="space-y-2.5 text-xs"></div>
-    </div>
-  </div>
-
-  <!-- BAGIAN B: MASTER TERAPIS -->
-  <div id="sub-terapis-section" class="space-y-4 hide">
-    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-      <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
-        <i class="fa-solid fa-user-doctor text-amber-500"></i> Kelola Master Terapis
-      </h2>
-      <input type="hidden" id="editTerapisId">
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Nama Terapis</label>
-        <input type="text" id="masterNamaTerapis" placeholder="Contoh: Ustadz Ridwan" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
-      </div>
-      <div class="grid grid-cols-2 gap-2.5">
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">Kategori</label>
-          <select id="masterKategoriTerapis" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
-            <option value="Ikhwan (Pria)">Ikhwan (Pria)</option>
-            <option value="Akhwat (Wanita)">Akhwat (Wanita)</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">No. WhatsApp</label>
-          <input type="tel" id="masterWaTerapis" placeholder="08xxxxxxxxxx" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
-        </div>
-      </div>
-      <div class="flex gap-2 pt-1">
-        <button onclick="simpanMasterTerapis()" class="flex-1 py-3 btn-tb-primary text-white font-extrabold rounded-2xl text-xs">Simpan Terapis</button>
-        <button onclick="resetFormMasterTerapis()" class="px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl text-xs hover:bg-gray-200 active:scale-95 transition">Batal</button>
-      </div>
-    </div>
-
-    <div class="glass-card p-4 rounded-3xl space-y-3">
-      <h3 class="font-extrabold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Terapis Aktif</h3>
-      <div id="masterTerapisList" class="space-y-2.5 text-xs"></div>
-    </div>
-  </div>
-
-  <!-- BAGIAN C: MASTER LAYANAN -->
-  <div id="sub-layanan-section" class="space-y-4 hide">
-    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-      <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
-        <i class="fa-solid fa-sliders text-amber-500"></i> Kelola Paket Terapi
-      </h2>
-      <input type="hidden" id="editLayananId">
-      <div>
-        <label class="text-[11px] font-bold text-gray-700">Nama Paket Layanan</label>
-        <input type="text" id="masterNamaLayanan" placeholder="Contoh: Bekam Kepala Tanpa Cukur" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
-      </div>
-      <div class="grid grid-cols-2 gap-2.5">
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">Tarif Pasien (Rp)</label>
-          <input type="number" id="masterHargaLayanan" placeholder="130000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">Fee Terapis (Rp)</label>
-          <input type="number" id="masterFeeTerapis" placeholder="45000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
-        </div>
-      </div>
-      <div class="flex gap-2 pt-1">
-        <button onclick="simpanMasterLayanan()" class="flex-1 py-3 btn-tb-primary text-white font-extrabold rounded-2xl text-xs">Simpan Layanan</button>
-        <button onclick="resetFormMasterLayanan()" class="px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl text-xs hover:bg-gray-200 active:scale-95 transition">Batal</button>
-      </div>
-    </div>
-
-    <div class="glass-card p-4 rounded-3xl space-y-3">
-      <h3 class="font-extrabold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Paket Terapi Aktif</h3>
-      <div id="masterLayananList" class="space-y-2.5 text-xs"></div>
-    </div>
-  </div>
-
-  <!-- BAGIAN D: DATA PASIEN -->
-  <div id="sub-pasien-section" class="space-y-4 hide">
-    <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
-      <div class="flex justify-between items-center">
-        <div>
-          <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
-            <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
-          </h2>
-          <p class="text-[10px] text-gray-500 mt-0.5">Tersimpan otomatis di browser lokal.</p>
-        </div>
-        <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-xs flex items-center gap-1.5 transition">
-          <i class="fa-brands fa-google text-emerald-600"></i> Impor
-          <input type="file" id="fileGoogleContacts" accept=".csv, .vcf" onchange="imporGoogleKontak(event)" class="hidden">
-        </label>
-      </div>
-
+      <!-- Input Nomor WA dengan Saran Prediksi -->
       <div class="relative">
-        <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-9 pr-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
-        <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+        <label class="text-[11px] font-bold text-gray-700 flex justify-between">
+          <span>Nomor WhatsApp Pasien</span>
+          <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis muncul</span>
+        </label>
+        <div class="relative mt-1">
+          <input type="tel" id="resWA" oninput="isiOtomatisReservasiPasien()" autocomplete="off" placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+          <i class="fa-brands fa-whatsapp absolute right-3.5 top-3 text-emerald-600 text-base"></i>
+        </div>
+        <div id="suggestBoxRes" class="absolute left-0 right-0 mt-1 bg-white border border-emerald-100 rounded-2xl shadow-xl z-50 max-h-48 overflow-y-auto divide-y divide-gray-100 hide"></div>
       </div>
 
-      <div id="pasienListContainer" class="space-y-2.5 text-xs pt-1"></div>
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Nama Pasien</label>
+        <input type="text" id="resNama" placeholder="Contoh: Bapak / Ibu Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+      </div>
+
+      <!-- Kolom Alamat Khusus Home Care -->
+      <div id="boxAlamatHomeCare" class="bg-amber-50/70 border border-amber-200 p-3 rounded-2xl space-y-1.5 hide">
+        <label class="text-[11px] font-bold text-amber-950 flex items-center gap-1.5">
+          <i class="fa-solid fa-map-location-dot text-amber-600"></i> Alamat Rumah Lengkap & Patokan
+        </label>
+        <textarea id="resAlamat" rows="2" placeholder="Contoh: Perumahan Indah Blok C3 No. 12, dekat masjid" class="w-full p-2.5 bg-white border border-amber-200 rounded-xl text-xs outline-none focus:border-emerald-600"></textarea>
+        <p class="text-[9px] text-amber-800 italic">*Terapis kami akan berkunjung ke alamat yang tercantum.</p>
+      </div>
+
+      <!-- Pilihan Layanan dengan Tombol Pintas Paket Cepat (Reservasi) -->
+      <div class="space-y-2 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-[11px] font-bold text-emerald-950">Pilih Cepat Paket Booking</label>
+          <span class="text-[10px] text-emerald-700 font-bold">1-Klik</span>
+        </div>
+        <div id="quickPackageRes" class="grid grid-cols-2 gap-1.5 mb-2"></div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Pilihan Terapi</label>
+            <select id="resLayanan" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-700 flex justify-between">
+              <span>Pilihan Terapis</span>
+              <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
+            </label>
+            <select id="resTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold text-gray-700">Catatan Tambahan / Keluhan</label>
+        <input type="text" id="resCatatan" placeholder="Contoh: Pegal leher dan punggung, minta ruang tenang" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+      </div>
+
+      <button onclick="simpanReservasi()" class="w-full py-3.5 btn-tb-primary text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 mt-1">
+        <i class="fa-solid fa-calendar-plus text-amber-300"></i> Simpan & Kirim Bukti Reservasi
+      </button>
+    </section>
+  </div>
+
+  <!-- BAGIAN 2: DAFTAR ANTREAN BOOKING & RIWAYAT KASIR -->
+  <div id="sub-booking-antrean-section" class="space-y-4 hide">
+    <!-- Antrean Jadwal Booking Reservasi -->
+    <section class="glass-card p-4 rounded-3xl space-y-3">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+        <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i> Jadwal Booking Reservasi
+        </h2>
+        <span class="text-[10px] font-mono text-emerald-800 bg-emerald-100 font-bold px-2 py-0.5 rounded-full" id="badgeJumlahReservasi">0 Booking</span>
+      </div>
+
+      <div id="daftarReservasiList" class="space-y-2.5 text-xs">
+        <p class="text-gray-400 text-center py-4">Belum ada jadwal reservasi aktif.</p>
+      </div>
+    </section>
+
+    <!-- Riwayat Transaksi Kasir Hari Ini -->
+    <section class="glass-card p-4 rounded-3xl space-y-3">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+        <h2 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-receipt text-amber-600"></i> Riwayat Kasir Hari Ini
+        </h2>
+        <span class="text-[10px] text-emerald-800 bg-emerald-100 font-extrabold px-2.5 py-0.5 rounded-full" id="txCountBadge">0 Pasien</span>
+      </div>
+      <div id="riwayatList" class="space-y-2.5 text-xs">
+        <p class="text-gray-400 text-center py-4">Belum ada antrean selesai hari ini.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ================= TAB 3: MENU LAPORAN & MASTER DATA ================= -->
+<main id="tab-laporan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
+  
+  <!-- Sub-Navigasi Menu Laporan: Analitik vs Master Data -->
+  <div class="grid grid-cols-2 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-xs font-bold text-center">
+    <button onclick="switchSubLaporan('analitik')" id="btn-sub-lap-analitik" class="py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-chart-pie text-sm"></i> Analitik & Keuangan
+    </button>
+    <button onclick="switchSubLaporan('master')" id="btn-sub-lap-master" class="py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-sliders text-sm"></i> Kelola Master Data
+    </button>
+  </div>
+
+  <!-- BAGIAN 1: ANALITIK & KEUANGAN -->
+  <div id="sub-laporan-analitik-section" class="space-y-4">
+    <!-- Filter Rentang Tanggal -->
+    <section class="glass-card p-4 rounded-3xl space-y-3">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
+        <span class="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
+          <i class="fa-solid fa-calendar-days text-emerald-700"></i> Filter Rentang Tanggal
+        </span>
+        <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="badgeLabelPeriode">Hari Ini</span>
+      </div>
+
+      <div class="grid grid-cols-4 gap-1.5 text-[10px] font-extrabold">
+        <button onclick="setPintasTanggal('hari_ini')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Hari Ini</button>
+        <button onclick="setPintasTanggal('7_hari')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">7 Hari</button>
+        <button onclick="setPintasTanggal('bulan_ini')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Bulan Ini</button>
+        <button onclick="setPintasTanggal('semua')" class="py-2 rounded-xl bg-gray-100 hover:bg-emerald-100 hover:text-emerald-900 text-gray-700 transition active:scale-95">Semua</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <div>
+          <label class="text-[10px] font-bold text-gray-500 block mb-1">Dari Tanggal:</label>
+          <input type="date" id="filterTglMulai" onchange="gantiRentangTanggal()" class="w-full px-3 py-2 bg-gray-50/80 border border-gray-300 rounded-xl text-xs font-mono outline-none focus:border-emerald-600">
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-gray-500 block mb-1">Sampai Tanggal:</label>
+          <input type="date" id="filterTglSampai" onchange="gantiRentangTanggal()" class="w-full px-3 py-2 bg-gray-50/80 border border-gray-300 rounded-xl text-xs font-mono outline-none focus:border-emerald-600">
+        </div>
+      </div>
+    </section>
+
+    <!-- Ringkasan Finansial Utama -->
+    <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
+      <div class="card-stat card-income p-3.5 rounded-3xl shadow-sm">
+        <div class="font-extrabold text-[10px] uppercase tracking-wider text-emerald-900">Total Omset</div>
+        <div class="font-black text-xs mt-1" id="totalOmset">Rp 0</div>
+      </div>
+      <div class="card-stat card-expense p-3.5 rounded-3xl shadow-sm">
+        <div class="font-extrabold text-[10px] uppercase tracking-wider text-rose-900">Pengeluaran</div>
+        <div class="font-black text-xs mt-1" id="totalPengeluaranHeader">Rp 0</div>
+      </div>
+      <div class="card-stat card-balance p-3.5 rounded-3xl shadow-sm">
+        <div class="font-extrabold text-[10px] uppercase tracking-wider text-amber-950">Sisa Saldo</div>
+        <div class="font-black text-xs mt-1" id="sisaKasBersih">Rp 0</div>
+      </div>
+    </div>
+
+    <!-- HIGHLIGHT TOP PERFORMA KLINIK -->
+    <section class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 text-white p-5 rounded-3xl shadow-md space-y-3.5">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2.5">
+        <h2 class="font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 text-amber-300">
+          <i class="fa-solid fa-trophy text-amber-400"></i> Top Performa & Analitik
+        </h2>
+        <span class="text-[10px] font-semibold text-emerald-200 bg-white/10 px-2.5 py-0.5 rounded-full" id="labelTanggalTop">-</span>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2.5 text-xs">
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-rose-400/20 text-rose-300 flex items-center justify-center text-sm font-bold shadow-xs">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+            <div>
+              <div class="text-[10px] text-emerald-200 font-bold uppercase tracking-wider">Pasien Paling Loyal</div>
+              <div class="font-black text-white text-xs mt-0.5" id="topPasienNama">-</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold text-rose-300 text-xs" id="topPasienKunjungan">0 Terapi</div>
+            <div class="text-[10px] text-emerald-200" id="topPasienTotalBelanja">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-sm font-bold shadow-xs">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <div class="text-[10px] text-emerald-200 font-bold uppercase tracking-wider">Terapis Paling Produktif</div>
+              <div class="font-black text-white text-xs mt-0.5" id="topTerapisNama">-</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold text-amber-300 text-xs" id="topTerapisPasien">0 Pasien</div>
+            <div class="text-[10px] text-emerald-200" id="topTerapisOmset">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-sky-400/20 text-sky-300 flex items-center justify-center text-sm font-bold shadow-xs">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <div class="text-[10px] text-emerald-200 font-bold uppercase tracking-wider">Layanan Paling Banyak</div>
+              <div class="font-black text-white text-xs mt-0.5" id="topLayananNama">-</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold text-sky-300 text-xs" id="topLayananQty">0x Terjual</div>
+            <div class="text-[10px] text-emerald-200" id="topLayananPersen">0% Porsi</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demografi Pasien -->
+    <section class="glass-card p-4 rounded-3xl space-y-3">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+        <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
+          <i class="fa-solid fa-venus-mars text-tb-green"></i> Demografi Pasien
+        </h3>
+        <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-bold" id="totalPasienPeriodeBadge">0 Pasien</span>
+      </div>
+
+      <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden flex shadow-inner">
+        <div id="barIkhwan" class="bg-emerald-600 h-full transition-all duration-500 ease-out" style="width: 50%;"></div>
+        <div id="barAkhwat" class="bg-rose-500 h-full transition-all duration-500 ease-out" style="width: 50%;"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 text-xs">
+        <div class="card-stat bg-emerald-50/80 border border-emerald-200/80 p-3 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5 font-extrabold text-emerald-900 text-xs">
+              <i class="fa-solid fa-mars text-emerald-700"></i> Pria (Ikhwan)
+            </div>
+            <span class="text-[10px] font-black text-emerald-700" id="persenIkhwan">0%</span>
+          </div>
+          <div class="mt-2 flex justify-between items-baseline">
+            <div class="text-sm font-black text-gray-900" id="jmlPasienIkhwan">0 Pasien</div>
+            <div class="text-[10px] font-bold text-emerald-800" id="omsetIkhwan">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="card-stat bg-rose-50/80 border border-rose-200/80 p-3 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5 font-extrabold text-rose-900 text-xs">
+              <i class="fa-solid fa-venus text-rose-600"></i> Wanita (Akhwat)
+            </div>
+            <span class="text-[10px] font-black text-rose-700" id="persenAkhwat">0%</span>
+          </div>
+          <div class="mt-2 flex justify-between items-baseline">
+            <div class="text-sm font-black text-gray-900" id="jmlPasienAkhwat">0 Pasien</div>
+            <div class="text-[10px] font-bold text-rose-800" id="omsetAkhwat">Rp 0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saldo Kas Tunai & Bank -->
+    <div class="space-y-2.5">
+      <div class="card-stat card-wallet-cash p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-700 text-base shadow-sm">💵</div>
+          <div>
+            <div class="text-[11px] font-bold text-amber-900">Kas Fisik Tunai (Laci)</div>
+            <div class="text-xs font-black text-gray-900" id="kasTunai">Rp 0</div>
+          </div>
+        </div>
+        <span class="text-[10px] font-extrabold text-amber-900 bg-amber-200/90 px-2.5 py-1 rounded-full">Cash Drawer</span>
+      </div>
+
+      <div class="card-stat card-wallet-bank p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 text-base shadow-sm">📱</div>
+          <div>
+            <div class="text-[11px] font-bold text-emerald-950">QRIS / Bank Transfer</div>
+            <div class="text-xs font-black text-gray-900" id="kasQris">Rp 0</div>
+          </div>
+        </div>
+        <span class="text-[10px] font-extrabold text-emerald-900 bg-emerald-200/90 px-2.5 py-1 rounded-full">Digital</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAGIAN 2: MASTER DATA & OPERASIONAL (DIDALAM TAB LAPORAN) -->
+  <div id="sub-laporan-master-section" class="space-y-4 hide">
+    <!-- Sub-Navigasi 4 Pilihan Master -->
+    <div class="grid grid-cols-4 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-[10px] font-bold text-center">
+      <button onclick="switchSubMaster('biaya')" id="btn-sub-biaya" class="py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95">Biaya</button>
+      <button onclick="switchSubMaster('terapis')" id="btn-sub-terapis" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">Terapis</button>
+      <button onclick="switchSubMaster('layanan')" id="btn-sub-layanan" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">Layanan</button>
+      <button onclick="switchSubMaster('pasien')" id="btn-sub-pasien" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95">Pasien</button>
+    </div>
+
+    <!-- PENGELUARAN / BIAYA -->
+    <div id="sub-biaya-section" class="space-y-4">
+      <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+        <h2 class="font-extrabold text-rose-800 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-receipt text-rose-600"></i> Catat Biaya Operasional
+        </h2>
+
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Keterangan Pengeluaran</label>
+          <input type="text" id="expKeterangan" placeholder="Contoh: Beli minyak zaitun, jarum bekam" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Kategori</label>
+            <select id="expKategori" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold"></select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Sumber Kas</label>
+            <select id="expSumberKas" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-semibold">
+              <option value="Tunai">💵 Kas Tunai (Laci)</option>
+              <option value="QRIS">📱 Rekening / Transfer</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Nominal (Rp)</label>
+          <input type="number" id="expNominal" placeholder="50000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-rose-600 focus:bg-white font-mono font-bold">
+        </div>
+
+        <button onclick="simpanPengeluaran()" class="w-full py-3 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5 mt-2">
+          <i class="fa-solid fa-minus-circle"></i> Catat Biaya Operasional
+        </button>
+      </div>
+
+      <div class="glass-card p-4 rounded-3xl space-y-3">
+        <h3 class="font-extrabold text-gray-800 text-xs uppercase tracking-wider">Daftar Biaya Hari Ini</h3>
+        <div id="pengeluaranList" class="space-y-2.5 text-xs"></div>
+      </div>
+    </div>
+
+    <!-- MASTER TERAPIS -->
+    <div id="sub-terapis-section" class="space-y-4 hide">
+      <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+        <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+          <i class="fa-solid fa-user-doctor text-amber-500"></i> Kelola Master Terapis
+        </h2>
+        <input type="hidden" id="editTerapisId">
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Nama Terapis</label>
+          <input type="text" id="masterNamaTerapis" placeholder="Contoh: Ustadz Ridwan" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Kategori</label>
+            <select id="masterKategoriTerapis" class="w-full mt-1 px-3 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
+              <option value="Ikhwan (Pria)">Ikhwan (Pria)</option>
+              <option value="Akhwat (Wanita)">Akhwat (Wanita)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">No. WhatsApp</label>
+            <input type="tel" id="masterWaTerapis" placeholder="08xxxxxxxxxx" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+          </div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="simpanMasterTerapis()" id="btnSubmitTerapis" class="flex-1 py-3 btn-tb-primary text-white font-extrabold rounded-2xl text-xs">Simpan Terapis</button>
+          <button onclick="resetFormMasterTerapis()" class="px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl text-xs hover:bg-gray-200 active:scale-95 transition">Batal</button>
+        </div>
+      </div>
+
+      <div class="glass-card p-4 rounded-3xl space-y-3">
+        <h3 class="font-extrabold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Terapis Aktif</h3>
+        <div id="masterTerapisList" class="space-y-2.5 text-xs"></div>
+      </div>
+    </div>
+
+    <!-- MASTER LAYANAN -->
+    <div id="sub-layanan-section" class="space-y-4 hide">
+      <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+        <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-amber-500"></i> Kelola Paket Terapi
+        </h2>
+        <input type="hidden" id="editLayananId">
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Nama Paket Layanan</label>
+          <input type="text" id="masterNamaLayanan" placeholder="Contoh: Bekam Kepala Tanpa Cukur" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Tarif Pasien (Rp)</label>
+            <input type="number" id="masterHargaLayanan" placeholder="130000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-700">Fee Terapis (Rp)</label>
+            <input type="number" id="masterFeeTerapis" placeholder="45000" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+          </div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="simpanMasterLayanan()" id="btnSubmitLayanan" class="flex-1 py-3 btn-tb-primary text-white font-extrabold rounded-2xl text-xs">Simpan Layanan</button>
+          <button onclick="resetFormMasterLayanan()" class="px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl text-xs hover:bg-gray-200 active:scale-95 transition">Batal</button>
+        </div>
+      </div>
+
+      <div class="glass-card p-4 rounded-3xl space-y-3">
+        <h3 class="font-extrabold text-gray-800 text-xs mb-3 uppercase tracking-wider">Daftar Paket Terapi Aktif</h3>
+        <div id="masterLayananList" class="space-y-2.5 text-xs"></div>
+      </div>
+    </div>
+
+    <!-- DATA PASIEN -->
+    <div id="sub-pasien-section" class="space-y-4 hide">
+      <div class="glass-card p-5 rounded-3xl space-y-3.5 shadow-sm">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="font-extrabold text-tb-green text-sm flex items-center gap-2">
+              <i class="fa-solid fa-address-book text-amber-500"></i> Rekam Data Pasien
+            </h2>
+            <p class="text-[10px] text-gray-500 mt-0.5">Tersimpan otomatis di browser lokal.</p>
+          </div>
+          <label class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-xs flex items-center gap-1.5 transition">
+            <i class="fa-brands fa-google text-emerald-600"></i> Impor
+            <input type="file" id="fileGoogleContacts" accept=".csv, .vcf" onchange="imporGoogleKontak(event)" class="hidden">
+          </label>
+        </div>
+
+        <div class="relative">
+          <input type="text" id="cariPasienListInput" oninput="renderDaftarPasien()" placeholder="Ketik nama atau No. WA pasien..." class="w-full pl-9 pr-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
+          <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+        </div>
+
+        <div id="pasienListContainer" class="space-y-2.5 text-xs pt-1"></div>
+      </div>
     </div>
   </div>
 </main>
 
-<!-- ================= TAB 5: PENGATURAN & BACKUP ================= -->
+<!-- ================= TAB 4: PENGATURAN & BACKUP ================= -->
 <main id="tab-pengaturan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   <div class="glass-card p-5 rounded-3xl space-y-4 shadow-sm">
     <h2 class="font-extrabold text-gray-800 text-sm flex items-center gap-2">
@@ -631,6 +746,145 @@ input:focus, select:focus {
   </div>
 </main>
 
+<!-- MODAL EDIT TRANSAKSI (KASIR) -->
+<div id="modalEditTx" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-3.5">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+      <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
+        <i class="fa-solid fa-pen-to-square text-amber-500"></i> Edit Transaksi Pasien
+      </h3>
+      <button onclick="tutupModalEditTx()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="hidden" id="editTxId">
+    
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Nama Pasien</label>
+      <input type="text" id="editTxNama" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold outline-none focus:border-emerald-600">
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Nomor WhatsApp</label>
+      <input type="tel" id="editTxWa" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono outline-none focus:border-emerald-600">
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="text-[10px] font-bold text-gray-500">Terapis</label>
+        <select id="editTxTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
+      </div>
+      <div>
+        <label class="text-[10px] font-bold text-gray-500">Metode Bayar</label>
+        <select id="editTxMetode" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600">
+          <option value="Tunai">💵 Tunai</option>
+          <option value="QRIS">📱 QRIS / Bank</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Total Tarif (Rp)</label>
+      <input type="number" id="editTxNominal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-emerald-600">
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Keluhan / Catatan</label>
+      <input type="text" id="editTxKeluhan" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <button onclick="simpanPerubahanTransaksi()" class="flex-1 py-2.5 bg-emerald-800 hover:bg-emerald-900 active:scale-95 transition text-white font-extrabold rounded-xl text-xs shadow-md">
+        Simpan Perubahan
+      </button>
+      <button onclick="tutupModalEditTx()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs">
+        Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT PENGELUARAN / BIAYA -->
+<div id="modalEditExp" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-3.5">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+      <h3 class="font-extrabold text-xs uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+        <i class="fa-solid fa-pen-to-square text-rose-600"></i> Edit Catatan Biaya
+      </h3>
+      <button onclick="tutupModalEditExp()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="hidden" id="editExpId">
+    
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Keterangan Biaya</label>
+      <input type="text" id="editExpKeterangan" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-rose-600">
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="text-[10px] font-bold text-gray-500">Kategori</label>
+        <select id="editExpKategori" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-rose-600"></select>
+      </div>
+      <div>
+        <label class="text-[10px] font-bold text-gray-500">Sumber Kas</label>
+        <select id="editExpSumber" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-rose-600">
+          <option value="Tunai">💵 Kas Tunai</option>
+          <option value="QRIS">📱 Rekening</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Nominal (Rp)</label>
+      <input type="number" id="editExpNominal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-rose-600">
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <button onclick="simpanPerubahanPengeluaran()" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-800 active:scale-95 transition text-white font-extrabold rounded-xl text-xs shadow-md">
+        Simpan Biaya
+      </button>
+      <button onclick="tutupModalEditExp()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs">
+        Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT DATA PASIEN -->
+<div id="modalEditPasien" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-3.5">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+      <h3 class="font-extrabold text-xs uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+        <i class="fa-solid fa-user-pen text-amber-500"></i> Edit Data Pasien
+      </h3>
+      <button onclick="tutupModalEditPasien()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <input type="hidden" id="editPasienOldWa">
+    
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Nama Lengkap Pasien</label>
+      <input type="text" id="editPasienNama" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold outline-none focus:border-emerald-600">
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Nomor WhatsApp</label>
+      <input type="tel" id="editPasienWa" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-emerald-600">
+    </div>
+
+    <div>
+      <label class="text-[10px] font-bold text-gray-500">Catatan Keluhan / Terapi Sebelumnya</label>
+      <input type="text" id="editPasienKeluhan" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600">
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <button onclick="simpanPerubahanPasien()" class="flex-1 py-2.5 bg-emerald-800 hover:bg-emerald-900 active:scale-95 transition text-white font-extrabold rounded-xl text-xs shadow-md">
+        Simpan Data Pasien
+      </button>
+      <button onclick="tutupModalEditPasien()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs">
+        Batal
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL CETAK STRUK THERMAL -->
 <div id="modalStruk" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hide transition-all">
   <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl space-y-3.5">
@@ -646,16 +900,11 @@ input:focus, select:focus {
   </div>
 </div>
 
-<!-- Bottom Navigation Ramping (4 Menu Utama) -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-emerald-900/10 px-3 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
-  <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-chart-pie text-base"></i>
-    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Laporan</span>
-  </button>
-
+<!-- Bottom Navigation 3 Menu Utama (Ramping & Bersih) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-emerald-900/10 px-6 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
   <button onclick="switchTab('reservasi')" id="nav-reservasi" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-calendar-check text-base"></i>
-    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Booking</span>
+    <i class="fa-solid fa-calendar-check text-lg"></i>
+    <span class="text-[9.5px] mt-1 whitespace-nowrap font-bold">Booking</span>
   </button>
 
   <!-- KASIR FLOATING CENTER BUTTON -->
@@ -666,9 +915,9 @@ input:focus, select:focus {
     </button>
   </div>
 
-  <button onclick="switchTab('master')" id="nav-master" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-sliders text-base"></i>
-    <span class="text-[9px] mt-1 whitespace-nowrap font-bold">Master Data</span>
+  <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
+    <i class="fa-solid fa-chart-pie text-lg"></i>
+    <span class="text-[9.5px] mt-1 whitespace-nowrap font-bold">Laporan & Master</span>
   </button>
 </nav>
 
@@ -728,7 +977,7 @@ function getTodayDateStr() {
   return `${year}-${month}-${day}`;
 }
 
-// FORMAT 24 JAM STANDAR INDONESIA (TANPA AM/PM)
+// FORMAT 24 JAM STANDAR INDONESIA
 function getJam24Format(d = new Date()) {
   const jam = String(d.getHours()).padStart(2, '0');
   const menit = String(d.getMinutes()).padStart(2, '0');
@@ -787,6 +1036,13 @@ let databasePasien = JSON.parse(localStorage.getItem('tb_database_pasien')) || {
     kunjunganTerakhir: '2026-09-12',
     layananTerakhir: 'Bekam Sunnah Standar',
     terapisTerakhir: 'Ustadz Ridwan'
+  },
+  '081375222349': {
+    nama: 'Bapak Maman',
+    keluhan: 'Pegal linu pinggang & asam urat',
+    kunjunganTerakhir: '2026-09-20',
+    layananTerakhir: 'Bekam Medis + Pijat Relaksasi',
+    terapisTerakhir: 'Ustadz Ridwan'
   }
 };
 
@@ -841,7 +1097,82 @@ function cariInfoKunjunganTerakhir(wa, nama) {
   return null;
 }
 
-// 1. CARI PASIEN FORM KASIR
+// 1. CARI PASIEN & PREDIKSI AUTOCOMPLETE
+function renderPrediksiPasien(inputVal, boxId, targetMode) {
+  const box = document.getElementById(boxId);
+  const val = inputVal.trim().toLowerCase();
+
+  if (!val || val.length < 3) {
+    box.innerHTML = '';
+    box.classList.add('hide');
+    return;
+  }
+
+  const matches = Object.keys(databasePasien).filter(wa => {
+    const p = databasePasien[wa];
+    return wa.includes(val) || (p.nama && p.nama.toLowerCase().includes(val));
+  });
+
+  if (matches.length === 0) {
+    box.innerHTML = '';
+    box.classList.add('hide');
+    return;
+  }
+
+  box.innerHTML = matches.slice(0, 5).map(wa => {
+    const p = databasePasien[wa];
+    const tgl = p.kunjunganTerakhir ? formatTanggalIndo(p.kunjunganTerakhir) : 'Belum pernah';
+    return `
+      <div onclick="pilihPrediksiPasien('${wa}', '${targetMode}')" class="p-2.5 hover:bg-emerald-50 active:bg-emerald-100 cursor-pointer flex justify-between items-center transition">
+        <div>
+          <div class="font-bold text-gray-800 text-xs">${p.nama}</div>
+          <div class="text-[10px] font-mono text-emerald-700 font-semibold">${wa}</div>
+        </div>
+        <div class="text-right">
+          <span class="text-[9px] bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded-full">Pernah Datang</span>
+          <div class="text-[9px] text-gray-400 mt-0.5">${tgl}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  box.classList.remove('hide');
+}
+
+function pilihPrediksiPasien(wa, targetMode) {
+  const p = databasePasien[wa];
+  if (!p) return;
+
+  if (targetMode === 'kasir') {
+    document.getElementById('custWA').value = wa;
+    document.getElementById('custName').value = p.nama;
+    document.getElementById('custKeluhan').value = p.keluhan || '';
+    document.getElementById('suggestBoxKasir').classList.add('hide');
+    cariPasienOtomatis();
+  } else if (targetMode === 'reservasi') {
+    document.getElementById('resWA').value = wa;
+    document.getElementById('resNama').value = p.nama;
+    if (p.keluhan) {
+      document.getElementById('resCatatan').value = p.keluhan;
+    }
+    document.getElementById('suggestBoxRes').classList.add('hide');
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const boxKasir = document.getElementById('suggestBoxKasir');
+  const inputKasir = document.getElementById('custWA');
+  if (boxKasir && !boxKasir.contains(e.target) && e.target !== inputKasir) {
+    boxKasir.classList.add('hide');
+  }
+
+  const boxRes = document.getElementById('suggestBoxRes');
+  const inputRes = document.getElementById('resWA');
+  if (boxRes && !boxRes.contains(e.target) && e.target !== inputRes) {
+    boxRes.classList.add('hide');
+  }
+});
+
 function cariPasienOtomatis() {
   const rawWA = document.getElementById('custWA').value.trim();
   const wa = normalisasiNomorWA(rawWA) || rawWA;
@@ -849,6 +1180,8 @@ function cariPasienOtomatis() {
   const namaInput = document.getElementById('custName');
   const keluhanInput = document.getElementById('custKeluhan');
   const banner = document.getElementById('bannerRiwayatTerakhir');
+
+  renderPrediksiPasien(rawWA, 'suggestBoxKasir', 'kasir');
 
   if (databasePasien[wa]) {
     const p = databasePasien[wa];
@@ -873,6 +1206,51 @@ function cariPasienOtomatis() {
   }
 }
 
+// PILIHAN CEPAT PAKET LAYANAN
+function renderTombolPilihanCepat() {
+  const containerKasir = document.getElementById('quickPackageKasir');
+  const containerRes = document.getElementById('quickPackageRes');
+
+  const abjad = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+  const htmlKasir = masterLayanan.map((l, idx) => {
+    const labelPaket = `Paket ${abjad[idx] || (idx + 1)}`;
+    return `
+      <button type="button" onclick="pilihCepatLayananKasir('${l.id}')" class="text-left p-2 rounded-xl border border-emerald-300/80 bg-white hover:bg-emerald-100/70 active:scale-95 transition shadow-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-black text-emerald-900 text-[11px]">${labelPaket}</span>
+          <span class="text-[9px] font-bold text-emerald-700 font-mono">${formatRp(l.harga)}</span>
+        </div>
+        <div class="text-[9.5px] text-gray-600 truncate mt-0.5">${l.nama}</div>
+      </button>
+    `;
+  }).join('');
+
+  const htmlRes = masterLayanan.map((l, idx) => {
+    const labelPaket = `Paket ${abjad[idx] || (idx + 1)}`;
+    return `
+      <button type="button" onclick="pilihCepatLayananRes('${l.nama}')" class="text-left p-2 rounded-xl border border-emerald-300/80 bg-white hover:bg-emerald-100/70 active:scale-95 transition shadow-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-black text-emerald-900 text-[11px]">${labelPaket}</span>
+          <span class="text-[9px] font-bold text-emerald-700 font-mono">${formatRp(l.harga)}</span>
+        </div>
+        <div class="text-[9.5px] text-gray-600 truncate mt-0.5">${l.nama}</div>
+      </button>
+    `;
+  }).join('');
+
+  if (containerKasir) containerKasir.innerHTML = htmlKasir;
+  if (containerRes) containerRes.innerHTML = htmlRes;
+}
+
+function pilihCepatLayananKasir(layananId) {
+  document.getElementById('layananSelect1').value = layananId;
+}
+
+function pilihCepatLayananRes(layananNama) {
+  document.getElementById('resLayanan').value = layananNama;
+}
+
 // 2. SIMPAN TRANSAKSI KASIR
 function simpanTransaksi() {
   const rawWA = document.getElementById('custWA').value.trim();
@@ -884,7 +1262,11 @@ function simpanTransaksi() {
   let terapisNama = document.getElementById('terapisSelect').value.trim();
   const metode = document.getElementById('metodeBayar').value;
 
-  if (!nama) { alert("Nama pasien wajib diisi!"); return; }
+  if (!nama) { 
+    alert("Nama pasien wajib diisi!"); 
+    document.getElementById('custName').focus();
+    return; 
+  }
 
   const l1 = masterLayanan.find(l => l.id === layananId1);
   if (!l1) { alert("Pilih minimal 1 paket terapi utama!"); return; }
@@ -945,11 +1327,109 @@ function simpanTransaksi() {
   document.getElementById('layananSelect2').value = '';
   document.getElementById('terapisSelect').value = '';
   document.getElementById('bannerRiwayatTerakhir').classList.add('hide');
+  document.getElementById('suggestBoxKasir').classList.add('hide');
   cariPasienOtomatis();
   updateUI();
+  alert("Alhamdulillah, transaksi kasir berhasil dicatat!");
 }
 
-// 3. FITUR RESERVASI
+// EDIT TRANSAKSI KASIR
+function bukaModalEditTx(id) {
+  const item = transaksi.find(t => t.id === id);
+  if (!item) return;
+
+  document.getElementById('editTxId').value = item.id;
+  document.getElementById('editTxNama').value = item.nama;
+  document.getElementById('editTxWa').value = item.wa !== '-' ? item.wa : '';
+  document.getElementById('editTxMetode').value = item.metode;
+  document.getElementById('editTxNominal').value = item.nominal;
+  document.getElementById('editTxKeluhan').value = item.keluhan || '';
+
+  const terapisSelectEl = document.getElementById('editTxTerapis');
+  terapisSelectEl.innerHTML = `<option value="-">-- Tanpa Pilihan Terapis --</option>` + masterTerapis.map(t => 
+    `<option value="${t.nama}" ${t.nama === item.terapis ? 'selected' : ''}>${t.nama} (${t.kategori})</option>`
+  ).join('');
+
+  document.getElementById('modalEditTx').classList.remove('hide');
+}
+
+function tutupModalEditTx() {
+  document.getElementById('modalEditTx').classList.add('hide');
+}
+
+function simpanPerubahanTransaksi() {
+  const id = parseInt(document.getElementById('editTxId').value);
+  const index = transaksi.findIndex(t => t.id === id);
+  if (index === -1) return;
+
+  const terapisBaru = document.getElementById('editTxTerapis').value;
+  const rawWa = document.getElementById('editTxWa').value.trim();
+  const cleanWa = normalisasiNomorWA(rawWa) || (rawWa ? rawWa : '-');
+  const dataTerapisObj = masterTerapis.find(t => t.nama === terapisBaru);
+
+  transaksi[index].nama = document.getElementById('editTxNama').value.trim() || transaksi[index].nama;
+  transaksi[index].wa = cleanWa;
+  transaksi[index].terapis = terapisBaru;
+  transaksi[index].kategoriPasien = dataTerapisObj ? dataTerapisObj.kategori : (transaksi[index].kategoriPasien || 'Ikhwan (Pria)');
+  transaksi[index].metode = document.getElementById('editTxMetode').value;
+  transaksi[index].nominal = parseInt(document.getElementById('editTxNominal').value) || transaksi[index].nominal;
+  transaksi[index].keluhan = document.getElementById('editTxKeluhan').value.trim();
+
+  if (cleanWa && cleanWa !== '-') {
+    databasePasien[cleanWa] = {
+      nama: transaksi[index].nama,
+      keluhan: transaksi[index].keluhan,
+      kunjunganTerakhir: transaksi[index].tanggal || getTodayDateStr(),
+      layananTerakhir: transaksi[index].layanan,
+      terapisTerakhir: terapisBaru
+    };
+    localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+  }
+
+  localStorage.setItem('tb_transaksi_today', JSON.stringify(transaksi));
+  tutupModalEditTx();
+  updateUI();
+  alert("Data transaksi kasir berhasil diperbarui!");
+}
+
+// ================= 3. FITUR RESERVASI =================
+function switchSubBooking(sub) {
+  const formSec = document.getElementById('sub-booking-form-section');
+  const antreanSec = document.getElementById('sub-booking-antrean-section');
+  const btnForm = document.getElementById('btn-sub-bkg-form');
+  const btnAntrean = document.getElementById('btn-sub-bkg-antrean');
+
+  if (sub === 'form') {
+    formSec.classList.remove('hide');
+    antreanSec.classList.add('hide');
+    btnForm.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAntrean.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+  } else {
+    formSec.classList.add('hide');
+    antreanSec.classList.remove('hide');
+    btnAntrean.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnForm.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    renderDaftarReservasi();
+  }
+}
+
+function toggleTipeLayananBooking() {
+  const radioHomecare = document.querySelector('input[name="resTipeLayanan"][value="Home Care"]').checked;
+  const boxAlamat = document.getElementById('boxAlamatHomeCare');
+  const labelKlinik = document.getElementById('labelKlinik');
+  const labelHomecare = document.getElementById('labelHomecare');
+
+  if (radioHomecare) {
+    boxAlamat.classList.remove('hide');
+    labelHomecare.className = "cursor-pointer border-2 border-emerald-600 bg-emerald-50 text-emerald-950 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition";
+    labelKlinik.className = "cursor-pointer border-2 border-gray-200 bg-gray-50 text-gray-600 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition";
+  } else {
+    boxAlamat.classList.add('hide');
+    labelKlinik.className = "cursor-pointer border-2 border-emerald-600 bg-emerald-50 text-emerald-950 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition";
+    labelHomecare.className = "cursor-pointer border-2 border-gray-200 bg-gray-50 text-gray-600 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition";
+  }
+}
+
 function renderDropdownReservasi() {
   const selLayanan = document.getElementById('resLayanan');
   const selTerapis = document.getElementById('resTerapis');
@@ -963,6 +1443,9 @@ function renderDropdownReservasi() {
 function isiOtomatisReservasiPasien() {
   const rawWA = document.getElementById('resWA').value.trim();
   const wa = normalisasiNomorWA(rawWA) || rawWA;
+
+  renderPrediksiPasien(rawWA, 'suggestBoxRes', 'reservasi');
+
   if (databasePasien[wa]) {
     document.getElementById('resNama').value = databasePasien[wa].nama || '';
     if (databasePasien[wa].keluhan) {
@@ -972,17 +1455,41 @@ function isiOtomatisReservasiPasien() {
 }
 
 function simpanReservasi() {
-  const tgl = document.getElementById('resTanggal').value;
-  const jam = document.getElementById('resJam').value;
+  const tipeLayanan = document.querySelector('input[name="resTipeLayanan"]:checked')?.value || 'Klinik';
+  
+  let tgl = document.getElementById('resTanggal').value;
+  let jam = document.getElementById('resJam').value;
+  if (!tgl) {
+    tgl = getTodayDateStr();
+    document.getElementById('resTanggal').value = tgl;
+  }
+  if (!jam) {
+    jam = getJam24Format();
+    document.getElementById('resJam').value = jam;
+  }
+
   const rawWA = document.getElementById('resWA').value.trim();
   const wa = normalisasiNomorWA(rawWA) || rawWA;
   const nama = document.getElementById('resNama').value.trim();
+  const alamat = document.getElementById('resAlamat').value.trim();
   const layanan = document.getElementById('resLayanan').value;
   let terapis = document.getElementById('resTerapis').value.trim();
   const catatan = document.getElementById('resCatatan').value.trim();
 
-  if (!tgl || !jam || !nama || !wa) {
-    alert("Tanggal, Jam, Nama Pasien, dan Nomor WhatsApp wajib diisi!");
+  if (!wa) {
+    alert("Nomor WhatsApp Pasien wajib diisi!");
+    document.getElementById('resWA').focus();
+    return;
+  }
+  if (!nama) {
+    alert("Nama Pasien wajib diisi!");
+    document.getElementById('resNama').focus();
+    return;
+  }
+
+  if (tipeLayanan === 'Home Care' && !alamat) {
+    alert("Untuk layanan Home Care ke rumah, alamat lengkap wajib diisi!");
+    document.getElementById('resAlamat').focus();
     return;
   }
 
@@ -992,6 +1499,8 @@ function simpanReservasi() {
 
   const newRes = {
     id: Date.now(),
+    tipe: tipeLayanan,
+    alamat: alamat || '-',
     tanggalBooking: tgl,
     jamBooking: jam,
     wa: wa,
@@ -1012,14 +1521,19 @@ function simpanReservasi() {
 
   renderDaftarReservasi();
 
-  if (confirm(`Reservasi ${nama} berhasil disimpan.\n\nKirim bukti booking ke WhatsApp pasien sekarang?`)) {
+  if (confirm(`Reservasi ${nama} (${tipeLayanan}) berhasil disimpan.\n\nKirim bukti booking ke WhatsApp pasien sekarang?`)) {
     kirimBuktiReservasiWA(newRes.id);
   }
 
   document.getElementById('resNama').value = '';
   document.getElementById('resWA').value = '';
+  document.getElementById('resAlamat').value = '';
   document.getElementById('resCatatan').value = '';
   document.getElementById('resTerapis').value = '';
+  document.getElementById('resJam').value = getJam24Format();
+  document.getElementById('suggestBoxRes').classList.add('hide');
+
+  switchSubBooking('antrean');
 }
 
 function renderDaftarReservasi() {
@@ -1039,9 +1553,14 @@ function renderDaftarReservasi() {
           <div class="font-extrabold text-gray-800 text-xs">${r.nama}</div>
           <div class="text-[11px] font-mono text-emerald-700 font-bold">${r.wa}</div>
         </div>
-        <span class="text-[9px] bg-emerald-100 text-emerald-900 border border-emerald-300 font-black px-2 py-0.5 rounded-full">
-          ${r.status}
-        </span>
+        <div class="flex gap-1 items-center">
+          <span class="text-[9px] ${r.tipe === 'Home Care' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-sky-100 text-sky-900 border-sky-300'} border font-black px-2 py-0.5 rounded-full">
+            ${r.tipe || 'Klinik'}
+          </span>
+          <span class="text-[9px] bg-emerald-100 text-emerald-900 border border-emerald-300 font-black px-2 py-0.5 rounded-full">
+            ${r.status}
+          </span>
+        </div>
       </div>
 
       <div class="bg-white p-2.5 rounded-xl border border-gray-100 text-[10px] space-y-1">
@@ -1057,6 +1576,10 @@ function renderDaftarReservasi() {
         <div class="flex justify-between">
           <span class="text-gray-500">Terapis:</span>
           <span class="font-semibold text-gray-800">${r.terapis}</span>
+        </div>` : ''}
+        ${r.alamat && r.alamat !== '-' ? `
+        <div class="text-gray-600 bg-amber-50/80 p-2 rounded-lg border border-amber-200 mt-1">
+          <b>Alamat Home Care:</b> ${r.alamat}
         </div>` : ''}
         ${r.catatan && r.catatan !== '-' ? `<div class="text-gray-500 pt-0.5">Catatan: <i class="text-gray-700 font-medium">${r.catatan}</i></div>` : ''}
       </div>
@@ -1091,6 +1614,7 @@ function kirimBuktiReservasiWA(resId) {
   if (noWA.startsWith('0')) noWA = '62' + noWA.slice(1);
 
   const barisTerapis = (r.terapis && r.terapis !== '-') ? `\nTerapis : *${r.terapis}*` : '';
+  const barisTipe = r.tipe === 'Home Care' ? `\nTipe Layanan : *Layanan ke Rumah (Home Care)*\nAlamat Tujuan : *${r.alamat}*` : `\nTipe Layanan : *Datang ke Klinik*`;
 
   const pesan = 
 `Halo Bapak/Ibu *${r.nama}*, salam hangat dari Teman Bekam 😊
@@ -1100,14 +1624,14 @@ Terima kasih sudah melakukan reservasi perawatan tubuh bersama kami. Jadwal tera
 *KONFIRMASI RESERVASI - TEMAN BEKAM*
 -----------------------------------------------
 No. Booking : *#TB-RES-${r.id.toString().slice(-5)}*
-Nama : *${r.nama}*
+Nama : *${r.nama}*${barisTipe}
 Hari, Tanggal : *${formatTanggalIndo(r.tanggalBooking)}*
 Waktu Kedatangan : *Pukul ${r.jamBooking} WIB*
 Paket Terapi : *${r.layanan}*${barisTerapis}
 Status : *Terkonfirmasi*
 -----------------------------------------------
 
-*Catatan Kedatangan:*
+*Catatan:*
 Mohon datang sesuai jadwal yang sudah ditentukan.
 
 Jika ada kendala waktu atau ingin melakukan penyesuaian jadwal, jangan ragu untuk mengabari kami ya.
@@ -1130,11 +1654,17 @@ function cetakTiketReservasi(resId) {
     </div>
   ` : '';
 
+  const barisHomeCareHtml = (r.tipe === 'Home Care' && r.alamat && r.alamat !== '-') ? `
+    <div style="margin-top: 4px; padding: 4px; background: #eee; border-radius: 4px;">
+      <b>Alamat Home Care:</b> ${r.alamat}
+    </div>
+  ` : '';
+
   const htmlStruk = `
     <div style="text-align: center; margin-bottom: 8px;">
       <img src="${URL_LOGO_ONLINE}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
       <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
-      <div style="font-size: 9px; color: #555;">BUKTI RESERVASI JADWAL</div>
+      <div style="font-size: 9px; color: #555;">BUKTI RESERVASI JADWAL (${r.tipe || 'Klinik'})</div>
       <div style="font-size: 8px; color: #777;">Kode: #TB-RES-${r.id.toString().slice(-5)}</div>
     </div>
     <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
@@ -1151,10 +1681,11 @@ function cetakTiketReservasi(resId) {
       <span style="font-weight: 700;">${r.tanggalBooking}</span>
     </div>
     <div style="display: flex; justify-content: space-between;">
-      <span>Jam Kedatangan:</span>
+      <span>Waktu:</span>
       <span style="font-weight: 800;">${r.jamBooking} WIB</span>
     </div>
     ${barisTerapisHtml}
+    ${barisHomeCareHtml}
     <div style="border-top: 1px dashed #444; margin: 6px 0;"></div>
     <div>
       <div style="font-weight: 600;">Paket Terapi:</div>
@@ -1179,7 +1710,12 @@ function checkInKeKasir(resId) {
 
   document.getElementById('custWA').value = r.wa;
   document.getElementById('custName').value = r.nama;
-  document.getElementById('custKeluhan').value = r.catatan !== '-' ? r.catatan : '';
+
+  let catatanKasir = r.catatan !== '-' ? r.catatan : '';
+  if (r.tipe === 'Home Care') {
+    catatanKasir = `[HOME CARE] ${r.alamat} ${catatanKasir ? '• ' + catatanKasir : ''}`.trim();
+  }
+  document.getElementById('custKeluhan').value = catatanKasir;
 
   const layananObj = masterLayanan.find(l => l.nama === r.layanan);
   if (layananObj) {
@@ -1266,6 +1802,7 @@ function filterDataBerdasarkanRentang(listData) {
   });
 }
 
+// 5. KALKULASI LAPORAN TOP PERFORMA
 function hitungAnalitikTopPerforma(txFiltered) {
   const dataTerapis = {};
   const dataLayanan = {};
@@ -1330,7 +1867,7 @@ function hitungAnalitikTopPerforma(txFiltered) {
   document.getElementById('topPasienTotalBelanja').innerText = formatRp(topPasien.totalBelanja);
 }
 
-// 5. UPDATE UI
+// 6. UPDATE UI UTAMA
 function updateUI() {
   const todayStr = getTodayDateStr();
 
@@ -1351,6 +1888,9 @@ function updateUI() {
           <div class="font-black text-tb-green mt-1 text-xs">${formatRp(t.nominal)}</div>
         </div>
         <div class="flex items-center gap-1.5">
+          <button onclick="bukaModalEditTx(${t.id})" title="Edit Transaksi" class="w-8 h-8 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center hover:bg-sky-200 active:scale-90 transition">
+            <i class="fa-solid fa-pen-to-square text-xs"></i>
+          </button>
           <button onclick="bukaModalStruk(${t.id})" title="Cetak Nota" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center hover:bg-emerald-200 active:scale-90 transition">
             <i class="fa-solid fa-receipt text-xs"></i>
           </button>
@@ -1446,14 +1986,11 @@ function updateUI() {
   document.getElementById('sisaKasBersih').innerText = formatRp(sisaSaldoTotal);
   document.getElementById('kasTunai').innerText = formatRp(saldoTunaiBersih);
   document.getElementById('kasQris').innerText = formatRp(saldoQrisBersih);
-  document.getElementById('repOmset').innerText = formatRp(omset);
-  document.getElementById('repPengeluaran').innerText = formatRp(totalPengeluaran);
-  document.getElementById('repSisaSaldo').innerText = formatRp(sisaSaldoTotal);
 
   hitungAnalitikTopPerforma(txFiltered);
 }
 
-// 6. NOTA WA KASIR
+// 7. NOTA WA KASIR
 function kirimNotaWA(txId) {
   const item = transaksi.find(t => t.id === txId);
   if (!item) return;
@@ -1557,7 +2094,7 @@ function hapusTransaksi(id) {
   updateUI();
 }
 
-// 7. PENGELUARAN (FORMAT 24 JAM)
+// 8. PENGELUARAN (DENGAN EDIT)
 function simpanPengeluaran() {
   const ket = document.getElementById('expKeterangan').value.trim();
   const kategori = document.getElementById('expKategori').value;
@@ -1598,12 +2135,58 @@ function renderPengeluaran() {
         <div class="font-extrabold text-gray-800">${item.keterangan}</div>
         <div class="text-[11px] text-gray-500">${item.kategori} • ${item.sumber} • ${item.jam} WIB</div>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <span class="font-black text-rose-700">-${formatRp(item.nominal)}</span>
+        <button onclick="bukaModalEditExp(${item.id})" class="text-sky-600 hover:text-sky-800 p-1 active:scale-90 transition"><i class="fa-solid fa-pen-to-square"></i></button>
         <button onclick="hapusPengeluaran(${item.id})" class="text-rose-500 hover:text-rose-700 p-1 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
   `).join('');
+}
+
+function bukaModalEditExp(id) {
+  const item = pengeluaran.find(p => p.id === id);
+  if (!item) return;
+
+  document.getElementById('editExpId').value = item.id;
+  document.getElementById('editExpKeterangan').value = item.keterangan;
+  document.getElementById('editExpSumber').value = item.sumber;
+  document.getElementById('editExpNominal').value = item.nominal;
+
+  const selKat = document.getElementById('editExpKategori');
+  selKat.innerHTML = masterKategoriPengeluaran.map(k => 
+    `<option value="${k}" ${k === item.kategori ? 'selected' : ''}>${k}</option>`
+  ).join('');
+
+  document.getElementById('modalEditExp').classList.remove('hide');
+}
+
+function tutupModalEditExp() {
+  document.getElementById('modalEditExp').classList.add('hide');
+}
+
+function simpanPerubahanPengeluaran() {
+  const id = parseInt(document.getElementById('editExpId').value);
+  const index = pengeluaran.findIndex(p => p.id === id);
+  if (index === -1) return;
+
+  const ket = document.getElementById('editExpKeterangan').value.trim();
+  const kat = document.getElementById('editExpKategori').value;
+  const sumber = document.getElementById('editExpSumber').value;
+  const nom = parseInt(document.getElementById('editExpNominal').value) || 0;
+
+  if (!ket || nom <= 0) { alert("Keterangan dan nominal pengeluaran harus diisi!"); return; }
+
+  pengeluaran[index].keterangan = ket;
+  pengeluaran[index].kategori = kat;
+  pengeluaran[index].sumber = sumber;
+  pengeluaran[index].nominal = nom;
+
+  localStorage.setItem('tb_pengeluaran_today', JSON.stringify(pengeluaran));
+  tutupModalEditExp();
+  renderPengeluaran();
+  updateUI();
+  alert("Catatan biaya pengeluaran berhasil diperbarui!");
 }
 
 function hapusPengeluaran(id) {
@@ -1614,7 +2197,7 @@ function hapusPengeluaran(id) {
   updateUI();
 }
 
-// 8. DATA PASIEN
+// 9. DATA PASIEN
 function renderDaftarPasien() {
   const container = document.getElementById('pasienListContainer');
   const keyword = (document.getElementById('cariPasienListInput')?.value || '').toLowerCase();
@@ -1651,10 +2234,60 @@ function renderDaftarPasien() {
           <button onclick="pilihPasienKeKasir('${wa}')" class="text-xs bg-amber-100 text-amber-950 border border-amber-300 font-extrabold px-3 py-1 rounded-xl active:scale-95 transition">
             Pilih Kasir
           </button>
+          <button onclick="bukaModalEditPasien('${wa}')" class="text-[10px] text-sky-700 bg-sky-50 border border-sky-200 font-bold px-2 py-0.5 rounded-lg active:scale-95 transition">
+            <i class="fa-solid fa-user-pen"></i> Edit
+          </button>
         </div>
       </div>
     `;
   }).join('');
+}
+
+function bukaModalEditPasien(wa) {
+  const p = databasePasien[wa];
+  if (!p) return;
+
+  document.getElementById('editPasienOldWa').value = wa;
+  document.getElementById('editPasienNama').value = p.nama;
+  document.getElementById('editPasienWa').value = wa;
+  document.getElementById('editPasienKeluhan').value = p.keluhan || '';
+
+  document.getElementById('modalEditPasien').classList.remove('hide');
+}
+
+function tutupModalEditPasien() {
+  document.getElementById('modalEditPasien').classList.add('hide');
+}
+
+function simpanPerubahanPasien() {
+  const oldWa = document.getElementById('editPasienOldWa').value;
+  const nama = document.getElementById('editPasienNama').value.trim();
+  const rawWa = document.getElementById('editPasienWa').value.trim();
+  const newWa = normalisasiNomorWA(rawWa) || rawWa;
+  const keluhan = document.getElementById('editPasienKeluhan').value.trim();
+
+  if (!nama || !newWa) { alert("Nama dan nomor WhatsApp pasien wajib diisi!"); return; }
+
+  const kunjunganTerakhir = databasePasien[oldWa]?.kunjunganTerakhir || '';
+  const layananTerakhir = databasePasien[oldWa]?.layananTerakhir || '';
+  const terapisTerakhir = databasePasien[oldWa]?.terapisTerakhir || '';
+
+  if (oldWa !== newWa) {
+    delete databasePasien[oldWa];
+  }
+
+  databasePasien[newWa] = {
+    nama,
+    keluhan,
+    kunjunganTerakhir,
+    layananTerakhir,
+    terapisTerakhir
+  };
+
+  localStorage.setItem('tb_database_pasien', JSON.stringify(databasePasien));
+  tutupModalEditPasien();
+  renderDaftarPasien();
+  alert("Data pasien berhasil diperbarui!");
 }
 
 function pilihPasienKeKasir(wa) {
@@ -1695,7 +2328,28 @@ function imporGoogleKontak(event) {
   reader.readAsText(file);
 }
 
-// 9. SUB-TAB MASTER DATA (BIAYA, TERAPIS, LAYANAN, PASIEN)
+// 10. SUB-TAB DI DALAM TAB LAPORAN (ANALITIK VS MASTER DATA)
+function switchSubLaporan(sub) {
+  const secAnalitik = document.getElementById('sub-laporan-analitik-section');
+  const secMaster = document.getElementById('sub-laporan-master-section');
+  const btnAnalitik = document.getElementById('btn-sub-lap-analitik');
+  const btnMaster = document.getElementById('btn-sub-lap-master');
+
+  if (sub === 'analitik') {
+    secAnalitik.classList.remove('hide');
+    secMaster.classList.add('hide');
+    btnAnalitik.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnMaster.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    updateUI();
+  } else {
+    secAnalitik.classList.add('hide');
+    secMaster.classList.remove('hide');
+    btnMaster.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAnalitik.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    switchSubMaster('biaya');
+  }
+}
+
 function switchSubMaster(sub) {
   ['biaya', 'terapis', 'layanan', 'pasien'].forEach(s => {
     const el = document.getElementById(`sub-${s}-section`);
@@ -1727,26 +2381,46 @@ function renderMasterTerapis() {
         <div class="font-extrabold text-gray-800 text-xs">${t.nama}</div>
         <div class="text-[11px] text-gray-500 mt-0.5">${t.kategori} • WA: <span class="font-mono text-emerald-700 font-bold">${t.wa || '-'}</span></div>
       </div>
-      <button onclick="hapusTerapis('${t.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+      <div class="flex gap-2">
+        <button onclick="editTerapis('${t.id}')" class="text-sky-600 hover:text-sky-800 p-1.5 active:scale-90 transition"><i class="fa-solid fa-pen-to-square"></i></button>
+        <button onclick="hapusTerapis('${t.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+      </div>
     </div>
-  `).join('');
+  `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada terapis.</p>';
 }
 
 function simpanMasterTerapis() {
+  const id = document.getElementById('editTerapisId').value;
   const nama = document.getElementById('masterNamaTerapis').value.trim();
   const kategori = document.getElementById('masterKategoriTerapis').value;
   const wa = document.getElementById('masterWaTerapis').value.trim();
 
   if (!nama) { alert("Nama terapis wajib diisi!"); return; }
 
-  masterTerapis.push({ id: Date.now().toString(), nama, kategori, wa });
-  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
+  if (id) {
+    const index = masterTerapis.findIndex(t => t.id === id);
+    if (index !== -1) masterTerapis[index] = { id, nama, kategori, wa };
+  } else {
+    masterTerapis.push({ id: Date.now().toString(), nama, kategori, wa });
+  }
 
+  localStorage.setItem('tb_master_terapis', JSON.stringify(masterTerapis));
   resetFormMasterTerapis();
   renderMasterTerapis();
   renderSelectTerapis();
   renderDropdownReservasi();
   alert("Data terapis berhasil disimpan!");
+}
+
+function editTerapis(id) {
+  const item = masterTerapis.find(t => t.id === id);
+  if (!item) return;
+  document.getElementById('editTerapisId').value = item.id;
+  document.getElementById('masterNamaTerapis').value = item.nama;
+  document.getElementById('masterKategoriTerapis').value = item.kategori;
+  document.getElementById('masterWaTerapis').value = item.wa || '';
+  document.getElementById('btnSubmitTerapis').innerText = 'Perbarui Terapis';
+  window.scrollTo({ top: 120, behavior: 'smooth' });
 }
 
 function hapusTerapis(id) {
@@ -1759,8 +2433,10 @@ function hapusTerapis(id) {
 }
 
 function resetFormMasterTerapis() {
+  document.getElementById('editTerapisId').value = '';
   document.getElementById('masterNamaTerapis').value = '';
   document.getElementById('masterWaTerapis').value = '';
+  document.getElementById('btnSubmitTerapis').innerText = 'Simpan Terapis';
 }
 
 function renderMasterLayanan() {
@@ -1771,26 +2447,47 @@ function renderMasterLayanan() {
         <div class="font-extrabold text-gray-800 text-xs">${l.nama}</div>
         <div class="text-[11px] text-gray-500 mt-0.5">Tarif: <span class="text-tb-green font-extrabold">${formatRp(l.harga)}</span> • Fee: ${formatRp(l.fee)}</div>
       </div>
-      <button onclick="hapusLayanan('${l.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+      <div class="flex gap-2">
+        <button onclick="editLayanan('${l.id}')" class="text-sky-600 hover:text-sky-800 p-1.5 active:scale-90 transition"><i class="fa-solid fa-pen-to-square"></i></button>
+        <button onclick="hapusLayanan('${l.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 active:scale-90 transition"><i class="fa-solid fa-trash"></i></button>
+      </div>
     </div>
-  `).join('');
+  `).join('') || '<p class="text-gray-400 text-center py-2">Belum ada layanan aktif.</p>';
 }
 
 function simpanMasterLayanan() {
+  const id = document.getElementById('editLayananId').value;
   const nama = document.getElementById('masterNamaLayanan').value.trim();
   const harga = parseInt(document.getElementById('masterHargaLayanan').value) || 0;
   const fee = parseInt(document.getElementById('masterFeeTerapis').value) || 0;
 
   if (!nama || harga <= 0) { alert("Nama dan tarif terapi harus valid!"); return; }
 
-  masterLayanan.push({ id: Date.now().toString(), nama, harga, fee });
-  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
+  if (id) {
+    const index = masterLayanan.findIndex(l => l.id === id);
+    if (index !== -1) masterLayanan[index] = { id, nama, harga, fee };
+  } else {
+    masterLayanan.push({ id: Date.now().toString(), nama, harga, fee });
+  }
 
+  localStorage.setItem('tb_master_layanan', JSON.stringify(masterLayanan));
   resetFormMasterLayanan();
   renderMasterLayanan();
   renderSelectLayanan();
   renderDropdownReservasi();
+  renderTombolPilihanCepat();
   alert("Layanan tersimpan!");
+}
+
+function editLayanan(id) {
+  const item = masterLayanan.find(l => l.id === id);
+  if (!item) return;
+  document.getElementById('editLayananId').value = item.id;
+  document.getElementById('masterNamaLayanan').value = item.nama;
+  document.getElementById('masterHargaLayanan').value = item.harga;
+  document.getElementById('masterFeeTerapis').value = item.fee;
+  document.getElementById('btnSubmitLayanan').innerText = 'Perbarui Layanan';
+  window.scrollTo({ top: 120, behavior: 'smooth' });
 }
 
 function hapusLayanan(id) {
@@ -1800,12 +2497,15 @@ function hapusLayanan(id) {
   renderMasterLayanan();
   renderSelectLayanan();
   renderDropdownReservasi();
+  renderTombolPilihanCepat();
 }
 
 function resetFormMasterLayanan() {
+  document.getElementById('editLayananId').value = '';
   document.getElementById('masterNamaLayanan').value = '';
   document.getElementById('masterHargaLayanan').value = '';
   document.getElementById('masterFeeTerapis').value = '';
+  document.getElementById('btnSubmitLayanan').innerText = 'Simpan Layanan';
 }
 
 function renderSelectTerapis() {
@@ -1823,7 +2523,7 @@ function renderSelectLayanan() {
   select2.innerHTML = `<option value="">-- Tidak ada layanan tambahan --</option>` + options;
 }
 
-// 10. BACKUP & EXPORT
+// 11. BACKUP & EXPORT
 function exportLaporanCSV() {
   const txFiltered = filterDataBerdasarkanRentang(transaksi);
   const expFiltered = filterDataBerdasarkanRentang(pengeluaran);
@@ -1917,6 +2617,7 @@ function restoreDataJSON(event) {
       renderSelectTerapis();
       renderSelectLayanan();
       renderDropdownReservasi();
+      renderTombolPilihanCepat();
       renderDaftarReservasi();
       renderPengeluaran();
       updateUI();
@@ -1935,9 +2636,9 @@ function resetSemuaData() {
   location.reload();
 }
 
-// 11. NAVIGASI TAB MENU UTAMA (4 MENU UTAMA)
+// 12. NAVIGASI TAB MENU UTAMA (3 MENU UTAMA: BOOKING, KASIR, LAPORAN & MASTER)
 function switchTab(tab) {
-  ['dashboard', 'reservasi', 'laporan', 'master', 'pengaturan'].forEach(t => {
+  ['dashboard', 'reservasi', 'laporan', 'pengaturan'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) {
       el.classList.add('hide');
@@ -1972,14 +2673,13 @@ function switchTab(tab) {
   }
 
   if (tab === 'dashboard' || tab === 'laporan') updateUI();
-  if (tab === 'reservasi') renderDaftarReservasi();
-  if (tab === 'master') {
-    switchSubMaster('biaya');
-  }
+  if (tab === 'reservasi') switchSubBooking('form');
+  if (tab === 'laporan') switchSubLaporan('analitik');
 }
 
-// Inisialisasi awal
+// Inisialisasi awal saat aplikasi dibuka
 document.getElementById('resTanggal').value = getTodayDateStr();
+document.getElementById('resJam').value = getJam24Format();
 document.getElementById('filterTglMulai').value = tglMulaiLaporan;
 document.getElementById('filterTglSampai').value = tglSampaiLaporan;
 document.getElementById('expKategori').innerHTML = masterKategoriPengeluaran.map(k => `<option value="${k}">${k}</option>`).join('');
@@ -1987,6 +2687,7 @@ document.getElementById('expKategori').innerHTML = masterKategoriPengeluaran.map
 renderSelectTerapis();
 renderSelectLayanan();
 renderDropdownReservasi();
+renderTombolPilihanCepat();
 renderDaftarReservasi();
 renderPengeluaran();
 updateUI();
