@@ -120,7 +120,7 @@ input:focus, select:focus, textarea:focus {
 </head>
 <body class="pb-32">
 
-<!-- Header Branding -->
+<!-- Header Branding Mobile -->
 <header class="bg-tb-gradient text-white px-5 pt-7 pb-8 rounded-b-[2.5rem] text-center shadow-lg relative overflow-hidden">
   <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl"></div>
   <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl"></div>
@@ -157,10 +157,11 @@ input:focus, select:focus, textarea:focus {
       <span id="badgePasien" class="text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-semibold transition-all">Pasien Baru</span>
     </div>
 
+    <!-- Input Nomor WA dengan Live Autocomplete -->
     <div class="relative">
       <label class="text-[11px] font-bold text-gray-700 flex justify-between">
         <span>Nomor WhatsApp Pasien</span>
-        <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis muncul saat diketik</span>
+        <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis muncul</span>
       </label>
       <div class="relative mt-1">
         <input type="tel" id="custWA" oninput="cariPasienOtomatis()" autocomplete="off" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
@@ -187,20 +188,14 @@ input:focus, select:focus, textarea:focus {
       <input type="text" id="custName" placeholder="Contoh: Bapak Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
     </div>
 
-    <!-- Area Pemilihan Layanan Dengan Pilihan Cepat -->
-    <div class="space-y-2.5 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
+    <!-- Pemilihan Layanan Kasir -->
+    <div class="space-y-2 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
       <div>
-        <div class="flex justify-between items-center mb-1.5">
-          <label class="text-[11px] font-bold text-emerald-950">Pilih Cepat Paket Terapi</label>
-          <span class="text-[10px] text-emerald-700 font-bold">1-Klik Pilih</span>
-        </div>
-        <div id="quickPackageKasir" class="grid grid-cols-2 gap-1.5 mb-2"></div>
-
-        <label class="text-[11px] font-bold text-emerald-950 flex justify-between mt-2">
+        <label class="text-[11px] font-bold text-emerald-950 flex justify-between">
           <span>Layanan Utama</span>
           <span class="text-[10px] text-emerald-700 font-bold">Wajib</span>
         </label>
-        <select id="layananSelect1" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs"></select>
+        <select id="layananSelect1" class="w-full mt-1 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs"></select>
       </div>
 
       <div>
@@ -208,7 +203,7 @@ input:focus, select:focus, textarea:focus {
           <span>Layanan Tambahan</span>
           <span class="text-[10px] text-gray-500 font-medium">Opsional</span>
         </label>
-        <select id="layananSelect2" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs">
+        <select id="layananSelect2" class="w-full mt-1 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 text-gray-800 font-semibold shadow-xs">
           <option value="">-- Tidak ada layanan tambahan --</option>
         </select>
       </div>
@@ -242,16 +237,16 @@ input:focus, select:focus, textarea:focus {
   </section>
 </main>
 
-<!-- ================= TAB 2: MENU BOOKING & ANTREAN ================= -->
+<!-- ================= TAB 2: MENU BOOKING & JADWAL ANTREAN ================= -->
 <main id="tab-reservasi" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   
-  <!-- Sub-Navigasi Beralih: Form Booking vs Antrean -->
+  <!-- Sub-Navigasi 2 Bagian di Menu Booking -->
   <div class="grid grid-cols-2 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-xs font-bold text-center">
-    <button onclick="switchSubBooking('form')" id="btn-sub-bkg-form" class="py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
-      <i class="fa-solid fa-calendar-plus text-sm"></i> Form Booking
+    <button onclick="switchSubBooking('form')" id="btn-sub-bkg-form" class="py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-calendar-plus text-xs"></i> Form Booking
     </button>
-    <button onclick="switchSubBooking('antrean')" id="btn-sub-bkg-antrean" class="py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
-      <i class="fa-solid fa-list-check text-sm"></i> Antrean & Riwayat
+    <button onclick="switchSubBooking('antrean')" id="btn-sub-bkg-antrean" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-list-check text-xs"></i> Antrean & Riwayat
     </button>
   </div>
 
@@ -265,7 +260,7 @@ input:focus, select:focus, textarea:focus {
         <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Booking Jadwal</span>
       </div>
 
-      <!-- Pilihan Tipe Layanan -->
+      <!-- Tipe Layanan: Datang ke Klinik vs Layanan ke Rumah -->
       <div>
         <label class="text-[11px] font-bold text-gray-700 block mb-1">Tipe Layanan</label>
         <div class="grid grid-cols-2 gap-2">
@@ -274,20 +269,27 @@ input:focus, select:focus, textarea:focus {
             <i class="fa-solid fa-clinic-medical"></i> Datang ke Klinik
           </label>
           <label id="labelHomecare" class="cursor-pointer border-2 border-gray-200 bg-gray-50 text-gray-600 p-2.5 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs transition">
-            <input type="radio" name="resTipeLayanan" value="Home Care" onchange="toggleTipeLayananBooking()" class="hidden">
+            <input type="radio" name="resTipeLayanan" value="Layanan ke Rumah" onchange="toggleTipeLayananBooking()" class="hidden">
             <i class="fa-solid fa-house-chimney-medical"></i> Layanan ke Rumah
           </label>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5">
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">Tanggal Kedatangan</label>
-          <input type="date" id="resTanggal" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-gray-700">Pukul / Jam (Format 24 Jam)</label>
-          <input type="time" id="resJam" class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+      <!-- Tanggal & Jam (Pilihan Jam dan Menit Terpisah) -->
+      <div>
+        <label class="text-[11px] font-bold text-gray-700 block mb-1">Tanggal & Waktu Kedatangan</label>
+        <div class="grid grid-cols-5 gap-2">
+          <div class="col-span-3">
+            <input type="date" id="resTanggal" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+          </div>
+          <div class="col-span-1">
+            <select id="resJamPukul" class="w-full px-1.5 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 font-mono font-bold text-gray-800 text-center">
+            </select>
+          </div>
+          <div class="col-span-1">
+            <select id="resJamMenit" class="w-full px-1.5 py-2 bg-white border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 font-mono font-bold text-gray-800 text-center">
+            </select>
+          </div>
         </div>
       </div>
 
@@ -295,7 +297,7 @@ input:focus, select:focus, textarea:focus {
       <div class="relative">
         <label class="text-[11px] font-bold text-gray-700 flex justify-between">
           <span>Nomor WhatsApp Pasien</span>
-          <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis muncul</span>
+          <span class="text-emerald-700 font-semibold text-[10px]">Prediksi otomatis</span>
         </label>
         <div class="relative mt-1">
           <input type="tel" id="resWA" oninput="isiOtomatisReservasiPasien()" autocomplete="off" placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
@@ -309,7 +311,7 @@ input:focus, select:focus, textarea:focus {
         <input type="text" id="resNama" placeholder="Contoh: Bapak / Ibu Abdullah" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-emerald-600 focus:bg-white">
       </div>
 
-      <!-- Kolom Alamat Khusus Home Care -->
+      <!-- Kolom Alamat Khusus Layanan ke Rumah -->
       <div id="boxAlamatHomeCare" class="bg-amber-50/70 border border-amber-200 p-3 rounded-2xl space-y-1.5 hide">
         <label class="text-[11px] font-bold text-amber-950 flex items-center gap-1.5">
           <i class="fa-solid fa-map-location-dot text-amber-600"></i> Alamat Rumah Lengkap & Patokan
@@ -318,26 +320,18 @@ input:focus, select:focus, textarea:focus {
         <p class="text-[9px] text-amber-800 italic">*Terapis kami akan berkunjung ke alamat yang tercantum.</p>
       </div>
 
-      <!-- Pilihan Layanan dengan Tombol Pintas Paket Cepat (Reservasi) -->
-      <div class="space-y-2 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
-        <div class="flex justify-between items-center mb-1">
-          <label class="text-[11px] font-bold text-emerald-950">Pilih Cepat Paket Booking</label>
-          <span class="text-[10px] text-emerald-700 font-bold">1-Klik</span>
+      <!-- Pemilihan Layanan & Terapis Form Booking -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="text-[11px] font-bold text-gray-700">Pilihan Terapi</label>
+          <select id="resLayanan" class="w-full mt-1 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600 text-gray-800"></select>
         </div>
-        <div id="quickPackageRes" class="grid grid-cols-2 gap-1.5 mb-2"></div>
-
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="text-[11px] font-bold text-gray-700">Pilihan Terapi</label>
-            <select id="resLayanan" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-gray-700 flex justify-between">
-              <span>Pilihan Terapis</span>
-              <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
-            </label>
-            <select id="resTerapis" class="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600"></select>
-          </div>
+        <div>
+          <label class="text-[11px] font-bold text-gray-700 flex justify-between">
+            <span>Pilihan Terapis</span>
+            <span class="text-gray-400 font-normal text-[10px]">Opsional</span>
+          </label>
+          <select id="resTerapis" class="w-full mt-1 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-emerald-600 text-gray-800"></select>
         </div>
       </div>
 
@@ -386,17 +380,16 @@ input:focus, select:focus, textarea:focus {
 <!-- ================= TAB 3: MENU LAPORAN & MASTER DATA ================= -->
 <main id="tab-laporan" class="px-4 mt-4 space-y-4 max-w-md mx-auto hide fade-in-tab">
   
-  <!-- Sub-Navigasi Menu Laporan: Analitik vs Master Data -->
   <div class="grid grid-cols-2 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-xs font-bold text-center">
-    <button onclick="switchSubLaporan('analitik')" id="btn-sub-lap-analitik" class="py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
-      <i class="fa-solid fa-chart-pie text-sm"></i> Analitik & Keuangan
+    <button onclick="switchSubLaporan('analitik')" id="btn-sub-lap-analitik" class="py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-chart-pie text-xs"></i> Analitik & Finansial
     </button>
-    <button onclick="switchSubLaporan('master')" id="btn-sub-lap-master" class="py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
-      <i class="fa-solid fa-sliders text-sm"></i> Kelola Master Data
+    <button onclick="switchSubLaporan('master')" id="btn-sub-lap-master" class="py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-sliders text-xs"></i> Kelola Master Data
     </button>
   </div>
 
-  <!-- BAGIAN 1: ANALITIK & KEUANGAN -->
+  <!-- BAGIAN 1: ANALITIK KEUANGAN & TOP PERFORMA -->
   <div id="sub-laporan-analitik-section" class="space-y-4">
     <!-- Filter Rentang Tanggal -->
     <section class="glass-card p-4 rounded-3xl space-y-3">
@@ -508,7 +501,7 @@ input:focus, select:focus, textarea:focus {
         <h3 class="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
           <i class="fa-solid fa-venus-mars text-tb-green"></i> Demografi Pasien
         </h3>
-        <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-bold" id="totalPasienPeriodeBadge">0 Pasien</span>
+        <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full font-bold" id="totalPasienPeriodeBadge">0 Pasien</span>
       </div>
 
       <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden flex shadow-inner">
@@ -545,7 +538,7 @@ input:focus, select:focus, textarea:focus {
       </div>
     </section>
 
-    <!-- Saldo Kas Tunai & Bank -->
+    <!-- Saldo Laci Kas & Bank -->
     <div class="space-y-2.5">
       <div class="card-stat card-wallet-cash p-3.5 rounded-3xl flex items-center justify-between shadow-xs">
         <div class="flex items-center gap-3">
@@ -571,7 +564,7 @@ input:focus, select:focus, textarea:focus {
     </div>
   </div>
 
-  <!-- BAGIAN 2: MASTER DATA & OPERASIONAL (DIDALAM TAB LAPORAN) -->
+  <!-- BAGIAN 2: MASTER DATA & OPERASIONAL -->
   <div id="sub-laporan-master-section" class="space-y-4 hide">
     <!-- Sub-Navigasi 4 Pilihan Master -->
     <div class="grid grid-cols-4 bg-gray-200/80 p-1.5 rounded-2xl gap-1 shadow-inner text-[10px] font-bold text-center">
@@ -644,7 +637,7 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div>
             <label class="text-[11px] font-bold text-gray-700">No. WhatsApp</label>
-            <input type="tel" id="masterWaTerapis" placeholder="08xxxxxxxxxx" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
+            <input type="tel" id="masterWaTerapis" placeholder="08xxxxxxxxxx" class="w-full mt-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs outline-none focus:border-emerald-600 focus:bg-white font-mono">
           </div>
         </div>
         <div class="flex gap-2 pt-1">
@@ -900,10 +893,10 @@ input:focus, select:focus, textarea:focus {
   </div>
 </div>
 
-<!-- Bottom Navigation 3 Menu Utama (Ramping & Bersih) -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-emerald-900/10 px-6 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
+<!-- Bottom Navigation Ramping Mobile (3 Menu Utama) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-emerald-900/10 px-4 py-2 flex justify-between items-center text-gray-400 z-40 shadow-[0_-8px_25px_rgba(0,0,0,0.06)]">
   <button onclick="switchTab('reservasi')" id="nav-reservasi" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-calendar-check text-lg"></i>
+    <i class="fa-solid fa-calendar-check text-base"></i>
     <span class="text-[9.5px] mt-1 whitespace-nowrap font-bold">Booking</span>
   </button>
 
@@ -916,7 +909,7 @@ input:focus, select:focus, textarea:focus {
   </div>
 
   <button onclick="switchTab('laporan')" id="nav-laporan" class="flex flex-col items-center hover:text-emerald-800 flex-1 py-1 active:scale-90 transition">
-    <i class="fa-solid fa-chart-pie text-lg"></i>
+    <i class="fa-solid fa-chart-pie text-base"></i>
     <span class="text-[9.5px] mt-1 whitespace-nowrap font-bold">Laporan & Master</span>
   </button>
 </nav>
@@ -982,6 +975,30 @@ function getJam24Format(d = new Date()) {
   const jam = String(d.getHours()).padStart(2, '0');
   const menit = String(d.getMinutes()).padStart(2, '0');
   return `${jam}:${menit}`;
+}
+
+// GENERATOR OPSI JAM 24 JAM DAN MENIT TERPISAH
+function renderOpsiJamMenit24() {
+  const selJam = document.getElementById('resJamPukul');
+  const selMenit = document.getElementById('resJamMenit');
+  if (!selJam || !selMenit) return;
+
+  const currentHour = new Date().getHours();
+  let defaultHour = String(currentHour).padStart(2, '0');
+  let optJam = '';
+  for (let h = 0; h <= 23; h++) {
+    const hh = String(h).padStart(2, '0');
+    optJam += `<option value="${hh}" ${hh === defaultHour ? 'selected' : ''}>${hh}</option>`;
+  }
+  selJam.innerHTML = optJam;
+
+  let optMenit = '';
+  for (let m = 0; m < 60; m += 5) {
+    const mm = String(m).padStart(2, '0');
+    optMenit += `<option value="${mm}">${mm}</option>`;
+  }
+  selMenit.innerHTML = optMenit;
+  selMenit.value = "00";
 }
 
 function formatTanggalIndo(tglStr) {
@@ -1188,7 +1205,7 @@ function cariPasienOtomatis() {
     namaInput.value = p.nama;
     keluhanInput.value = p.keluhan || '';
     badge.innerText = "Pasien Lama (Terdaftar)";
-    badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold border border-emerald-300";
+    badge.className = "text-[10px] px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold border border-emerald-300";
 
     const last = cariInfoKunjunganTerakhir(wa, p.nama);
     if (last && last.tanggal) {
@@ -1204,51 +1221,6 @@ function cariPasienOtomatis() {
     badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-bold";
     banner.classList.add('hide');
   }
-}
-
-// PILIHAN CEPAT PAKET LAYANAN
-function renderTombolPilihanCepat() {
-  const containerKasir = document.getElementById('quickPackageKasir');
-  const containerRes = document.getElementById('quickPackageRes');
-
-  const abjad = ['A', 'B', 'C', 'D', 'E', 'F'];
-
-  const htmlKasir = masterLayanan.map((l, idx) => {
-    const labelPaket = `Paket ${abjad[idx] || (idx + 1)}`;
-    return `
-      <button type="button" onclick="pilihCepatLayananKasir('${l.id}')" class="text-left p-2 rounded-xl border border-emerald-300/80 bg-white hover:bg-emerald-100/70 active:scale-95 transition shadow-xs">
-        <div class="flex items-center justify-between">
-          <span class="font-black text-emerald-900 text-[11px]">${labelPaket}</span>
-          <span class="text-[9px] font-bold text-emerald-700 font-mono">${formatRp(l.harga)}</span>
-        </div>
-        <div class="text-[9.5px] text-gray-600 truncate mt-0.5">${l.nama}</div>
-      </button>
-    `;
-  }).join('');
-
-  const htmlRes = masterLayanan.map((l, idx) => {
-    const labelPaket = `Paket ${abjad[idx] || (idx + 1)}`;
-    return `
-      <button type="button" onclick="pilihCepatLayananRes('${l.nama}')" class="text-left p-2 rounded-xl border border-emerald-300/80 bg-white hover:bg-emerald-100/70 active:scale-95 transition shadow-xs">
-        <div class="flex items-center justify-between">
-          <span class="font-black text-emerald-900 text-[11px]">${labelPaket}</span>
-          <span class="text-[9px] font-bold text-emerald-700 font-mono">${formatRp(l.harga)}</span>
-        </div>
-        <div class="text-[9.5px] text-gray-600 truncate mt-0.5">${l.nama}</div>
-      </button>
-    `;
-  }).join('');
-
-  if (containerKasir) containerKasir.innerHTML = htmlKasir;
-  if (containerRes) containerRes.innerHTML = htmlRes;
-}
-
-function pilihCepatLayananKasir(layananId) {
-  document.getElementById('layananSelect1').value = layananId;
-}
-
-function pilihCepatLayananRes(layananNama) {
-  document.getElementById('resLayanan').value = layananNama;
 }
 
 // 2. SIMPAN TRANSAKSI KASIR
@@ -1392,7 +1364,7 @@ function simpanPerubahanTransaksi() {
   alert("Data transaksi kasir berhasil diperbarui!");
 }
 
-// ================= 3. FITUR RESERVASI =================
+// ================= 3. FITUR RESERVASI (LAYANAN KE RUMAH & SUB-TAB) =================
 function switchSubBooking(sub) {
   const formSec = document.getElementById('sub-booking-form-section');
   const antreanSec = document.getElementById('sub-booking-antrean-section');
@@ -1402,19 +1374,19 @@ function switchSubBooking(sub) {
   if (sub === 'form') {
     formSec.classList.remove('hide');
     antreanSec.classList.add('hide');
-    btnForm.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
-    btnAntrean.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnForm.className = "py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAntrean.className = "py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
   } else {
     formSec.classList.add('hide');
     antreanSec.classList.remove('hide');
-    btnAntrean.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
-    btnForm.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAntrean.className = "py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnForm.className = "py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
     renderDaftarReservasi();
   }
 }
 
 function toggleTipeLayananBooking() {
-  const radioHomecare = document.querySelector('input[name="resTipeLayanan"][value="Home Care"]').checked;
+  const radioHomecare = document.querySelector('input[name="resTipeLayanan"][value="Layanan ke Rumah"]').checked;
   const boxAlamat = document.getElementById('boxAlamatHomeCare');
   const labelKlinik = document.getElementById('labelKlinik');
   const labelHomecare = document.getElementById('labelHomecare');
@@ -1458,14 +1430,13 @@ function simpanReservasi() {
   const tipeLayanan = document.querySelector('input[name="resTipeLayanan"]:checked')?.value || 'Klinik';
   
   let tgl = document.getElementById('resTanggal').value;
-  let jam = document.getElementById('resJam').value;
+  const jamPukul = document.getElementById('resJamPukul').value || '10';
+  const jamMenit = document.getElementById('resJamMenit').value || '00';
+  const jamGabungan = `${jamPukul}:${jamMenit}`;
+
   if (!tgl) {
     tgl = getTodayDateStr();
     document.getElementById('resTanggal').value = tgl;
-  }
-  if (!jam) {
-    jam = getJam24Format();
-    document.getElementById('resJam').value = jam;
   }
 
   const rawWA = document.getElementById('resWA').value.trim();
@@ -1487,8 +1458,8 @@ function simpanReservasi() {
     return;
   }
 
-  if (tipeLayanan === 'Home Care' && !alamat) {
-    alert("Untuk layanan Home Care ke rumah, alamat lengkap wajib diisi!");
+  if (tipeLayanan === 'Layanan ke Rumah' && !alamat) {
+    alert("Untuk Layanan ke Rumah, alamat lengkap wajib diisi!");
     document.getElementById('resAlamat').focus();
     return;
   }
@@ -1502,7 +1473,7 @@ function simpanReservasi() {
     tipe: tipeLayanan,
     alamat: alamat || '-',
     tanggalBooking: tgl,
-    jamBooking: jam,
+    jamBooking: jamGabungan,
     wa: wa,
     nama: nama,
     layanan: layanan,
@@ -1525,12 +1496,12 @@ function simpanReservasi() {
     kirimBuktiReservasiWA(newRes.id);
   }
 
+  // Reset form
   document.getElementById('resNama').value = '';
   document.getElementById('resWA').value = '';
   document.getElementById('resAlamat').value = '';
   document.getElementById('resCatatan').value = '';
   document.getElementById('resTerapis').value = '';
-  document.getElementById('resJam').value = getJam24Format();
   document.getElementById('suggestBoxRes').classList.add('hide');
 
   switchSubBooking('antrean');
@@ -1554,7 +1525,7 @@ function renderDaftarReservasi() {
           <div class="text-[11px] font-mono text-emerald-700 font-bold">${r.wa}</div>
         </div>
         <div class="flex gap-1 items-center">
-          <span class="text-[9px] ${r.tipe === 'Home Care' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-sky-100 text-sky-900 border-sky-300'} border font-black px-2 py-0.5 rounded-full">
+          <span class="text-[9px] ${r.tipe === 'Layanan ke Rumah' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-sky-100 text-sky-900 border-sky-300'} border font-black px-2 py-0.5 rounded-full">
             ${r.tipe || 'Klinik'}
           </span>
           <span class="text-[9px] bg-emerald-100 text-emerald-900 border border-emerald-300 font-black px-2 py-0.5 rounded-full">
@@ -1579,7 +1550,7 @@ function renderDaftarReservasi() {
         </div>` : ''}
         ${r.alamat && r.alamat !== '-' ? `
         <div class="text-gray-600 bg-amber-50/80 p-2 rounded-lg border border-amber-200 mt-1">
-          <b>Alamat Home Care:</b> ${r.alamat}
+          <b>Alamat Tujuan:</b> ${r.alamat}
         </div>` : ''}
         ${r.catatan && r.catatan !== '-' ? `<div class="text-gray-500 pt-0.5">Catatan: <i class="text-gray-700 font-medium">${r.catatan}</i></div>` : ''}
       </div>
@@ -1605,7 +1576,7 @@ function renderDaftarReservasi() {
   `).join('');
 }
 
-// BUKTI RESERVASI VIA WHATSAPP
+// BUKTI RESERVASI VIA WHATSAPP (MURNI "LAYANAN KE RUMAH")
 function kirimBuktiReservasiWA(resId) {
   const r = dataReservasi.find(item => item.id === resId);
   if (!r) return;
@@ -1614,7 +1585,15 @@ function kirimBuktiReservasiWA(resId) {
   if (noWA.startsWith('0')) noWA = '62' + noWA.slice(1);
 
   const barisTerapis = (r.terapis && r.terapis !== '-') ? `\nTerapis : *${r.terapis}*` : '';
-  const barisTipe = r.tipe === 'Home Care' ? `\nTipe Layanan : *Layanan ke Rumah (Home Care)*\nAlamat Tujuan : *${r.alamat}*` : `\nTipe Layanan : *Datang ke Klinik*`;
+  const isHomecare = r.tipe === 'Layanan ke Rumah';
+
+  const barisTipe = isHomecare 
+    ? `\nTipe Layanan : *Layanan ke Rumah*\nAlamat Tujuan : *${r.alamat}*` 
+    : `\nTipe Layanan : *Datang ke Klinik*`;
+
+  const catatanLayanan = isHomecare 
+    ? `*Catatan Layanan ke Rumah:*\nTerapis kami akan datang ke alamat Anda sesuai jadwal yang sudah ditentukan.\n\nJika ada kendala waktu atau ingin melakukan penyesuaian jadwal/alamat, jangan ragu untuk mengabari kami ya.\n\nSampai jumpa saat sesi terapi di rumah Anda! Semoga sehat dan segar selalu.`
+    : `*Catatan Kedatangan:*\nMohon datang sesuai jadwal yang sudah ditentukan.\n\nJika ada kendala waktu atau ingin melakukan penyesuaian jadwal, jangan ragu untuk mengabari kami ya.\n\nSampai jumpa di Teman Bekam! Semoga sehat dan segar selalu.`;
 
   const pesan = 
 `Halo Bapak/Ibu *${r.nama}*, salam hangat dari Teman Bekam 😊
@@ -1631,12 +1610,7 @@ Paket Terapi : *${r.layanan}*${barisTerapis}
 Status : *Terkonfirmasi*
 -----------------------------------------------
 
-*Catatan:*
-Mohon datang sesuai jadwal yang sudah ditentukan.
-
-Jika ada kendala waktu atau ingin melakukan penyesuaian jadwal, jangan ragu untuk mengabari kami ya.
-
-Sampai jumpa di Teman Bekam! Semoga sehat dan segar selalu.
+${catatanLayanan}
 *Teman Bekam - Ahlinya Bekam & Relaksasi*`;
 
   window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`, '_blank');
@@ -1654,9 +1628,9 @@ function cetakTiketReservasi(resId) {
     </div>
   ` : '';
 
-  const barisHomeCareHtml = (r.tipe === 'Home Care' && r.alamat && r.alamat !== '-') ? `
+  const barisHomeCareHtml = (r.tipe === 'Layanan ke Rumah' && r.alamat && r.alamat !== '-') ? `
     <div style="margin-top: 4px; padding: 4px; background: #eee; border-radius: 4px;">
-      <b>Alamat Home Care:</b> ${r.alamat}
+      <b>Alamat Tujuan:</b> ${r.alamat}
     </div>
   ` : '';
 
@@ -1712,8 +1686,8 @@ function checkInKeKasir(resId) {
   document.getElementById('custName').value = r.nama;
 
   let catatanKasir = r.catatan !== '-' ? r.catatan : '';
-  if (r.tipe === 'Home Care') {
-    catatanKasir = `[HOME CARE] ${r.alamat} ${catatanKasir ? '• ' + catatanKasir : ''}`.trim();
+  if (r.tipe === 'Layanan ke Rumah') {
+    catatanKasir = `[LAYANAN KE RUMAH] ${r.alamat} ${catatanKasir ? '• ' + catatanKasir : ''}`.trim();
   }
   document.getElementById('custKeluhan').value = catatanKasir;
 
@@ -2094,7 +2068,7 @@ function hapusTransaksi(id) {
   updateUI();
 }
 
-// 8. PENGELUARAN (DENGAN EDIT)
+// 8. PENGELUARAN
 function simpanPengeluaran() {
   const ket = document.getElementById('expKeterangan').value.trim();
   const kategori = document.getElementById('expKategori').value;
@@ -2328,7 +2302,7 @@ function imporGoogleKontak(event) {
   reader.readAsText(file);
 }
 
-// 10. SUB-TAB DI DALAM TAB LAPORAN (ANALITIK VS MASTER DATA)
+// 10. SUB-TAB MASTER DATA
 function switchSubLaporan(sub) {
   const secAnalitik = document.getElementById('sub-laporan-analitik-section');
   const secMaster = document.getElementById('sub-laporan-master-section');
@@ -2338,14 +2312,14 @@ function switchSubLaporan(sub) {
   if (sub === 'analitik') {
     secAnalitik.classList.remove('hide');
     secMaster.classList.add('hide');
-    btnAnalitik.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
-    btnMaster.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAnalitik.className = "py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnMaster.className = "py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
     updateUI();
   } else {
     secAnalitik.classList.add('hide');
     secMaster.classList.remove('hide');
-    btnMaster.className = "py-2.5 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
-    btnAnalitik.className = "py-2.5 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnMaster.className = "py-2 rounded-xl bg-white text-tb-green shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5";
+    btnAnalitik.className = "py-2 rounded-xl text-gray-600 hover:text-gray-900 transition active:scale-95 flex items-center justify-center gap-1.5";
     switchSubMaster('biaya');
   }
 }
@@ -2475,7 +2449,6 @@ function simpanMasterLayanan() {
   renderMasterLayanan();
   renderSelectLayanan();
   renderDropdownReservasi();
-  renderTombolPilihanCepat();
   alert("Layanan tersimpan!");
 }
 
@@ -2497,7 +2470,6 @@ function hapusLayanan(id) {
   renderMasterLayanan();
   renderSelectLayanan();
   renderDropdownReservasi();
-  renderTombolPilihanCepat();
 }
 
 function resetFormMasterLayanan() {
@@ -2617,7 +2589,6 @@ function restoreDataJSON(event) {
       renderSelectTerapis();
       renderSelectLayanan();
       renderDropdownReservasi();
-      renderTombolPilihanCepat();
       renderDaftarReservasi();
       renderPengeluaran();
       updateUI();
@@ -2636,7 +2607,7 @@ function resetSemuaData() {
   location.reload();
 }
 
-// 12. NAVIGASI TAB MENU UTAMA (3 MENU UTAMA: BOOKING, KASIR, LAPORAN & MASTER)
+// 12. NAVIGASI TAB MENU UTAMA (3 MENU UTAMA MOBILE)
 function switchTab(tab) {
   ['dashboard', 'reservasi', 'laporan', 'pengaturan'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
@@ -2672,14 +2643,18 @@ function switchTab(tab) {
     }
   }
 
-  if (tab === 'dashboard' || tab === 'laporan') updateUI();
-  if (tab === 'reservasi') switchSubBooking('form');
-  if (tab === 'laporan') switchSubLaporan('analitik');
+  if (tab === 'dashboard') updateUI();
+  if (tab === 'reservasi') {
+    switchSubBooking('form');
+  }
+  if (tab === 'laporan') {
+    switchSubLaporan('analitik');
+  }
 }
 
 // Inisialisasi awal saat aplikasi dibuka
 document.getElementById('resTanggal').value = getTodayDateStr();
-document.getElementById('resJam').value = getJam24Format();
+renderOpsiJamMenit24();
 document.getElementById('filterTglMulai').value = tglMulaiLaporan;
 document.getElementById('filterTglSampai').value = tglSampaiLaporan;
 document.getElementById('expKategori').innerHTML = masterKategoriPengeluaran.map(k => `<option value="${k}">${k}</option>`).join('');
@@ -2687,7 +2662,6 @@ document.getElementById('expKategori').innerHTML = masterKategoriPengeluaran.map
 renderSelectTerapis();
 renderSelectLayanan();
 renderDropdownReservasi();
-renderTombolPilihanCepat();
 renderDaftarReservasi();
 renderPengeluaran();
 updateUI();
