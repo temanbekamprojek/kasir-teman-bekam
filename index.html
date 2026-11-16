@@ -956,7 +956,32 @@ const LOGO_TEMAN_BEKAM_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(`
 `);
 
 const URL_LOGO_ONLINE = "https://lh3.googleusercontent.com/d/1WWjwADg0bnye5BQuzwSqLQy4g2fhhckV";
+let LOGO_STRUK_DATA_URL = URL_LOGO_ONLINE;
 let currentStrukFileName = "Struk_TemanBekam";
+
+// Preload logo Google ke Base64 DataURL agar aman saat dirender ke JPG oleh html2canvas
+(function preloadLogoUntukStruk() {
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.referrerPolicy = "no-referrer";
+  img.onload = function() {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 200;
+      canvas.height = img.naturalHeight || 200;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      LOGO_STRUK_DATA_URL = canvas.toDataURL('image/png');
+    } catch (e) {
+      // Jika CORS diblokir browser, tetap gunakan URL_LOGO_ONLINE
+      LOGO_STRUK_DATA_URL = URL_LOGO_ONLINE;
+    }
+  };
+  img.onerror = function() {
+    LOGO_STRUK_DATA_URL = LOGO_TEMAN_BEKAM_SVG;
+  };
+  img.src = URL_LOGO_ONLINE;
+})();
 
 function renderVectorLogo(imgElement) {
   imgElement.onerror = null;
@@ -1655,7 +1680,7 @@ ${catatanLayanan}
   window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
 
-// Cetak Tiket Struk Reservasi
+// Cetak Tiket Struk Reservasi (Menggunakan Logo Teman Bekam Google)
 function cetakTiketReservasi(resId) {
   const r = dataReservasi.find(item => item.id === resId);
   if (!r) return;
@@ -1677,7 +1702,7 @@ function cetakTiketReservasi(resId) {
 
   const htmlStruk = `
     <div style="text-align: center; margin-bottom: 8px;">
-      <img src="${LOGO_TEMAN_BEKAM_SVG}" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
+      <img src="${LOGO_STRUK_DATA_URL}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 52px; height: 52px; object-fit: cover; margin: 0 auto 5px auto; display: block; border-radius: 12px; border: 1px solid #d1d5db;">
       <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
       <div style="font-size: 9px; color: #555;">BUKTI RESERVASI JADWAL (${r.tipe || 'Klinik'})</div>
       <div style="font-size: 8px; color: #777;">Kode: #TB-RES-${r.id.toString().slice(-5)}</div>
@@ -2062,7 +2087,7 @@ function bukaModalStruk(txId) {
 
   const htmlStruk = `
     <div style="text-align: center; margin-bottom: 8px;">
-      <img src="${LOGO_TEMAN_BEKAM_SVG}" style="width: 44px; height: 44px; object-fit: contain; margin: 0 auto 5px auto; display: block; border-radius: 50%;">
+      <img src="${LOGO_STRUK_DATA_URL}" referrerpolicy="no-referrer" onerror="renderVectorLogo(this)" style="width: 52px; height: 52px; object-fit: cover; margin: 0 auto 5px auto; display: block; border-radius: 12px; border: 1px solid #d1d5db;">
       <div style="font-weight: 800; font-size: 13px;">TEMAN BEKAM</div>
       <div style="font-size: 9px; color: #555;">Ahlinya Bekam & Relaksasi</div>
       <div style="font-size: 8px; color: #777;">No. #${item.id.toString().slice(-6)} | ${item.jam} WIB</div>
@@ -2113,17 +2138,33 @@ function simpanStrukJPG() {
   btn.disabled = true;
 
   html2canvas(area, {
-    scale: 3, // Resolusi tinggi agar teks tajam
+    scale: 3,
     backgroundColor: "#ffffff",
-    useCORS: true
+    useCORS: true,
+    allowTaint: true
   }).then(canvas => {
-    const imgData = canvas.toDataURL("image/jpeg", 0.95);
-    const link = document.createElement('a');
-    link.download = `${currentStrukFileName}.jpg`;
-    link.href = imgData;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const link = document.createElement('a');
+      link.download = `${currentStrukFileName}.jpg`;
+      link.href = imgData;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      // Fallback otomatis jika browser memblokir ekspor gambar eksternal (CORS)
+      const imgEl = area.querySelector('img');
+      if (imgEl) imgEl.src = LOGO_TEMAN_BEKAM_SVG;
+      html2canvas(area, { scale: 3, backgroundColor: "#ffffff" }).then(fallbackCanvas => {
+        const imgData = fallbackCanvas.toDataURL("image/jpeg", 0.95);
+        const link = document.createElement('a');
+        link.download = `${currentStrukFileName}.jpg`;
+        link.href = imgData;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
 
     btn.innerHTML = originalHTML;
     btn.disabled = false;
